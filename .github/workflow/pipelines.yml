@@ -1,0 +1,54 @@
+name: Vercel Production Deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+
+      - name: Install dependencies
+        run: |
+          npm install next
+          npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run GitLeaks
+        run: npm run gitleaks
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Build project
+        run: npm run build
+
+  Deploy-Production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
