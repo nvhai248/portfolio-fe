@@ -1,27 +1,24 @@
 import { client } from '$lib/sanity';
 import type { PageServerLoad } from './$types';
 
+const postsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3] {
+	title,
+	slug,
+	mainImage,
+	categories,
+	publishedAt,
+	body
+}`;
+
+const settingsQuery = `*[_type == "settings"][0] {
+	socials
+}`;
+
 export const load: PageServerLoad = async () => {
-    const postsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3] {
-        title,
-        slug,
-        mainImage,
-        categories,
-        publishedAt,
-        body
-    }`;
+	const [posts, settings] = await Promise.all([client.fetch(postsQuery), client.fetch(settingsQuery)]);
 
-    const settingsQuery = `*[_type == "settings"][0] {
-        socials
-    }`;
-
-    const [posts, settings] = await Promise.all([
-        client.fetch(postsQuery),
-        client.fetch(settingsQuery)
-    ]);
-
-    return {
-        posts,
-        settings
-    };
+	return {
+		posts,
+		settings
+	};
 };

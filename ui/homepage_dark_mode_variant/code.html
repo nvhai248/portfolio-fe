@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nguyen Van Hai — Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-solid border-slate-200 dark:border-[#233648] px-6 md:px-20 lg:px-40 py-5 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V44" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] uppercase">Nguyen Van Hai</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Work</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">About</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Insight</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[120px] items-center justify-between rounded-full h-10 px-4 bg-slate-200 dark:bg-[#233648] text-slate-900 dark:text-white text-xs font-bold leading-normal tracking-[0.05em] uppercase border border-transparent hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+<span class="truncate">Mode: Dark</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-primary/20" data-alt="Portrait of Nguyen Van Hai" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAP9VRYPiS1slT1IC61d3p2d6goj650npDjvsJ1k7kbK-_GaahXKATlUWBht01WFLUpyo4y6kmHx0w-2e8ExwHDGD_iJUi_r3obF8OiPLG-wKmA4pilvpE_2fcaRK6b57YQ7yHcXj4esjMH2yKUa-7QoMdJ0_V8QiulLYscvKdbvaPIbdkNibvTElFZSsVFn0jYtbnpJ0HrVVL1dDCkwjnIez0EqetZ7nF1w7fWWziN9kmL1CBKKbj1U8ji50J_FQFORElT7p0Hm6s");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-6 md:px-20 lg:px-40 py-12 md:py-20 max-w-[1440px] mx-auto w-full">
+<!-- Headline Hero Section -->
+<div class="layout-content-container flex flex-col mb-20">
+<div class="flex items-center gap-2 mb-6">
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Available for projects</span>
+</div>
+<h1 class="text-slate-900 dark:text-white tracking-tight text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] max-w-4xl">
+                        Digital Designer &amp; Creative Strategist focusing on minimal interfaces and meaningful experiences.
+                    </h1>
+</div>
+<!-- Featured Work Section -->
+<div class="mb-24">
+<div class="flex items-end justify-between border-b border-slate-200 dark:border-[#233648] pb-4 mb-8">
+<h2 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-bold leading-tight tracking-[-0.015em]">Featured Work</h2>
+<a class="text-primary text-sm font-semibold hover:underline flex items-center gap-1 uppercase tracking-wider" href="#">
+                            View All <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Project 1 -->
+<div class="group flex flex-col gap-4 cursor-pointer">
+<div class="w-full aspect-video bg-slate-100 dark:bg-[#1a2632] rounded-xl overflow-hidden relative border border-slate-200 dark:border-[#233648]">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Minimalist mobile app interface design" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCaSKR5WaZiYJe0lDPHI10WE4Hp-zV88R_JoGpQaAX1bDXyffO7EFb53-gAtq-X8zklblvqVISm3CsorAOpHVRW3FkYyAorO4mSVrvneLIb_3aVA8EtNoen7DU6CEbgWDd8_ZdM7kvleBtasRjbXBQoWh1c0r0hv-sS6u3PKBlDeUJ7GmdOkli7wMQA0kvYKAp_QF-wlXK7SgTc_q8wvokCPSlC3OwznK7AReS-gZuoZKxbiySoazBl2a2oCeR68xivCxAmrwILkP8");'></div>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Aura Financial Platform</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1 uppercase tracking-wider">UX Design • 2024</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-all">arrow_forward</span>
+</div>
+</div>
+<!-- Project 2 -->
+<div class="group flex flex-col gap-4 cursor-pointer">
+<div class="w-full aspect-video bg-slate-100 dark:bg-[#1a2632] rounded-xl overflow-hidden relative border border-slate-200 dark:border-[#233648]">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Branding and editorial website design" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCG3-ngShRTsomL6DJGgy5TB2RJUuSu7dPWoEmAVgvE55hw4EAG4FqMEKh10ZW6p1PkOWqhZWd_wraVflhi6BRQrOzJPpZq8YL8_I6QwPcCDURFheEu3CauX5v8tHRNV7rd7RXT9_XYeOsI8xT2D6h5rUHKyq_R9ww-mytLPuX7NaJsqIpS4hbwR186koTEby5bPgheAwARs2bkzarjTciYxGvIueKuzdlvo1N3jFE_noneBcGDniDlrBMc-FF3fSR7gQNWWrmnNAE");'></div>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Ethos Editorial</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1 uppercase tracking-wider">Branding • 2023</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-all">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Insights Section -->
+<div class="mb-24">
+<div class="flex items-end justify-between border-b border-slate-200 dark:border-[#233648] pb-4 mb-8">
+<h2 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-bold leading-tight tracking-[-0.015em]">Recent Insights</h2>
+<span class="text-slate-400 text-sm italic font-display">Thoughts on design &amp; tech</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Insight 1 -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-slate-100 dark:bg-[#16212b] border border-slate-200 dark:border-[#233648] hover:border-primary/50 transition-all cursor-pointer group">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract composition representing negative space" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA6Yy_Artmnu7ikvrn7i2uL-1-6U5gmyuJx7aKzAQHWsi4f2VuQh4hH6EFoEY37fDQRwjYNgVdQfPlL46JLiP4H2XX9V9GN0NxHZ0z6pZhw-jVVWGE31leYPmc7CsZEAl658SUJypXQyOaDiSL1K_vWiBFd_X-t3sOFS-o-mYxk8vgzfP5d9CkVDu211qNnjTL4_vbJQHZ4DeDCT3Z_T7n3TuE52T3VdHZmF-xG_J-9D7ky0EfrMRUI-1jVD2hXNA8GieihL7jM6nE");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Design Theory</span>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight group-hover:text-primary transition-colors">The Power of Negative Space</p>
+<div class="flex items-center gap-2 mt-2">
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">Oct 24, 2023</p>
+<span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">5 min read</p>
+</div>
+</div>
+</div>
+<!-- Insight 2 -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-slate-100 dark:bg-[#16212b] border border-slate-200 dark:border-[#233648] hover:border-primary/50 transition-all cursor-pointer group">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Modular blocks representing design systems" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAy69ES9BUInkZKgJMBYuDvFkYtFYv6ZYTKv1JmIM_pU0hDn2vKzp6rlLbJnbVdpiDwSxvpToT1H28lTDH0TMLZTmZ48TAP1AtJgsck4nV6BwMxxkNZvKJPJOar5Ov-rTPjv80hJn9iPHzq3sQKSOsOqrIqzIXa_0wFmE3nZgu0wNyudoHdLZeBhU8upFRZcr8sDxuBhUBtEzivpY8puPXpcOBUEe7UNpVnkoJn6OUY566LX23Wlbo7Ur6GOl7BIEUMqy97VdHsLVk");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Systems</span>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight group-hover:text-primary transition-colors">Design Systems in 2024</p>
+<div class="flex items-center gap-2 mt-2">
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">Nov 12, 2023</p>
+<span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">8 min read</p>
+</div>
+</div>
+</div>
+<!-- Insight 3 -->
+<div class="flex flex-col gap-4 p-6 rounded-xl bg-slate-100 dark:bg-[#16212b] border border-slate-200 dark:border-[#233648] hover:border-primary/50 transition-all cursor-pointer group">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Grid layout representation" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAYcBZCVrNFOu4aD4PVYnKUq18-HoHrGOwsvLj-VeD8cz9_sHdLB-zrN9ZOATafwi8aQIN2YHoLkrjsTyTqBhxOfYbWrgXE5QSiWHMrm0RBT2c3QgXzFdd8-5kWRjRY5vtaMJGufwvx64jRsahdHuLDY29uatYfJnrxUnZZVSHyOPZDmbLZiRMa5lqXbQ9ISaB-ewXy9Jy7ry9_ZiXx-48_jVej7s7VyewcWfk1R4_2whEhkqVcpao1Xr83PW0G2tElfRyBTaAchk0");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Layout</span>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight group-hover:text-primary transition-colors">Editorial Grid Layouts</p>
+<div class="flex items-center gap-2 mt-2">
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">Dec 05, 2023</p>
+<span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+<p class="text-slate-500 dark:text-[#92adc9] text-xs font-medium">4 min read</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Contact CTA -->
+<div class="py-20 flex flex-col items-center text-center border-t border-slate-200 dark:border-[#233648]">
+<h2 class="text-3xl md:text-4xl font-bold mb-6">Let's build something together.</h2>
+<p class="text-slate-500 dark:text-slate-400 max-w-lg mb-10 text-lg">
+                        Currently accepting new projects and collaborations for Q2 2024.
+                    </p>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-10 rounded-full transition-all flex items-center gap-3">
+                        Start a Project <span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="px-6 md:px-20 lg:px-40 py-10 border-t border-slate-200 dark:border-[#233648] flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2">
+<p class="text-slate-400 text-sm font-medium">© 2024 Nguyen Van Hai. All rights reserved.</p>
+<div class="flex gap-4">
+<a class="text-xs text-slate-500 hover:text-primary uppercase tracking-widest" href="#">Twitter</a>
+<a class="text-xs text-slate-500 hover:text-primary uppercase tracking-widest" href="#">Dribbble</a>
+<a class="text-xs text-slate-500 hover:text-primary uppercase tracking-widest" href="#">LinkedIn</a>
+</div>
+</div>
+<div class="flex gap-8 items-center">
+<p class="text-slate-400 text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">location_on</span>
+                        Ho Chi Minh City, VN
+                    </p>
+<div class="flex items-center gap-1">
+<span class="text-xs text-slate-500 uppercase font-bold">Privacy</span>
+<span class="text-slate-700 mx-2">/</span>
+<span class="text-xs text-slate-500 uppercase font-bold">Terms</span>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

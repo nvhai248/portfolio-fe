@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimizing Moodle with Ollama AI - Nguyen Van Hai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body { 
+                @apply font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-200; 
+            }
+        }
+        .prose pre { 
+            @apply bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg p-6 overflow-x-auto;
+        }
+        .sidebar-sticky { 
+            position: sticky; 
+            top: 6rem; 
+        }
+    </style>
+</head>
+<body>
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16">
+<div class="flex items-center gap-10">
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="size-8 bg-primary rounded flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<span class="text-lg font-bold tracking-tight">NVH.</span>
+</a>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-primary" href="#">Articles</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Projects</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">About</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+<div class="hidden sm:block h-6 w-px bg-slate-200 dark:border-slate-800"></div>
+<div class="size-9 rounded-full border border-slate-200 dark:border-slate-800 bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAoCYPbWOEDYmmA9WS26MoD9x6Rs02kVoWpbeOTg84zk1zWY2d4sYOxNYEy3FQzYFRWwA5pFcjNa5SsHSwG348zzNjK51OqtymTDHI4PGklHDI1FvAwqfVXjGkyEOBPytCq-0QpYNhf3HWahP9EBh0kLXdr8Tp1X-XRlF-B60EO7DFyjbk9yK1jOQcpS-zuNVj3ztUPqIU0MkmtrDh92s0g9pwAuNLGUs8Fqk8nR0tkeILayrLRN7oFF8TJYDqvcRB-Mb8x1ro8018');"></div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 md:px-12 py-16 lg:py-24">
+<div class="fixed top-0 left-0 w-full z-[60] h-1 pointer-events-none">
+<div class="h-full bg-primary" style="width: 35%;"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<aside class="hidden lg:block lg:col-span-3">
+<div class="sidebar-sticky flex flex-col gap-10">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Content</h3>
+<span class="text-[10px] font-medium text-primary uppercase">35% Done</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/5 text-primary" href="#">
+<span class="material-symbols-outlined text-lg">info</span>
+<span class="text-sm font-semibold">Introduction</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">account_tree</span>
+<span class="text-sm font-medium">Architecture</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">code</span>
+<span class="text-sm font-medium">Implementation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">speed</span>
+<span class="text-sm font-medium">Benchmarks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">done_all</span>
+<span class="text-sm font-medium">Conclusion</span>
+</a>
+</nav>
+</div>
+<div class="pt-8 border-t border-slate-100 dark:border-slate-800">
+<div class="flex flex-col gap-4">
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Reading Time</p>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-xl">schedule</span>
+<span class="text-sm font-medium">12 min read</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<article class="lg:col-span-9 xl:col-span-8">
+<header class="mb-16">
+<div class="flex items-center gap-3 mb-8">
+<span class="bg-primary/10 text-primary text-[10px] uppercase font-extrabold tracking-widest px-3 py-1 rounded-full">Engineering</span>
+<span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+<time class="text-slate-500 text-xs font-medium">January 24, 2024</time>
+</div>
+<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.15] tracking-tight mb-10">
+                        Optimizing Moodle with Ollama AI
+                    </h1>
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-800" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA2uHVKFXturLd1w7e07OZedkpjRjuZqDXP3gw3UYLwXJbx4vR97hRE1FSsN66qpKyZqa9EQ2W5iI8moQtL62b3gjImUrui9ZM9GRez7ZYqV39Cp0XJSe0zqCl_GVulAI4YuRA_sQNLk-CiDbI8y1YFT2QPtxXYqvR5UrAIkl_DnU5raknTV8L1Tpev8Aq3ApsmI9fNb1C7zQQTdYL4KMv3zuYgrY6FEqVSZnGhWzCSTPxEcboeB-zS6Qn3XwKuq0XxSVw2FiajqiM');"></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Nguyen Van Hai</p>
+<p class="text-xs text-slate-500">Backend Engineer &amp; System Architect</p>
+</div>
+</div>
+</header>
+<div class="prose prose-slate dark:prose-invert max-w-none">
+<p class="text-xl md:text-2xl font-light leading-relaxed text-slate-600 dark:text-slate-400 mb-12 border-l-4 border-primary/20 pl-8">
+                        Modern Learning Management Systems (LMS) like Moodle are entering a new era. By integrating local LLM orchestration via Ollama, we can provide private, performant AI features without the cost of external APIs.
+                    </p>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mt-16 mb-6">Introduction to LLMs in Education</h2>
+<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-8">
+                        The educational landscape is shifting. Privacy is paramount when dealing with student data, making cloud-based AI solutions often problematic for strict compliance environments. This is where <strong>Ollama</strong> shines—allowing us to run powerful models like Llama 3 or Mistral directly on our own infrastructure.
+                    </p>
+<div class="my-12 p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">memory</span>
+                            System Architecture Overlook
+                        </h3>
+<div class="aspect-video bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="text-center p-8">
+<span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-700 mb-4">schema</span>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Architectural Flow</p>
+<p class="text-sm text-slate-500 mt-2">Moodle (PHP) <span class="text-primary px-2">⟷</span> REST API <span class="text-primary px-2">⟷</span> Ollama (Local LLM)</p>
+</div>
+</div>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mt-16 mb-6">Implementation: The PHP Connector</h2>
+<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-8">
+                        To connect Moodle (PHP) with Ollama, we leverage the REST API. Below is a simplified implementation of a service class that handles the stream-based communication with the local AI daemon.
+                    </p>
+<div class="my-10 relative">
+<div class="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 pointer-events-none">PHP 8.2</div>
+<pre class="font-mono text-sm leading-7"><code><span class="text-primary">class</span> <span class="text-amber-600 dark:text-amber-400">OllamaService</span> {
+    <span class="text-slate-500">// Initialize connection to local Ollama instance</span>
+    <span class="text-primary">public function</span> <span class="text-blue-600 dark:text-blue-400">generateResponse</span>(string <span class="text-emerald-600">$prompt</span>) {
+        <span class="text-emerald-600">$ch</span> = curl_init(<span class="text-rose-500">'http://localhost:11434/api/generate'</span>);
+        curl_setopt(<span class="text-emerald-600">$ch</span>, CURLOPT_POSTFIELDS, json_encode([
+            <span class="text-rose-500">'model'</span> =&gt; <span class="text-rose-500">'llama3'</span>,
+            <span class="text-rose-500">'prompt'</span> =&gt; <span class="text-emerald-600">$prompt</span>,
+            <span class="text-rose-500">'stream'</span> =&gt; <span class="text-primary">false</span>
+        ]));
+        <span class="text-primary">return</span> curl_exec(<span class="text-emerald-600">$ch</span>);
+    }
+}</code></pre>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mt-16 mb-6">Benchmarks &amp; Performance</h2>
+<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-8">
+                        In our tests running on an NVIDIA RTX 4090, we observed tokens-per-second (TPS) rates that exceed the typical latency of cloud-based providers, with the added benefit of zero egress costs.
+                    </p>
+<blockquote class="my-16 px-10 py-2 border-l-4 border-primary italic">
+<p class="text-2xl font-medium text-slate-900 dark:text-white leading-relaxed">
+                            "The goal isn't just to add AI; it's to add intelligence that respects user privacy and system reliability."
+                        </p>
+</blockquote>
+</div>
+<div class="mt-24 pt-12 border-t border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<a class="group p-6 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors" href="#">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 block">Previous</span>
+<span class="text-lg font-bold group-hover:text-primary transition-colors">Scaling Kubernetes for 100k Concurrent Users</span>
+</a>
+<a class="group p-6 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors text-right" href="#">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 block">Next Up</span>
+<span class="text-lg font-bold group-hover:text-primary transition-colors">Zero-Trust Security in PHP Apps</span>
+</a>
+</div>
+</div>
+</article>
+</div>
+</main>
+<footer class="bg-slate-50 dark:bg-slate-900/30 border-t border-slate-200 dark:border-slate-800 py-16">
+<div class="max-w-7xl mx-auto px-6 md:px-12">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+<div class="space-y-4">
+<a class="flex items-center gap-2.5" href="#">
+<div class="size-6 bg-primary rounded-sm flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</div>
+<span class="font-bold tracking-tight">Nguyen Van Hai</span>
+</a>
+<p class="text-sm text-slate-500 max-w-xs">Building robust backend systems and exploring the future of educational technology.</p>
+</div>
+<div class="flex flex-wrap gap-x-12 gap-y-6">
+<div class="space-y-4">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Connect</p>
+<div class="flex flex-col gap-2">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Twitter</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">GitHub</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">LinkedIn</a>
+</div>
+</div>
+<div class="space-y-4">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Site</p>
+<div class="flex flex-col gap-2">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Resume</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">RSS</a>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between gap-4">
+<p class="text-xs text-slate-500">© 2024 Nguyen Van Hai. All rights reserved.</p>
+<p class="text-xs text-slate-400 italic">Built with precision and minimal noise.</p>
+</div>
+</div>
+</footer>
+
+</body></html>

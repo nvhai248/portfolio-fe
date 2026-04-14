@@ -1,43 +1,56 @@
 import { browser } from '$app/environment';
 
+type ThemeMode = 'light' | 'dark';
+
 function createThemeStore() {
-    let current = $state('light');
+	let current = $state<ThemeMode>('light');
 
-    function init() {
-        if (browser) {
-            const saved = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+	function resolveInitialMode(): ThemeMode {
+		if (!browser) return 'light';
 
-            if (saved === 'dark' || (!saved && prefersDark)) {
-                setMode('dark');
-            } else {
-                setMode('light');
-            }
-        }
-    }
+		const saved = localStorage.getItem('theme');
+		if (saved === 'light' || saved === 'dark') {
+			return saved;
+		}
 
-    function setMode(mode: 'light' | 'dark') {
-        current = mode;
-        if (browser) {
-            const html = document.documentElement;
-            if (mode === 'dark') {
-                html.classList.add('dark');
-            } else {
-                html.classList.remove('dark');
-            }
-            localStorage.setItem('theme', mode);
-        }
-    }
+		if (document.documentElement.classList.contains('dark')) {
+			return 'dark';
+		}
 
-    function toggle() {
-        setMode(current === 'dark' ? 'light' : 'dark');
-    }
+		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	}
 
-    return {
-        get current() { return current; },
-        init,
-        toggle
-    };
+	function applyMode(mode: ThemeMode) {
+		const html = document.documentElement;
+		html.classList.toggle('dark', mode === 'dark');
+		localStorage.setItem('theme', mode);
+	}
+
+	function init() {
+		if (!browser) return;
+		const mode = resolveInitialMode();
+		current = mode;
+		applyMode(mode);
+	}
+
+	function setMode(mode: ThemeMode) {
+		current = mode;
+		if (browser) {
+			applyMode(mode);
+		}
+	}
+
+	function toggle() {
+		setMode(current === 'dark' ? 'light' : 'dark');
+	}
+
+	return {
+		get current() {
+			return current;
+		},
+		init,
+		toggle
+	};
 }
 
 export const theme = createThemeStore();

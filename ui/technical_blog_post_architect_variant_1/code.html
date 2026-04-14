@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Designing Resilient Microservices | Nguyen Van Hai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-['Space Grotesk'] bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100;
+            }
+        }
+        .aside-line {
+            position: absolute;
+            left: -1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #1173d4;
+            opacity: 0.3;
+        }
+        .sticky-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="selection:bg-primary/30">
+<div class="sticky-progress">
+<div class="h-1 bg-primary/20 w-full">
+<div class="h-1 bg-primary" style="width: 35%;"></div>
+</div>
+</div>
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V44Z" fill="currentColor" fill-opacity="0.2" fill-rule="evenodd"></path>
+<path d="M24 4V17.3333M24 17.3333V30.6667M24 17.3333H6M24 17.3333H42" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold tracking-tighter uppercase hidden sm:block">Nguyen Van Hai</h2>
+</div>
+<nav class="flex items-center gap-8">
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-sm font-medium text-primary" href="#">Blog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Resume</a>
+</div>
+<div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+<button class="hidden sm:flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-xs font-bold transition-transform active:scale-95 uppercase tracking-wider">
+                        Contact
+                    </button>
+</div>
+</nav>
+</div>
+</header>
+<main class="flex-1">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 pt-8 flex justify-between items-center">
+<a class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1">arrow_back</span>
+                Back to Archive
+            </a>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+<button class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+</div>
+</div>
+<div class="w-full max-w-[1440px] mx-auto px-6 md:px-10 pt-12 pb-16">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7">
+<div class="flex gap-3 mb-8 flex-wrap">
+<div class="flex h-7 items-center justify-center rounded-full bg-primary/10 border border-primary/20 px-4">
+<p class="text-primary text-[10px] font-bold uppercase tracking-[0.2em]">Architecture</p>
+</div>
+<div class="flex h-7 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 px-4">
+<p class="text-[10px] font-medium uppercase tracking-widest">System Design</p>
+</div>
+</div>
+<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-8">
+                        Designing Resilient <span class="text-primary">Microservices</span>: A Deep Dive
+                    </h1>
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden">
+<img alt="Nguyen Van Hai" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRTJRwm_UVBicobPA1nrhNwTHjAASV7jCk0Y8yB3HL2Sr116QwJT7hTnD4-ennkf3V6Iw1eJ5TSlfrUIOvmBevx9cF0eIJBdKPhyNpZt9PXf0WnomzevYGM85LcPP4YjPQCaeo6gpomxsg0R2cAnMSM1kvmFQ8v22nwnWugpe2OEDtOZ7pstfZljJHCmNxGf8d6IA-ihlhqNb1DWdXZfhTm53xRbbM_8kEkjSyGl7Hqy941OnMipgl75rxXPdXrvavlIkhvedbZlQ"/>
+</div>
+<div>
+<p class="text-sm font-bold">Nguyen Van Hai</p>
+<p class="text-xs text-slate-500 uppercase tracking-widest">Oct 12, 2023 • 15 min read</p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5">
+<div class="aspect-square bg-slate-100 dark:bg-slate-900 rounded-3xl overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-2xl">
+<div class="absolute inset-0 opacity-40 mix-blend-overlay bg-gradient-to-br from-primary to-transparent"></div>
+<img alt="Architectural Diagram" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhj-vy0cNzOvRDJxa42qlIsWI9fs7-lk6a-oobaVNzC6A31I-PntykdqszD4FmVfUpTLMpLkFW7k4AHEiM3amOtpFW3e8BBXCn9IcwMfFwfElCP__CY9KZ72c7wDK3khJzDd4n1oKTbAjwQEv9FlHkA2sEzIeX99_7If-2Rymb4539gcUdrav1alcH4aKeRVgXwisN9IFVY5dFtq2cpO096igAUJ6jHxPdAP5hZ3uDeYZMeEU9A9ca9GwvXQJm9o0VOYFeukHjx-E"/>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full max-w-[1440px] mx-auto px-6 md:px-10 flex flex-col lg:flex-row gap-16 pb-32">
+<article class="flex-1 max-w-[760px]">
+<div class="space-y-8 text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+<p class="text-2xl font-light text-slate-900 dark:text-white leading-snug">
+                        The shift towards microservices has introduced unprecedented scalability, but it also brought a new class of distributed systems challenges. Chief among these is maintaining data consistency across independent services.
+                    </p>
+<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white pt-6">The Fallacy of Distributed Transactions</h2>
+<p>
+                        In monolithic systems, ACID transactions were our safety net. In a distributed world, the two-phase commit (2PC) is often too slow and brittle. This is where Event Sourcing changes the paradigm: instead of storing the current state, we store the sequence of events that led to it.
+                    </p>
+<div class="group rounded-2xl overflow-hidden bg-slate-950 text-slate-100 my-10 border border-slate-800 shadow-xl">
+<div class="flex justify-between items-center px-6 py-3 bg-slate-900/50 border-b border-slate-800">
+<div class="flex items-center gap-2">
+<div class="flex gap-1.5">
+<div class="size-2.5 rounded-full bg-red-500/50"></div>
+<div class="size-2.5 rounded-full bg-amber-500/50"></div>
+<div class="size-2.5 rounded-full bg-emerald-500/50"></div>
+</div>
+<span class="text-[10px] font-mono text-slate-500 ml-4 uppercase tracking-widest">EventStore.cs</span>
+</div>
+<button class="text-[10px] font-bold text-slate-500 hover:text-primary transition-colors uppercase tracking-widest">Copy Code</button>
+</div>
+<pre class="font-mono text-sm leading-6 p-6 overflow-x-auto"><code>public async Task AppendEvent(Guid streamId, Event @event) 
+{
+    var sequence = await _db.GetLastSequence(streamId);
+    var record = new EventRecord(
+        streamId, 
+        sequence + 1, 
+        @event.GetType().Name, 
+        JsonConvert.SerializeObject(@event)
+    );
+    await _db.Events.AddAsync(record);
+    await _db.SaveChangesAsync();
+}</code></pre>
+</div>
+<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white pt-4">Eventual Consistency in Practice</h2>
+<p>
+                        Transitioning to eventual consistency requires a mental shift for both developers and stakeholders. We must design for the "in-between" states. When a user places an order, it isn't "Confirmed" immediately; it is "PendingValidation".
+                    </p>
+<div class="bg-primary/5 border-l-4 border-primary p-8 rounded-r-2xl my-10">
+<h4 class="font-display font-bold text-primary uppercase text-xs tracking-[0.2em] mb-3">Core Principle</h4>
+<p class="text-xl text-slate-800 dark:text-slate-200 italic font-medium leading-relaxed">
+                            "The Single Source of Truth is no longer a static database table; it is the immutable, Append-Only Log."
+                        </p>
+</div>
+<p>
+                        Using a message broker like Apache Kafka or RabbitMQ, we can ensure that every downstream service reacts to these events at its own pace, providing high availability even if some parts of the system are temporarily offline.
+                    </p>
+</div>
+</article>
+<aside class="w-full lg:w-[320px] shrink-0">
+<div class="sticky top-24 space-y-12">
+<div class="relative pt-2">
+<div class="aside-line"></div>
+<h4 class="font-display font-bold text-primary uppercase text-xs tracking-widest mb-4">Architect's Note</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
+                            Event Sourcing isn't a silver bullet. It introduces complexity in querying (CQRS becomes mandatory) and data evolution (versioning events). Only use it for high-value core domains.
+                        </p>
+</div>
+<div class="relative pt-2">
+<div class="aside-line"></div>
+<h4 class="font-display font-bold text-primary uppercase text-xs tracking-widest mb-6">Technical Glossary</h4>
+<div class="space-y-6">
+<div>
+<p class="text-sm font-bold mb-1">Distributed Log</p>
+<p class="text-xs text-slate-500 leading-relaxed">A sequence of records, ordered by time, that can be appended to and read sequentially.</p>
+</div>
+<div>
+<p class="text-sm font-bold mb-1">CQRS</p>
+<p class="text-xs text-slate-500 leading-relaxed">Separating the model for updating data from the model for reading data to optimize performance.</p>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-200 dark:border-slate-800">
+<h4 class="font-display font-bold uppercase text-[10px] tracking-[0.2em] text-slate-400 mb-6">Related Resources</h4>
+<div class="flex flex-col gap-4">
+<a class="group flex items-center justify-between p-3 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="text-sm font-medium">ES Example Repository</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity">north_east</span>
+</a>
+<a class="group flex items-center justify-between p-3 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="text-sm font-medium">Martin Fowler on ES</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 py-16">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<div class="lg:col-span-5 space-y-8">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded"></div>
+<h2 class="text-xl font-bold tracking-tighter uppercase">Nguyen Van Hai</h2>
+</div>
+<p class="text-slate-500 dark:text-slate-400 max-w-sm text-sm leading-relaxed">
+                        Backend Engineer &amp; System Architect. Building scalable distributed systems and sharing architectural patterns for modern cloud infrastructure.
+                    </p>
+<div class="flex gap-4">
+<a class="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:text-primary hover:border-primary transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</a>
+<a class="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:text-primary hover:border-primary transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</a>
+</div>
+</div>
+<div class="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+<div class="space-y-6">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Navigation</h4>
+<ul class="space-y-4">
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Home</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Portfolio</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Blog Archive</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Interests</h4>
+<ul class="space-y-4">
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Kubernetes</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Rust/Go</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Cloud Native</a></li>
+</ul>
+</div>
+<div class="space-y-6">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Contact</h4>
+<ul class="space-y-4">
+<li><a class="text-sm hover:text-primary transition-colors" href="#">LinkedIn</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">GitHub</a></li>
+<li><a class="text-sm hover:text-primary transition-colors" href="#">Email</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="mt-20 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-xs text-slate-500 uppercase tracking-widest">© 2024 Nguyen Van Hai. All Rights Reserved.</p>
+<div class="flex items-center gap-8">
+<a class="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

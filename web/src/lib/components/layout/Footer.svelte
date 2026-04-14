@@ -1,23 +1,59 @@
-<footer class="px-6 md:px-20 lg:px-40 py-16 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-    <div>
-      <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Get in touch</p>
-      <a class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white hover:text-primary transition-colors underline decoration-slate-300 dark:decoration-slate-700 underline-offset-8" href="mailto:nvhai2408@gmail.com">
-        nvhai2408@gmail.com
-      </a>
-    </div>
-    <div class="flex gap-6">
-      <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Twitter</a>
-      <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Medium</a>
-      <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">RSS Feed</a>
-    </div>
-  </div>
-  <div class="max-w-[1200px] mx-auto mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
-    <p class="text-xs text-slate-400">© 2024 Nguyen Van Hai. All rights reserved.</p>
-    <div class="flex items-center gap-2 text-xs text-slate-400">
-      <span>Built with</span>
-      <span class="material-symbols-outlined text-xs text-primary">favorite</span>
-      <span>and Systems Design</span>
-    </div>
-  </div>
+<script lang="ts">
+	import { base } from '$app/paths';
+	import { footerProfileLinks, primaryNavItems } from '$lib/content/navigation';
+
+	const footerNavItems = primaryNavItems.filter((item) => item.href !== '/blog');
+</script>
+
+<footer class="border-t ui-divider bg-[var(--ui-surface-soft)]">
+	<div class="page-shell grid gap-10 py-12 lg:grid-cols-[1.3fr_1fr]">
+		<div class="space-y-4">
+			<p class="ui-eyebrow">Open to selected opportunities</p>
+			<h2 class="text-2xl font-bold tracking-tight sm:text-3xl [color:var(--ui-text)]">
+				Building reliable backend systems with measurable business impact.
+			</h2>
+			<p class="ui-body max-w-xl">
+				If you need a backend engineer to modernize architecture, improve performance, or ship AI-enabled
+				features safely, let's connect.
+			</p>
+			<a href="mailto:nvhai2408@gmail.com" class="ui-link inline-flex items-center gap-2 text-sm">
+				nvhai2408@gmail.com
+				<span class="material-symbols-outlined text-base">north_east</span>
+			</a>
+		</div>
+
+		<div class="grid gap-8 sm:grid-cols-2">
+			<div>
+				<h3 class="mb-3 text-sm font-semibold [color:var(--ui-text)]">Navigation</h3>
+				<ul class="space-y-2 text-sm [color:var(--ui-text-muted)]">
+					{#each footerNavItems as item}
+						<li><a class="hover:text-primary" href={`${base}${item.href}`}>{item.label}</a></li>
+					{/each}
+				</ul>
+			</div>
+			<div>
+				<h3 class="mb-3 text-sm font-semibold [color:var(--ui-text)]">Profiles</h3>
+				<ul class="space-y-2 text-sm [color:var(--ui-text-muted)]">
+					{#each footerProfileLinks as link}
+						<li>
+							<a
+								class="hover:text-primary"
+								href={link.external ? link.href : `${base}${link.href}`}
+								target={link.external ? '_blank' : undefined}
+								rel={link.external ? 'noreferrer' : undefined}
+							>
+								{link.label}
+							</a>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="border-t ui-divider py-4">
+		<div class="page-shell flex flex-col items-start justify-between gap-2 text-xs [color:var(--ui-text-subtle)] sm:flex-row sm:items-center">
+			<p>© {new Date().getFullYear()} Nguyen Van Hai. All rights reserved.</p>
+			<p>Built with SvelteKit and a focus on performance, accessibility, and clarity.</p>
+		</div>
+	</div>
 </footer>

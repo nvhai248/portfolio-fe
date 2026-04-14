@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nguyen Van Hai | Digital CV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-300">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden">
+<!-- Navigation -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="mx-auto max-w-[960px] px-6 lg:px-10">
+<div class="flex h-16 items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded bg-primary text-white">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">Nguyen Van Hai</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#about">About</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#experience">Experience</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#stack">Stack</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#contact">Contact</a>
+<button class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90 transition-all">
+                            Download CV
+                        </button>
+</nav>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="mx-auto max-w-[960px] px-6 lg:px-10 py-12 md:py-20">
+<!-- Hero Section -->
+<section class="mb-24" id="about">
+<div class="@container">
+<div class="flex flex-col gap-10 @[864px]:flex-row @[864px]:items-center">
+<div class="w-full @[864px]:w-1/2">
+<div class="aspect-square w-full max-w-[400px] overflow-hidden rounded-2xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl">
+<div class="h-full w-full bg-cover bg-center grayscale hover:grayscale-0 transition-all duration-500" data-alt="Professional portrait of a senior developer in studio setting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCK_ieXmAVvym8-LC2yuHOjlzPDNExmAnP6vKltRz_7qBi-o13m-6DLcYSHKaqhy4T60XCldo2b8izpoUwzhpYSuQgGcBz-rXv41x6VL6gzIFDhEFuQtQMmxl7S85XOvHjf-tN_3sw0DO7cNsF5R0fzp0wvHAcnXuoRXvkgD2BIEQXnxiNNRc51Rhbajyd5r4ErjkCnHgH26ZwiVu2HrGWbr5p-NnyUB_Bqc67KzsgpsZt8jg9Ob9Kx9tQOVxZ5qmegbmiVUDNQhOI");'>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-6 @[864px]:w-1/2">
+<div class="space-y-4">
+<h1 class="text-4xl font-black leading-tight tracking-tight md:text-5xl lg:text-6xl text-slate-900 dark:text-white">
+                                        Nguyen Van Hai — <span class="text-primary">Senior Developer</span>
+</h1>
+<p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+                                        Specializing in technical leadership and high-quality software craftsmanship. Building scalable, performant applications with a focus on modern web standards and exceptional user experience.
+                                    </p>
+</div>
+<div class="flex gap-4">
+<button class="flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-bold text-white transition-all hover:scale-105 active:scale-95">
+                                        Contact Me
+                                    </button>
+<button class="flex h-12 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-6 text-base font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                                        View GitHub
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Experience Section -->
+<section class="mb-24" id="experience">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Professional Journey</h2>
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+</div>
+<div class="grid grid-cols-[48px_1fr] gap-x-6">
+<!-- Entry 1 -->
+<div class="flex flex-col items-center">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">work</span>
+</div>
+<div class="w-0.5 grow bg-slate-200 dark:bg-slate-800 my-2"></div>
+</div>
+<div class="pb-12">
+<div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Senior Full-stack Developer</h3>
+<span class="text-sm font-semibold uppercase tracking-wider text-primary">Jan 2021 — Present</span>
+</div>
+<p class="text-lg font-medium text-slate-700 dark:text-slate-300 mb-4">TechCorp Solutions</p>
+<ul class="space-y-3 text-slate-600 dark:text-slate-400">
+<li class="flex gap-3"><span class="text-primary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>Architected and migrated legacy monolith to microservices using Node.js and AWS.</li>
+<li class="flex gap-3"><span class="text-primary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>Led a cross-functional team of 12 developers to deliver a FinTech platform serving 1M+ users.</li>
+<li class="flex gap-3"><span class="text-primary mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>Implemented CI/CD pipelines reducing deployment time by 60%.</li>
+</ul>
+</div>
+<!-- Entry 2 -->
+<div class="flex flex-col items-center">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+<span class="material-symbols-outlined">layers</span>
+</div>
+<div class="w-0.5 grow bg-slate-200 dark:bg-slate-800 my-2"></div>
+</div>
+<div class="pb-12">
+<div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Full-stack Developer</h3>
+<span class="text-sm font-semibold uppercase tracking-wider text-slate-500">Mar 2018 — Dec 2020</span>
+</div>
+<p class="text-lg font-medium text-slate-700 dark:text-slate-300 mb-4">InnovateSoft Agency</p>
+<ul class="space-y-3 text-slate-600 dark:text-slate-400">
+<li class="flex gap-3"><span class="text-slate-400 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>Developed and maintained 15+ client projects using React, Next.js, and Express.</li>
+<li class="flex gap-3"><span class="text-slate-400 mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>Optimized frontend performance, achieving 90+ Lighthouse scores across all metrics.</li>
+</ul>
+</div>
+<!-- Entry 3 -->
+<div class="flex flex-col items-center">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+<span class="material-symbols-outlined">code</span>
+</div>
+</div>
+<div class="pb-4">
+<div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Junior Web Developer</h3>
+<span class="text-sm font-semibold uppercase tracking-wider text-slate-500">Jun 2016 — Feb 2018</span>
+</div>
+<p class="text-lg font-medium text-slate-700 dark:text-slate-300 mb-4">StartUp Hub</p>
+<p class="text-slate-600 dark:text-slate-400">
+                                Foundation building in HTML5, CSS3, and JavaScript. Focused on responsive design and UI component development for various SaaS prototypes.
+                            </p>
+</div>
+</div>
+</section>
+<!-- Technical Stack -->
+<section class="mb-24" id="stack">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Technical Stack</h2>
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Frontend -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-6">
+<h4 class="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-6">
+<span class="material-symbols-outlined text-primary">desktop_windows</span>
+                                Frontend
+                            </h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">React.js</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">TypeScript</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Next.js</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tailwind CSS</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Redux Toolkit</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Framer Motion</span>
+</div>
+</div>
+<!-- Backend -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-6">
+<h4 class="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-6">
+<span class="material-symbols-outlined text-primary">database</span>
+                                Backend
+                            </h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Node.js</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">PostgreSQL</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GraphQL</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Redis</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Prisma</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Docker</span>
+</div>
+</div>
+<!-- Tools & Others -->
+<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-6">
+<h4 class="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-6">
+<span class="material-symbols-outlined text-primary">settings</span>
+                                DevOps &amp; Tools
+                            </h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">AWS (S3, EC2, Lambda)</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GitHub Actions</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Terraform</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Jest</span>
+<span class="px-3 py-1 rounded-full text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Agile/Scrum</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Project Highlight Grid -->
+<section class="mb-24">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Featured Projects</h2>
+<span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Project 1 -->
+<div class="group relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="aspect-video w-full bg-slate-800" data-alt="Screenshot of an enterprise dashboard showing data visualizations" style="background-image: linear-gradient(to bottom right, #1173d4, #0f172a);"></div>
+<div class="p-6">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Enterprise SaaS Dashboard</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">A complete overhaul of an analytics dashboard for real-time monitoring of IoT devices.</p>
+<div class="flex items-center gap-4">
+<a class="text-sm font-bold text-primary hover:underline" href="#">View Case Study</a>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Project 2 -->
+<div class="group relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="aspect-video w-full bg-slate-800" data-alt="Abstract UI pattern representing a distributed system" style="background-image: linear-gradient(to bottom left, #3b82f6, #1e293b);"></div>
+<div class="p-6">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Distributed Payment Gateway</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">High-throughput microservice architecture handling millions of transactions daily with 99.99% uptime.</p>
+<div class="flex items-center gap-4">
+<a class="text-sm font-bold text-primary hover:underline" href="#">View on GitHub</a>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-slate-200 dark:border-slate-800 py-12 bg-white dark:bg-slate-900/50" id="contact">
+<div class="mx-auto max-w-[960px] px-6 lg:px-10">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="space-y-4 text-center md:text-left">
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white">Let's build something together.</h2>
+<p class="text-slate-600 dark:text-slate-400">Available for freelance opportunities and full-time leadership roles.</p>
+</div>
+<div class="flex flex-col gap-4">
+<a class="flex items-center gap-3 px-6 py-3 rounded-lg bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/20 transition-all" href="mailto:hello@nvhai.dev">
+<span class="material-symbols-outlined">mail</span>
+                            hello@nvhai.dev
+                        </a>
+<div class="flex justify-center md:justify-start gap-4">
+<a class="h-10 w-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">link</span>
+</a>
+<a class="h-10 w-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+</div>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between gap-4 text-sm text-slate-500">
+<p>© 2024 Nguyen Van Hai. All rights reserved.</p>
+<p data-location="Ho Chi Minh City, Vietnam">Based in Ho Chi Minh City, Vietnam</p>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

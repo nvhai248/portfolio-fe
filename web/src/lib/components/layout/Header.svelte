@@ -1,39 +1,81 @@
 <script lang="ts">
-  import { base } from '$app/paths';
-  import { theme } from '$lib/stores/theme.svelte';
-  
+	import { base } from '$app/paths';
+	import { page } from '$app/state';
+	import { primaryNavItems } from '$lib/content/navigation';
+	import { theme } from '$lib/stores/theme.svelte';
+
+	let isMenuOpen = $state(false);
+
+	const isActive = (href: string) =>
+		page.url.pathname === href || (href !== '/' && page.url.pathname.startsWith(href));
+
+	const closeMenu = () => {
+		isMenuOpen = false;
+	};
 </script>
 
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-20 lg:px-40 py-6 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
-  <div class="flex items-center gap-3">
-    <div class="size-6 text-primary">
-      <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
-      </svg>
-    </div>
-    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Nguyen Van Hai</h2>
-  </div>
-  <div class="flex flex-1 justify-end gap-8">
-    <nav class="hidden md:flex items-center gap-9">
-      <a class="text-sm font-medium hover:text-primary transition-colors" href="{base}/">Home</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors" href="{base}/about">About</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors" href="{base}/blog">Blog</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors" href="{base}/cv">CV</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors" href="{base}/projects">Projects</a>
-    </nav>
-    <div class="flex gap-3">
-      <button 
-        onclick={() => theme.toggle()}
-        class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-all" 
-        aria-label="Toggle Theme"
-      >
-        <span class="material-symbols-outlined text-[20px]">
-          {theme.current === 'dark' ? 'light_mode' : 'dark_mode'}
-        </span>
-      </button>
-      <button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-all" aria-label="Share">
-        <span class="material-symbols-outlined text-[20px]">share</span>
-      </button>
-    </div>
-  </div>
+<header class="sticky top-0 z-50 border-b ui-divider bg-[var(--ui-bg)] backdrop-blur-md">
+	<div class="page-shell flex h-16 items-center justify-between">
+		<a class="group inline-flex items-center gap-3" href={`${base}/`} aria-label="Go to homepage" onclick={closeMenu}>
+			<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+				<span class="material-symbols-outlined text-lg">deployed_code</span>
+			</div>
+			<div class="flex flex-col">
+				<span class="text-sm font-semibold leading-none [color:var(--ui-text)]">Nguyen Van Hai</span>
+				<span class="text-xs leading-none [color:var(--ui-text-subtle)]">Backend Engineer</span>
+			</div>
+		</a>
+
+		<nav class="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
+			{#each primaryNavItems as item}
+				<a
+					href={`${base}${item.href}`}
+					class={`ui-nav-link ${isActive(item.href) ? 'ui-nav-link-active' : ''}`}
+				>
+					{item.label}
+				</a>
+			{/each}
+		</nav>
+
+		<div class="flex items-center gap-2">
+			<a href="mailto:nvhai2408@gmail.com" class="ui-btn ui-btn-primary hidden h-10 px-4 sm:inline-flex">Let's Talk</a>
+			<button
+				type="button"
+				onclick={() => theme.toggle()}
+				class="ui-icon-btn"
+				aria-label="Toggle color theme"
+				aria-pressed={theme.current === 'dark'}
+			>
+				<span class="material-symbols-outlined text-xl">
+					{theme.current === 'dark' ? 'light_mode' : 'dark_mode'}
+				</span>
+			</button>
+			<button
+				type="button"
+				onclick={() => (isMenuOpen = !isMenuOpen)}
+				class="ui-icon-btn md:hidden"
+				aria-label="Toggle mobile menu"
+				aria-expanded={isMenuOpen}
+			>
+				<span class="material-symbols-outlined text-xl">{isMenuOpen ? 'close' : 'menu'}</span>
+			</button>
+		</div>
+	</div>
+
+	{#if isMenuOpen}
+		<nav class="border-t ui-divider md:hidden" aria-label="Mobile navigation">
+			<div class="page-shell flex flex-col gap-1 py-3">
+				{#each primaryNavItems as item}
+					<a
+						href={`${base}${item.href}`}
+						onclick={closeMenu}
+						class={`ui-nav-link ${isActive(item.href) ? 'ui-nav-link-active' : ''}`}
+					>
+						{item.label}
+					</a>
+				{/each}
+				<a href="mailto:nvhai2408@gmail.com" onclick={closeMenu} class="ui-btn ui-btn-primary mt-2 h-10">Let's Talk</a>
+			</div>
+		</nav>
+	{/if}
 </header>

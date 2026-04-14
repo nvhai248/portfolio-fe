@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Projects Showcase | Nguyen Van Hai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0a0a0a",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#262626",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display antialiased transition-colors duration-300;
+            }
+        }
+        .code-snippet {
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+        }
+        .theme-toggle-dot {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .theme-toggle-dot {
+            transform: translateX(1.5rem);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<div class="flex h-full grow flex-col">
+<header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-border-light dark:border-border-dark">
+<div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 h-20 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="size-8 bg-primary text-white flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<h1 class="text-sm font-bold tracking-[0.2em] uppercase">Nguyen Van Hai</h1>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors" href="#">Works</a>
+<a class="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors" href="#">About</a>
+<a class="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<div class="h-6 w-px bg-border-light dark:bg-border-dark hidden md:block"></div>
+<button class="relative flex items-center h-8 w-14 bg-slate-100 dark:bg-slate-800 rounded-full p-1 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<div class="theme-toggle-dot size-6 bg-white dark:bg-primary rounded-full shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] dark:text-white text-slate-400">
+                                light_mode
+                            </span>
+</div>
+</button>
+<button class="hidden md:flex items-center justify-center rounded bg-slate-900 dark:bg-white text-white dark:text-black px-5 py-2 text-xs font-bold uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all">
+                        Resume
+                    </button>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
+<div class="max-w-3xl mb-24">
+<div class="inline-flex items-center gap-2 mb-6">
+<span class="h-px w-8 bg-primary"></span>
+<span class="text-primary text-xs font-bold uppercase tracking-[0.3em]">Case Studies</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-black leading-[1.05] tracking-tighter mb-8">
+                        Projects <br/><span class="text-slate-400 dark:text-slate-600">Showcase.</span>
+</h2>
+<p class="text-lg md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-light">
+                        Exploring the intersection of cloud-native architecture, serverless patterns, and integrated AI systems. Each project is built with scalability and maintainability at its core.
+                    </p>
+</div>
+<div class="space-y-32">
+<section class="group grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7">
+<div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100 dark:bg-slate-900 border border-border-light dark:border-border-dark">
+<div class="absolute inset-0 flex items-center justify-center p-12 overflow-hidden bg-[#0d1117]">
+<div class="relative w-full h-full opacity-30 group-hover:opacity-50 transition-opacity duration-700">
+<div class="absolute inset-0 flex items-center justify-around">
+<div class="w-px h-full bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
+<div class="w-px h-full bg-gradient-to-b from-transparent via-slate-700 to-transparent"></div>
+<div class="w-px h-full bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
+</div>
+<div class="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-500/30 to-transparent"></div>
+<div class="absolute top-1/2 left-1/4 -translate-y-1/2 size-20 border border-primary/50 flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-primary text-3xl">hub</span>
+</div>
+<div class="absolute top-1/4 right-1/4 -translate-y-1/2 size-16 border border-slate-700 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-slate-500">memory</span>
+</div>
+<div class="absolute bottom-1/4 right-1/4 translate-y-1/2 size-16 border border-slate-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">database</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-8 font-mono text-[10px] text-slate-600 uppercase tracking-widest">
+                                        SYS_ARCH // NODES_DYNAMIC_SCALING
+                                    </div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5">
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded">Azure Functions</span>
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-border-light dark:border-border-dark rounded">Vertex AI</span>
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-border-light dark:border-border-dark rounded">Qdrant</span>
+</div>
+<h3 class="text-3xl font-bold mb-4 tracking-tight group-hover:text-primary transition-colors">Microleap AI Food Detector</h3>
+<p class="text-slate-500 dark:text-slate-400 leading-relaxed mb-8 font-light">
+                                A distributed serverless ecosystem designed for real-time food identification. It handles complex vector searches across millions of nutritional data points with sub-100ms latency.
+                            </p>
+<div class="flex items-center gap-6">
+<a class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest group-hover:gap-3 transition-all" href="#">
+                                    Full Architecture <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+<a class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">code</span>
+</a>
+</div>
+</div>
+</section>
+<section class="group grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 lg:order-2">
+<div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-50 dark:bg-slate-950 border border-border-light dark:border-border-dark">
+<div class="absolute inset-0 p-10 code-snippet text-xs md:text-sm leading-relaxed overflow-hidden">
+<div class="flex gap-4">
+<div class="text-slate-400 dark:text-slate-600 select-none text-right w-8">
+                                            01<br/>02<br/>03<br/>04<br/>05<br/>06<br/>07<br/>08<br/>09<br/>10<br/>11<br/>12
+                                        </div>
+<div class="flex-1">
+<span class="text-blue-500">class</span> <span class="text-yellow-600 dark:text-yellow-400">OllamaLMSBridge</span> {<br/>
+                                              <span class="text-blue-500">private</span> $cache;<br/><br/>
+                                              <span class="text-blue-500">public function</span> <span class="text-green-600">processPrompt</span>(string $query) {<br/>
+                                                $hit = $this-&gt;cache-&gt;get(sha1($query));<br/>
+                                                <span class="text-pink-500">if</span> ($hit) <span class="text-pink-500">return</span> $hit;<br/><br/>
+                                                $response = $this-&gt;ollama-&gt;generate($query);<br/>
+                                                $this-&gt;cache-&gt;set(sha1($query), $response);<br/>
+                                                <span class="text-pink-500">return</span> $response;<br/>
+                                              }<br/>
+                                            }
+                                        </div>
+</div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-slate-950 via-transparent to-transparent opacity-40"></div>
+</div>
+</div>
+<div class="lg:col-span-5 lg:order-1">
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded">PHP 8.2</span>
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-border-light dark:border-border-dark rounded">Redis</span>
+<span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-border-light dark:border-border-dark rounded">Ollama</span>
+</div>
+<h3 class="text-3xl font-bold mb-4 tracking-tight group-hover:text-primary transition-colors">Open University Moodle</h3>
+<p class="text-slate-500 dark:text-slate-400 leading-relaxed mb-8 font-light">
+                                Modernizing educational infrastructure by integrating local LLMs for student support. Implemented custom caching layers that significantly reduced token usage and operating costs.
+                            </p>
+<div class="flex items-center gap-6">
+<a class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest group-hover:gap-3 transition-all" href="#">
+                                    System Review <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+<a class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">code</span>
+</a>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<footer class="border-t border-border-light dark:border-border-dark bg-slate-50/50 dark:bg-black/50">
+<div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+<div class="flex flex-col gap-2">
+<p class="font-bold text-sm tracking-widest uppercase">Nguyen Van Hai</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Backend Engineer &amp; System Architect</p>
+</div>
+<div class="flex justify-center gap-8">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">alternate_email</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">link</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">code</span>
+</a>
+</div>
+<div class="flex md:justify-end">
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            © 2024 / Built with Precision
+                        </p>
+</div>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

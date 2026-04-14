@@ -17,9 +17,16 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="layout-container flex h-full grow flex-col bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<a
+	href="#main-content"
+	class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+>
+	Skip to main content
+</a>
+
+<div class="layout-container flex min-h-screen grow flex-col">
 	<Header />
-	<main class="flex-1">
+	<main id="main-content" class="flex-1">
 		{@render children()}
 	</main>
 	<Footer />

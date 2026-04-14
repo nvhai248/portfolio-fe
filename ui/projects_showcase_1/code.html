@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Projects Showcase | Nguyen Van Hai</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#fcfcfd",
+                        "background-dark": "#0a0a0c",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#121214",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display antialiased;
+            }
+        }
+        .code-snippet-bg {
+            background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+        .dark .code-snippet-bg {
+            background-image: radial-gradient(#1e293b 0.5px, transparent 0.5px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-50 min-h-screen flex flex-col transition-colors duration-300">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-100 dark:border-slate-800/60 px-6 md:px-20 lg:px-40 py-5 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-white text-xl">terminal</span>
+</div>
+<h1 class="text-base font-black leading-tight tracking-tight uppercase">Nguyen Van Hai</h1>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">Works</a>
+<a class="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">About</a>
+<a class="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden md:block"></div>
+<button class="size-9 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined text-[20px] dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
+</button>
+<button class="flex items-center justify-center rounded-full h-10 px-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold tracking-tight hover:opacity-90 transition-all">
+<span>Resume</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-6 md:px-20 lg:px-40 py-16 md:py-24">
+<div class="max-w-[1200px] mx-auto">
+<div class="mb-20 md:mb-32">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 mb-6">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-primary font-bold text-[10px] uppercase tracking-widest">Portfolio 2024</span>
+</div>
+<h2 class="text-6xl md:text-8xl font-black text-slate-900 dark:text-white leading-[0.9] tracking-tighter mb-8">
+                        Selected<br/><span class="text-primary">Projects.</span>
+</h2>
+<p class="text-slate-500 dark:text-slate-400 text-lg md:text-xl font-normal leading-relaxed max-w-2xl">
+                        A showcase of backend engineering excellence, specializing in scalable microservices, vector search architectures, and automated LLM pipelines.
+                    </p>
+</div>
+<div class="grid grid-cols-1 gap-24 md:gap-40">
+<article class="group relative flex flex-col lg:flex-row gap-12 lg:gap-20">
+<div class="w-full lg:w-3/5">
+<div class="relative aspect-[16/10] bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800/50 overflow-hidden code-snippet-bg">
+<div class="absolute inset-0 flex items-center justify-center p-10">
+<div class="relative w-full h-full border border-slate-200/60 dark:border-slate-700/40 rounded-xl bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm shadow-sm flex items-center justify-center">
+<div class="flex items-center gap-4 md:gap-12">
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 md:size-16 rounded-xl border-2 border-primary bg-white dark:bg-slate-900 flex items-center justify-center shadow-lg shadow-primary/5">
+<span class="material-symbols-outlined text-primary text-3xl">api</span>
+</div>
+<span class="text-[10px] font-mono text-slate-400">Gateway</span>
+</div>
+<div class="w-12 md:w-24 h-px bg-gradient-to-r from-primary to-slate-300 dark:to-slate-600"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 md:size-16 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-3xl">psychology</span>
+</div>
+<span class="text-[10px] font-mono text-slate-400">Vertex AI</span>
+</div>
+<div class="w-12 md:w-24 h-px bg-gradient-to-r from-slate-300 dark:from-slate-600 to-primary"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 md:size-16 rounded-xl border-2 border-primary bg-white dark:bg-slate-900 flex items-center justify-center shadow-lg shadow-primary/5">
+<span class="material-symbols-outlined text-primary text-3xl">database</span>
+</div>
+<span class="text-[10px] font-mono text-slate-400">Qdrant</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 font-mono text-[10px] text-slate-400/60 uppercase">System: serverless-vector-v2</div>
+</div>
+</div>
+<div class="w-full lg:w-2/5 flex flex-col justify-center">
+<div class="flex gap-3 mb-6 flex-wrap">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">Azure</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">Python</span>
+</div>
+<h3 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">Microleap AI Food Detector</h3>
+<p class="text-slate-500 dark:text-slate-400 text-base leading-relaxed mb-8 max-w-md">
+                                A high-performance serverless backend for real-time image recognition and vector-based food similarity search. Leverages event-driven architecture to scale processing nodes dynamically.
+                            </p>
+<div class="flex items-center gap-4">
+<a class="h-12 px-8 bg-primary text-white rounded-full font-bold text-sm flex items-center hover:shadow-xl hover:shadow-primary/20 transition-all" href="#">
+                                    Case Study
+                                </a>
+<a class="size-12 flex items-center justify-center border border-slate-200 dark:border-slate-800 rounded-full text-slate-400 hover:text-primary hover:border-primary transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+</a>
+</div>
+</div>
+</article>
+<article class="group relative flex flex-col lg:flex-row-reverse gap-12 lg:gap-20">
+<div class="w-full lg:w-3/5">
+<div class="relative aspect-[16/10] bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800/50 overflow-hidden code-snippet-bg">
+<div class="absolute inset-0 flex items-center justify-center p-8">
+<div class="w-full max-w-md bg-[#1e293b] rounded-xl shadow-2xl overflow-hidden text-[11px] md:text-xs font-mono leading-relaxed">
+<div class="bg-slate-800/50 px-4 py-2 border-b border-slate-700 flex items-center gap-2">
+<div class="flex gap-1.5">
+<div class="size-2 rounded-full bg-red-500/50"></div>
+<div class="size-2 rounded-full bg-yellow-500/50"></div>
+<div class="size-2 rounded-full bg-green-500/50"></div>
+</div>
+<span class="text-slate-500 text-[10px]">OllamaBridge.php</span>
+</div>
+<div class="p-5 text-slate-300">
+<div class="flex gap-4"><span class="text-slate-600">01</span><span><span class="text-blue-400">class</span> <span class="text-yellow-300">LMSBridge</span> {</span></div>
+<div class="flex gap-4"><span class="text-slate-600">02</span><span class="pl-4"><span class="text-blue-400">public function</span> <span class="text-green-400">query</span>($input) {</span></div>
+<div class="flex gap-4"><span class="text-slate-600">03</span><span class="pl-8">$cache = <span class="text-purple-400">$this</span>-&gt;redis-&gt;get($input);</span></div>
+<div class="flex gap-4"><span class="text-slate-600">04</span><span class="pl-8"><span class="text-pink-400">if</span> ($cache) <span class="text-pink-400">return</span> $cache;</span></div>
+<div class="flex gap-4"><span class="text-slate-600">05</span><span class="pl-8">$res = <span class="text-purple-400">$this</span>-&gt;ollama-&gt;ask($input);</span></div>
+<div class="flex gap-4"><span class="text-slate-600">06</span><span class="pl-8"><span class="text-pink-400">return</span> $res;</span></div>
+<div class="flex gap-4"><span class="text-slate-600">07</span><span class="pl-4">}</span></div>
+<div class="flex gap-4"><span class="text-slate-600">08</span><span>}</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-2/5 flex flex-col justify-center">
+<div class="flex gap-3 mb-6 flex-wrap">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">PHP 8.2</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">Redis</span>
+</div>
+<h3 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">Open University Moodle</h3>
+<p class="text-slate-500 dark:text-slate-400 text-base leading-relaxed mb-8 max-w-md">
+                                Modernizing enterprise learning management systems through localized LLM integration. Optimized caching strategies reduced database load by 40% while providing instant AI-assisted tutoring.
+                            </p>
+<div class="flex items-center gap-4">
+<a class="h-12 px-8 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold text-sm flex items-center hover:opacity-90 transition-all" href="#">
+                                    System Review
+                                </a>
+<a class="size-12 flex items-center justify-center border border-slate-200 dark:border-slate-800 rounded-full text-slate-400 hover:text-primary hover:border-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</a>
+</div>
+</div>
+</article>
+</div>
+<div class="mt-40 pt-20 border-t border-slate-100 dark:border-slate-800/60 text-center">
+<h4 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter">Have a system in mind?</h4>
+<a class="inline-flex items-center gap-3 text-primary text-xl md:text-2xl font-bold hover:gap-6 transition-all underline decoration-primary/20 underline-offset-8" href="mailto:hello@nvhai.dev">
+                        Let's build it together <span class="material-symbols-outlined">east</span>
+</a>
+</div>
+</div>
+</main>
+<footer class="border-t border-slate-100 dark:border-slate-800/60 px-6 md:px-20 lg:px-40 py-16 bg-white dark:bg-background-dark/80">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="size-6 bg-primary/20 flex items-center justify-center rounded-sm">
+<span class="material-symbols-outlined text-primary text-xs">settings_ethernet</span>
+</div>
+<p class="text-slate-900 dark:text-white font-black text-sm uppercase tracking-wider">Nguyen Van Hai</p>
+</div>
+<p class="text-slate-400 text-xs font-medium max-w-[240px] leading-relaxed">
+                        Designing &amp; developing high-load backend systems with a focus on simplicity and resilience.
+                    </p>
+</div>
+<div class="flex flex-col md:items-end gap-6">
+<div class="flex gap-4">
+<a class="size-10 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800/50 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</a>
+<a class="size-10 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800/50 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">share</span>
+</a>
+<a class="size-10 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800/50 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</a>
+</div>
+<p class="text-slate-400 text-[10px] uppercase tracking-[0.2em]">© 2024 • Built with precision</p>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>
