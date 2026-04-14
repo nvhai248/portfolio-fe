@@ -5,7 +5,7 @@
 	const footerNavItems = primaryNavItems.filter((item) => item.href !== '/blog');
 </script>
 
-<footer class="border-t ui-divider bg-[var(--ui-surface-soft)]">
+<footer class="border-t ui-divider bg-[var(--ui-surface-soft)]" data-testid="site-footer">
 	<div class="page-shell grid gap-10 py-12 lg:grid-cols-[1.3fr_1fr]">
 		<div class="space-y-4">
 			<p class="ui-eyebrow">Open to selected opportunities</p>

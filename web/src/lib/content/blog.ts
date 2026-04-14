@@ -17,5 +17,14 @@ export const featuredPost: FeaturedPost = {
 	readTime: '12 min read'
 };
 
+export const featuredPostSeo = {
+	title: 'Optimizing Moodle with Ollama AI | Nguyen Van Hai',
+	description:
+		'How to integrate Ollama with Moodle for private, high-performance AI tutoring workflows without relying on external API providers.',
+	pathname: `/blog/${featuredPost.slug}`,
+	publishedAt: '2024-01-24T00:00:00.000Z',
+	tags: featuredPost.tags
+};
+
 export const blogBacklogMessage =
 	"I'm currently preparing additional write-ups on service decomposition, platform observability, and high-throughput API optimization.";

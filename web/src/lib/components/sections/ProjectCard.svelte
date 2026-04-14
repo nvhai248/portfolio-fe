@@ -3,45 +3,41 @@
 
 	interface Props {
 		project: ProjectContent;
+		overviewHeading: string;
+		stackHeading: string;
 	}
 
-	let { project }: Props = $props();
+	let { project, overviewHeading, stackHeading }: Props = $props();
 </script>
 
 <article class="ui-panel rounded-2xl p-5 sm:p-6">
 	<div class="flex flex-wrap items-start justify-between gap-4">
-		<div>
-			<h2 class="ui-heading-2">{project.title}</h2>
-			<p class="ui-muted mt-1">Role: {project.role}</p>
+		<div class="min-w-0">
+			<h2 class="ui-heading-2 break-words">{project.title}</h2>
+			<p class="ui-muted mt-1 break-words">Role: {project.role}</p>
 		</div>
-		<span class="ui-chip px-3 uppercase tracking-wide">{project.domain}</span>
+		<span class="ui-chip max-w-full whitespace-normal break-words px-3 uppercase tracking-wide">{project.domain}</span>
 	</div>
 
 	<div class="mt-5 grid gap-4 sm:gap-5 lg:grid-cols-3">
-		<div>
-			<h3 class="text-sm font-semibold [color:var(--ui-text)]">Context</h3>
-			<p class="mt-2 text-sm leading-relaxed [color:var(--ui-text-muted)]">{project.context}</p>
+		<div class="min-w-0">
+			<h3 class="text-sm font-semibold [color:var(--ui-text)]">{overviewHeading}</h3>
+			<p class="mt-2 text-sm leading-relaxed [color:var(--ui-text-muted)] break-words">{project.overview}</p>
 		</div>
-		<div>
-			<h3 class="text-sm font-semibold [color:var(--ui-text)]">Key contributions</h3>
-			<ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm [color:var(--ui-text-muted)]">
-				{#each project.contributions as contribution}
-					<li>{contribution}</li>
-				{/each}
-			</ul>
-		</div>
-		<div>
-			<h3 class="text-sm font-semibold [color:var(--ui-text)]">Impact</h3>
-			<ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm [color:var(--ui-text-muted)]">
-				{#each project.impact as item}
-					<li>{item}</li>
-				{/each}
-			</ul>
-		</div>
+		{#each project.detailLists as detail}
+			<div class="min-w-0">
+				<h3 class="text-sm font-semibold [color:var(--ui-text)] break-words">{detail.heading}</h3>
+				<ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm [color:var(--ui-text-muted)]">
+					{#each detail.items as item}
+						<li class="break-words">{item}</li>
+					{/each}
+				</ul>
+			</div>
+		{/each}
 	</div>
 
 	<div class="mt-5 border-t ui-divider pt-4 sm:pt-5">
-		<h3 class="text-sm font-semibold [color:var(--ui-text)]">Tech stack</h3>
-		<p class="mt-2 text-sm [color:var(--ui-text-muted)]">{project.stack}</p>
+		<h3 class="text-sm font-semibold [color:var(--ui-text)]">{stackHeading}</h3>
+		<p class="mt-2 text-sm [color:var(--ui-text-muted)] break-words">{project.techStack.join(', ')}</p>
 	</div>
 </article>

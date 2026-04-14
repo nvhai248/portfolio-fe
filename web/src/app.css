@@ -15,8 +15,8 @@
 		--ui-text-subtle: #64748b;
 		--ui-border: #cbd5e1;
 		--ui-border-subtle: #e2e8f0;
-		--ui-primary: #1173d4;
-		--ui-primary-strong: #0f63b6;
+		--ui-primary: #0b63b8;
+		--ui-primary-strong: #084f92;
 		--ui-primary-soft: rgb(17 115 212 / 0.1);
 		--ui-primary-softer: rgb(17 115 212 / 0.06);
 	}
@@ -61,7 +61,8 @@
 	input:focus-visible,
 	textarea:focus-visible {
 		outline: 2px solid var(--ui-primary);
-		outline-offset: 2px;
+		outline-offset: 3px;
+		box-shadow: 0 0 0 3px rgb(11 99 184 / 0.2);
 	}
 
 	.material-symbols-outlined {

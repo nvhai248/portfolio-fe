@@ -16,6 +16,11 @@
 			src={urlFor(post.mainImage).width(900).height(520).url()}
 			alt={post.mainImage.alt || post.title}
 			class="aspect-video w-full object-cover"
+			width="900"
+			height="520"
+			loading="lazy"
+			decoding="async"
+			fetchpriority="low"
 		/>
 	{:else}
 		<div class="aspect-video w-full bg-gradient-to-br from-primary/20 via-primary/10 to-[var(--ui-bg-muted)]" aria-hidden="true"></div>

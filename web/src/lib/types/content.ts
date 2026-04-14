@@ -1,3 +1,8 @@
+export interface SeoMeta {
+	title: string;
+	description: string;
+}
+
 export interface SectionIntroContent {
 	eyebrow?: string;
 	title: string;
@@ -9,17 +14,27 @@ export interface MetricItem {
 	value: string;
 }
 
-export interface InfoCardItem {
-	title: string;
-	description: string;
+export interface ContentCardItem {
+	heading: string;
+	body: string;
 }
 
-export interface HighlightListItem {
+export interface LabeledContentItem {
 	label: string;
-	description: string;
+	text: string;
 }
 
-export interface ProjectDetailGroup {
+export interface AboutContent {
+	seo: SeoMeta;
+	intro: SectionIntroContent;
+	cards: ContentCardItem[];
+	contributionPanel: {
+		title: string;
+		items: LabeledContentItem[];
+	};
+}
+
+export interface ProjectDetailList {
 	heading: string;
 	items: string[];
 }
@@ -28,10 +43,19 @@ export interface ProjectContent {
 	title: string;
 	role: string;
 	domain: string;
-	context: string;
-	contributions: string[];
-	impact: string[];
-	stack: string;
+	overview: string;
+	detailLists: ProjectDetailList[];
+	techStack: string[];
+}
+
+export interface ProjectsContent {
+	seo: SeoMeta;
+	intro: SectionIntroContent;
+	labels: {
+		overview: string;
+		techStack: string;
+	};
+	items: ProjectContent[];
 }
 
 export interface ExperienceItem {
@@ -41,11 +65,17 @@ export interface ExperienceItem {
 	achievements: string[];
 }
 
-export interface SkillCategory {
+export interface TechSkillCategory {
+	heading: string;
+	summary: string;
+	context: string;
+	wide?: boolean;
+}
+
+export interface TechSkillsContent {
 	title: string;
 	description: string;
-	note: string;
-	wide?: boolean;
+	categories: TechSkillCategory[];
 }
 
 export interface FeaturedPost {

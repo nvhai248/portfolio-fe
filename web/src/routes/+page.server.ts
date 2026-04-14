@@ -14,11 +14,35 @@ const settingsQuery = `*[_type == "settings"][0] {
 	socials
 }`;
 
-export const load: PageServerLoad = async () => {
-	const [posts, settings] = await Promise.all([client.fetch(postsQuery), client.fetch(settingsQuery)]);
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs = 2500): Promise<T> => {
+	const timeoutPromise = new Promise<never>((_, reject) => {
+		setTimeout(() => reject(new Error(`Timed out after ${timeoutMs}ms`)), timeoutMs);
+	});
 
-	return {
-		posts,
-		settings
-	};
+	return Promise.race([promise, timeoutPromise]);
+};
+
+export const load: PageServerLoad = async ({ setHeaders }) => {
+	setHeaders({
+		'cache-control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
+	});
+
+	try {
+		const [posts, settings] = await Promise.all([
+			withTimeout(client.fetch(postsQuery), 2500),
+			withTimeout(client.fetch(settingsQuery), 2500)
+		]);
+
+		return {
+			posts,
+			settings
+		};
+	} catch (error) {
+		console.error('Failed to fetch homepage data from Sanity:', error);
+
+		return {
+			posts: [],
+			settings: null
+		};
+	}
 };

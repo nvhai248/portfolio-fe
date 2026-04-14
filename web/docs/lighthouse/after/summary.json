@@ -1,0 +1,112 @@
+{
+  "/": {
+    "mobile": {
+      "performance": 94,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 2301,
+      "cls": 0.078,
+      "inpMs": 0,
+      "tbtMs": 57
+    },
+    "desktop": {
+      "performance": 81,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1880,
+      "cls": 0.022,
+      "inpMs": 0,
+      "tbtMs": 93
+    }
+  },
+  "/about": {
+    "mobile": {
+      "performance": 55,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 18430,
+      "cls": 0.021,
+      "inpMs": 0,
+      "tbtMs": 0
+    },
+    "desktop": {
+      "performance": 61,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 4250,
+      "cls": 0.001,
+      "inpMs": 0,
+      "tbtMs": 101
+    }
+  },
+  "/projects": {
+    "mobile": {
+      "performance": 55,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 22301,
+      "cls": 0.001,
+      "inpMs": 0,
+      "tbtMs": 0
+    },
+    "desktop": {
+      "performance": 82,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1875,
+      "cls": 0.001,
+      "inpMs": 0,
+      "tbtMs": 54
+    }
+  },
+  "/blog": {
+    "mobile": {
+      "performance": 55,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 21677,
+      "cls": 0.001,
+      "inpMs": 0,
+      "tbtMs": 17
+    },
+    "desktop": {
+      "performance": 82,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1878,
+      "cls": 0.05,
+      "inpMs": 0,
+      "tbtMs": 55
+    }
+  },
+  "/cv": {
+    "mobile": {
+      "performance": 98,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1871,
+      "cls": 0.007,
+      "inpMs": 0,
+      "tbtMs": 48
+    },
+    "desktop": {
+      "performance": 82,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1878,
+      "cls": 0,
+      "inpMs": 0,
+      "tbtMs": 60
+    }
+  }
+}

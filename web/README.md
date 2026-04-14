@@ -40,3 +40,14 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## CI quality gates
+
+GitHub Actions pipeline đã được chuẩn hóa cho PR/main với các gate:
+
+- `npm ci`
+- `npm run check`
+- `npm run build`
+- `npm run test:smoke`
+
+Xem tài liệu debug nhanh tại: [`docs/ci-quality-gates.md`](./docs/ci-quality-gates.md).

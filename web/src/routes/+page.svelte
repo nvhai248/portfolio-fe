@@ -1,22 +1,23 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { base } from '$app/paths';
+	import { page } from '$app/state';
 	import { homeHighlights, homeIntro, homeTagline, recentInsights } from '$lib/content/home';
 	import MetricList from '$lib/components/ui/MetricList.svelte';
 	import SocialLinkList from '$lib/components/ui/SocialLinkList.svelte';
 	import RecentPostCard from '$lib/components/sections/RecentPostCard.svelte';
 	import CtaBlock from '$lib/components/ui/CtaBlock.svelte';
+	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head>
-	<title>Nguyen Van Hai | Backend Engineer & System Architect</title>
-	<meta
-		name="description"
-		content="Portfolio of Nguyen Van Hai — backend engineering, system architecture, and practical AI integration for scalable products."
-	/>
-</svelte:head>
+<SeoHead
+	title="Nguyen Van Hai | Backend Engineer & System Architect"
+	description="Portfolio of Nguyen Van Hai — backend engineering, system architecture, and practical AI integration for scalable products."
+	pathname={page.url.pathname}
+	type="profile"
+/>
 
 <section class="page-shell pb-16 pt-14 lg:pt-20">
 	<div class="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-end">

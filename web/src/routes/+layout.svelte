@@ -4,17 +4,38 @@
 	import Header from '$lib/components/layout/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 	import { theme } from '$lib/stores/theme.svelte';
+	import { getPersonSchema, getWebsiteSchema } from '$lib/seo/schema';
 
 	let { children } = $props();
 
 	onMount(() => {
 		theme.init();
 	});
+
+	const personSchema = $derived(getPersonSchema(page.url.origin));
+	const websiteSchema = $derived(getWebsiteSchema(page.url.origin));
+	const stringifySchema = (payload: Record<string, unknown>): string =>
+		JSON.stringify(payload).replace(/</g, '\\u003c');
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<script>
+		{`try {
+			const key = 'theme';
+			const saved = localStorage.getItem(key);
+			const shouldUseDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+			document.documentElement.classList.toggle('dark', shouldUseDark);
+		} catch {
+			// ignore storage access errors
+		}`}
+	</script>
+	<script type="application/ld+json">{stringifySchema(personSchema)}</script>
+	<script type="application/ld+json">{stringifySchema(websiteSchema)}</script>
 </svelte:head>
 
 <a
@@ -26,7 +47,7 @@
 
 <div class="layout-container flex min-h-screen grow flex-col">
 	<Header />
-	<main id="main-content" class="flex-1">
+	<main id="main-content" class="flex-1" data-testid="main-content">
 		{@render children()}
 	</main>
 	<Footer />

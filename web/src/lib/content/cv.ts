@@ -1,4 +1,5 @@
-import type { ExperienceItem, SectionIntroContent, SkillCategory } from '$lib/types/content';
+import type { ExperienceItem, SectionIntroContent, TechSkillsContent } from '$lib/types/content';
+import { defineTechSkillsContent } from '$lib/content/validate';
 
 export const cvIntro: SectionIntroContent = {
 	eyebrow: 'Curriculum Vitae',
@@ -32,36 +33,44 @@ export const experienceItems: ExperienceItem[] = [
 	}
 ];
 
-export const skillCategories: SkillCategory[] = [
-	{
-		title: 'Languages',
-		description: 'Golang, TypeScript, PHP, C#/.NET',
-		note: 'Applied for API services, plugin customization, and backend workflow automation.'
-	},
-	{
-		title: 'Backend',
-		description: 'REST API design, service decomposition, event-driven processing, queue-based execution',
-		note: 'Built for high-traffic LMS and AI inference workloads with maintainable service boundaries.'
-	},
-	{
-		title: 'Data & AI',
-		description: 'PostgreSQL, Redis, Qdrant, Ollama, Vertex AI',
-		note: 'Used for caching, retrieval, local LLM orchestration, and practical ML-backed features.'
-	},
-	{
-		title: 'Cloud & DevOps',
-		description: 'Azure, AWS, Docker, Kubernetes, Terraform, CI/CD pipelines',
-		note: 'Focused on reproducible deployments, release safety, and platform reliability at scale.'
-	},
-	{
-		title: 'Engineering Practices',
-		description:
-			'Performance tuning, observability, architecture trade-off documentation, incident-informed iteration',
-		note:
-			'Used to keep teams aligned on outcomes, reduce delivery risk, and sustain long-term maintainability.',
-		wide: true
-	}
-];
+export const techSkillsContent: TechSkillsContent = defineTechSkillsContent({
+	title: 'Tech Skills',
+	description:
+		'Hands-on capabilities used in production delivery, grouped by engineering responsibility rather than tool lists.',
+	categories: [
+		{
+			heading: 'Languages',
+			summary: 'Golang, TypeScript, PHP, C#/.NET',
+			context: 'Applied for API services, plugin customization, and backend workflow automation.'
+		},
+		{
+			heading: 'Backend',
+			summary:
+				'REST API design, service decomposition, event-driven processing, queue-based execution',
+			context:
+				'Built for high-traffic LMS and AI inference workloads with maintainable service boundaries.'
+		},
+		{
+			heading: 'Data & AI',
+			summary: 'PostgreSQL, Redis, Qdrant, Ollama, Vertex AI',
+			context: 'Used for caching, retrieval, local LLM orchestration, and practical ML-backed features.'
+		},
+		{
+			heading: 'Cloud & DevOps',
+			summary: 'Azure, AWS, Docker, Kubernetes, Terraform, CI/CD pipelines',
+			context:
+				'Focused on reproducible deployments, release safety, and platform reliability at scale.'
+		},
+		{
+			heading: 'Engineering Practices',
+			summary:
+				'Performance tuning, observability, architecture trade-off documentation, incident-informed iteration',
+			context:
+				'Used to keep teams aligned on outcomes, reduce delivery risk, and sustain long-term maintainability.',
+			wide: true
+		}
+	]
+});
 
 export const education = {
 	school: 'VNUHCM - University of Science',

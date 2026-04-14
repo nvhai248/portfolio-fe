@@ -10,8 +10,8 @@
 
 	let {
 		content,
-		titleClass = 'ui-heading-1 mt-3 max-w-4xl',
-		descriptionClass = 'ui-body-lg mt-4 max-w-3xl',
+		titleClass = 'ui-heading-1 mt-3 max-w-4xl break-words',
+		descriptionClass = 'ui-body-lg mt-4 max-w-3xl break-words',
 		className = ''
 	}: Props = $props();
 </script>

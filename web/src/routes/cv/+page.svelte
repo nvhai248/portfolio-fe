@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { cvIntro, education, experienceItems, skillCategories } from '$lib/content/cv';
+	import { page } from '$app/state';
+	import { cvIntro, education, experienceItems, techSkillsContent } from '$lib/content/cv';
 	import ExperienceCard from '$lib/components/sections/ExperienceCard.svelte';
 	import SkillGrid from '$lib/components/sections/SkillGrid.svelte';
+	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 </script>
 
-<svelte:head>
-	<title>CV | Nguyen Van Hai</title>
-	<meta
-		name="description"
-		content="CV of Nguyen Van Hai — backend engineering experience, technical capabilities, and measurable project outcomes."
-	/>
-</svelte:head>
+<SeoHead
+	title="CV | Nguyen Van Hai"
+	description="CV of Nguyen Van Hai — backend engineering experience, technical capabilities, and measurable project outcomes."
+	pathname={page.url.pathname}
+/>
 
 <section class="page-shell max-w-5xl pb-12 pt-14 lg:pt-20">
 	<div class="flex flex-col gap-6 border-b ui-divider pb-10 md:flex-row md:items-end md:justify-between">
-		<div>
+		<div class="min-w-0">
 			<p class="ui-eyebrow">{cvIntro.eyebrow}</p>
-			<h1 class="ui-heading-1 mt-3">{cvIntro.title}</h1>
-			<p class="ui-body-lg mt-3 max-w-2xl">{cvIntro.description}</p>
+			<h1 class="ui-heading-1 mt-3 break-words">{cvIntro.title}</h1>
+			<p class="ui-body-lg mt-3 max-w-2xl break-words">{cvIntro.description}</p>
 		</div>
-		<a href="mailto:nvhai2408@gmail.com" class="ui-btn ui-btn-primary">Request full CV (PDF)</a>
+		<a href="mailto:nvhai2408@gmail.com" class="ui-btn ui-btn-primary md:shrink-0">Request full CV (PDF)</a>
 	</div>
 </section>
 
@@ -33,12 +33,10 @@
 </section>
 
 <section class="page-shell max-w-5xl pb-20">
-	<h2 class="ui-heading-2">Tech Skills</h2>
-	<p class="ui-body mt-3 max-w-3xl">
-		Hands-on capabilities used in production delivery, grouped by engineering responsibility rather than tool lists.
-	</p>
+	<h2 class="ui-heading-2">{techSkillsContent.title}</h2>
+	<p class="ui-body mt-3 max-w-3xl break-words">{techSkillsContent.description}</p>
 
-	<SkillGrid items={skillCategories} />
+	<SkillGrid items={techSkillsContent.categories} />
 </section>
 
 <section class="page-shell max-w-5xl pb-20 pt-2">

@@ -1,7 +1,22 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
+	import SeoHead from '$lib/components/seo/SeoHead.svelte';
+	import { featuredPostSeo } from '$lib/content/blog';
+	import { getArticleSchema } from '$lib/seo/schema';
 
-	let scrollProgress = 0;
+	let scrollProgress = $state(0);
+
+	const articleSchema = $derived(
+		getArticleSchema({
+			origin: page.url.origin,
+			pathname: featuredPostSeo.pathname,
+			title: featuredPostSeo.title,
+			description: featuredPostSeo.description,
+			datePublished: featuredPostSeo.publishedAt,
+			tags: featuredPostSeo.tags
+		})
+	);
 
 	onMount(() => {
 		const updateProgress = () => {
@@ -18,9 +33,13 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Optimizing Moodle with Ollama AI - Nguyen Van Hai</title>
-</svelte:head>
+<SeoHead
+	title={featuredPostSeo.title}
+	description={featuredPostSeo.description}
+	pathname={featuredPostSeo.pathname}
+	type="article"
+	structuredData={articleSchema}
+/>
 
 <div class="fixed left-0 top-0 z-[100] h-1 w-full bg-[var(--ui-surface)]/85 backdrop-blur-md">
 	<div class="h-full bg-primary transition-all duration-100 ease-out" style="width: {scrollProgress}%;"></div>
