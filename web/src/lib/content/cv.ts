@@ -1,4 +1,9 @@
-import type { ExperienceItem, SectionIntroContent, TechSkillsContent } from '$lib/types/content';
+import type {
+	EducationContent,
+	ExperienceItem,
+	SectionIntroContent,
+	TechSkillsContent
+} from '$lib/types/content';
 import { defineTechSkillsContent } from '$lib/content/validate';
 
 export const cvIntro: SectionIntroContent = {
@@ -72,7 +77,7 @@ export const techSkillsContent: TechSkillsContent = defineTechSkillsContent({
 	]
 });
 
-export const education = {
+export const education: EducationContent = {
 	school: 'VNUHCM - University of Science',
 	degree: 'Bachelor of Computer Science',
 	details: 'GPA: 3.2 / 4.0 • Class of 2019'

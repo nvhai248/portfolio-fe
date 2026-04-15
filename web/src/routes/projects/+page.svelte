@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { projectsContent } from '$lib/content/projects';
+	import type { PageData } from './$types';
 	import SectionIntro from '$lib/components/ui/SectionIntro.svelte';
 	import ProjectCard from '$lib/components/sections/ProjectCard.svelte';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 	import { getProjectsSchema } from '$lib/seo/schema';
+
+	let { data }: { data: PageData } = $props();
+	const projectsContent = $derived(data.projectsContent);
 
 	const projectsSchema = $derived(
 		getProjectsSchema({

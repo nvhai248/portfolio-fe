@@ -78,6 +78,21 @@ export interface TechSkillsContent {
 	categories: TechSkillCategory[];
 }
 
+export interface EducationContent {
+	school: string;
+	degree: string;
+	details: string;
+}
+
+export interface CvPageContent {
+	seo: SeoMeta;
+	intro: SectionIntroContent;
+	contactEmail: string;
+	experienceItems: ExperienceItem[];
+	techSkills: TechSkillsContent;
+	education: EducationContent;
+}
+
 export interface FeaturedPost {
 	title: string;
 	slug: string;

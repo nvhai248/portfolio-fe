@@ -4,5 +4,17 @@ import project from './project'
 import cv from './cv'
 import author from './author'
 import settings from './settings'
+import aboutPage from './aboutPage'
+import projectsPage from './projectsPage'
+import cvPage from './cvPage'
 
-export const schemaTypes = [post, project, cv, author, settings]
+export const schemaTypes = [
+  post,
+  project,
+  cv,
+  author,
+  settings,
+  aboutPage,
+  projectsPage,
+  cvPage,
+]

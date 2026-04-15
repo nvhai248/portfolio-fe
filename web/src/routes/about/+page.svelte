@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { aboutContent } from '$lib/content/about';
+	import type { PageData } from './$types';
 	import SectionIntro from '$lib/components/ui/SectionIntro.svelte';
 	import InfoCardGrid from '$lib/components/sections/InfoCardGrid.svelte';
 	import HighlightListPanel from '$lib/components/sections/HighlightListPanel.svelte';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
+
+	let { data }: { data: PageData } = $props();
+	const aboutContent = $derived(data.aboutContent);
 </script>
 
 <SeoHead title={aboutContent.seo.title} description={aboutContent.seo.description} pathname={page.url.pathname} />
