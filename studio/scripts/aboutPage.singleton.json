@@ -1,0 +1,80 @@
+{
+  "_id": "aboutPage.singleton",
+  "_type": "aboutPage",
+  "seo": {
+    "title": "About | Nguyen Van Hai",
+    "description": "Detailed profile of Nguyen Van Hai — backend engineer specializing in scalable service architecture, resilient delivery practices, and practical AI-enabled product execution."
+  },
+  "intro": {
+    "eyebrow": "About",
+    "title": "I design backend platforms that make product delivery faster, safer, and easier to scale over time.",
+    "description": "Over the last 5+ years, I have worked across LMS modernization, AI-enabled products, and cloud-native backend systems. My approach combines architecture clarity, disciplined execution, and operational feedback loops so teams can ship continuously without accumulating hidden risk. I care about outcomes that are visible to both users and business stakeholders: latency, reliability, release confidence, and development velocity."
+  },
+  "cards": [
+    {
+      "_key": "positioning",
+      "heading": "Positioning",
+      "body": "I operate as a backend-first engineer who bridges architecture, implementation, and delivery management. Instead of treating system design and shipping as separate phases, I keep them connected so trade-offs stay explicit and the team can move quickly without sacrificing long-term maintainability."
+    },
+    {
+      "_key": "systems-thinking",
+      "heading": "Systems thinking",
+      "body": "I design APIs and service boundaries with change tolerance in mind: clear ownership, predictable contracts, observable behavior, and failure modes that degrade gracefully. This helps teams evolve features safely as product scope grows and dependencies become more complex."
+    },
+    {
+      "_key": "delivery-method",
+      "heading": "Delivery method",
+      "body": "I break roadmap goals into small, testable increments with clear acceptance criteria. Each increment is designed to be releasable, measurable, and reversible when needed. This reduces rollout risk, shortens feedback cycles, and keeps momentum stable across cross-functional teams."
+    },
+    {
+      "_key": "technical-strengths",
+      "heading": "Technical strengths",
+      "body": "Core strengths include service design, API reliability, performance tuning, data-flow simplification, and production-ready AI integration. I prioritize solutions that are practical to operate: sensible defaults, actionable telemetry, and straightforward incident response paths."
+    },
+    {
+      "_key": "collaboration-style",
+      "heading": "Collaboration style",
+      "body": "I communicate through decision records, concise technical notes, and architecture diagrams that non-backend teammates can follow. I align product, QA, and engineering around shared risk language so release planning becomes predictable and technical debt is discussed with context, not guesswork."
+    },
+    {
+      "_key": "quality-philosophy",
+      "heading": "Quality philosophy",
+      "body": "Quality is treated as a continuous property of delivery, not a final checklist. I build it in through coding standards, review discipline, test coverage where it matters most, and production observability from the first release iteration."
+    }
+  ],
+  "contributionPanel": {
+    "title": "How I contribute inside teams",
+    "items": [
+      {
+        "_key": "architecture-with-intent",
+        "label": "Architecture with intent",
+        "text": "I define service boundaries and domain responsibilities early, then pressure-test them with realistic feature scenarios. This keeps scaling decisions grounded in actual product direction and prevents expensive rewrites later."
+      },
+      {
+        "_key": "execution-with-ownership",
+        "label": "Execution with ownership",
+        "text": "I drive initiatives from design through implementation and rollout, including release strategy, monitoring, and post-release refinement. The goal is not just \"build done\" but stable outcomes in production behavior."
+      },
+      {
+        "_key": "risk-visibility",
+        "label": "Risk visibility",
+        "text": "I surface technical and delivery risks early using concrete signals: dependency bottlenecks, unknowns in requirements, migration constraints, and operational blind spots. Teams can then make informed trade-offs before risk becomes incident."
+      },
+      {
+        "_key": "optimization-with-context",
+        "label": "Optimization with context",
+        "text": "I optimize where business and user impact are highest: latency on critical flows, throughput under growth, and reliability of high-frequency operations. This keeps engineering effort aligned with measurable value."
+      },
+      {
+        "_key": "cross-functional-alignment",
+        "label": "Cross-functional alignment",
+        "text": "I translate backend constraints into product language so roadmap planning stays realistic and transparent. By aligning PM, QA, and engineering on release criteria, we reduce surprises and preserve delivery trust."
+      },
+      {
+        "_key": "operational-learning",
+        "label": "Operational learning loop",
+        "text": "I turn incidents, support feedback, and usage telemetry into concrete improvements to architecture and process. This creates a compounding loop where each release improves both product quality and team execution maturity."
+      }
+    ]
+  }
+}

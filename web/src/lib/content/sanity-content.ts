@@ -25,6 +25,15 @@ const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
 	contributionPanel
 }`;
 
+const AUTHOR_ABOUT_QUERY = `coalesce(
+	*[_id == "drafts.author-main"][0],
+	*[_id == "author-main"][0],
+	*[_id == "author-hai-nguyen"][0],
+	*[_type == "author" && slug.current == "hai-nguyen" && !(_id in path("drafts.**"))][0]
+){
+	aboutPage
+}`;
+
 const PROJECTS_PAGE_QUERY = `*[_type == "projectsPage"][0]{
 	seo,
 	intro,
@@ -251,7 +260,12 @@ const sanitizeProject = (value: unknown): ProjectContent | null => {
 
 export const getAboutContent = async (): Promise<AboutContent> => {
 	try {
-		const raw = await withTimeout(client.fetch<Partial<AboutContent> | null>(ABOUT_PAGE_QUERY));
+		const [rawAuthor, rawAboutPage] = await Promise.all([
+			withTimeout(client.fetch<{ aboutPage?: Partial<AboutContent> } | null>(AUTHOR_ABOUT_QUERY)),
+			withTimeout(client.fetch<Partial<AboutContent> | null>(ABOUT_PAGE_QUERY))
+		]);
+
+		const raw = rawAuthor?.aboutPage ?? rawAboutPage;
 
 		if (!raw) {
 			return fallbackAboutContent;
@@ -269,7 +283,7 @@ export const getAboutContent = async (): Promise<AboutContent> => {
 			intro: safeIntro(raw.intro, fallbackAboutContent.intro, 'about.intro'),
 			cards: Array.isArray(raw.cards) && raw.cards.length > 0 ? raw.cards : fallbackAboutContent.cards,
 			contributionPanel:
-				raw.contributionPanel?.title &&
+				isNonEmptyString(raw.contributionPanel?.title) &&
 				Array.isArray(raw.contributionPanel.items) &&
 				raw.contributionPanel.items.length > 0
 					? {
