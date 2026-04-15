@@ -1,13 +1,17 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page, type Response } from '@playwright/test';
 
 type ThemeMode = 'light' | 'dark';
+type SmokeRoute = {
+	path: string;
+	marker?: RegExp;
+};
 
-const routes = [
+const routes: ReadonlyArray<SmokeRoute> = [
 	{ path: '/vi', marker: /Xem dự án|View Projects/i },
 	{ path: '/vi/about', marker: /How I contribute inside teams|đóng góp/i },
 	{ path: '/vi/projects', marker: /Open University Moodle Optimization|Moodle/i },
 	{ path: '/vi/cv', marker: /Kinh nghiệm|Experience/i },
-	{ path: '/vi/blog', marker: /Đang chuẩn bị thêm bài viết|More posts in progress/i }
+	{ path: '/vi/blog' }
 ] as const;
 
 const viewports = [
@@ -17,6 +21,51 @@ const viewports = [
 ] as const;
 
 const themes: ThemeMode[] = ['light', 'dark'];
+const blogEmptyStateMarker = /Đang chuẩn bị thêm bài viết|More posts in progress/i;
+const retriableNavigationErrors = ['ERR_NO_BUFFER_SPACE', 'ERR_CONNECTION_RESET', 'ERR_CONNECTION_REFUSED'];
+
+const isRetriableNavigationError = (error: unknown): boolean =>
+	error instanceof Error &&
+	retriableNavigationErrors.some((fragment) => error.message.includes(fragment));
+
+const gotoWithRetry = async (page: Page, path: string): Promise<Response | null> => {
+	const maxAttempts = 2;
+
+	for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+		try {
+			return await page.goto(path);
+		} catch (error) {
+			if (attempt === maxAttempts || !isRetriableNavigationError(error)) {
+				throw error;
+			}
+			await page.waitForTimeout(500);
+		}
+	}
+
+	return null;
+};
+
+const assertBlogContentIsVisible = async (page: Page): Promise<void> => {
+	await expect
+		.poll(async () => {
+			const cardCount = await page.locator('a.ui-card-link').count();
+			if (cardCount > 0) {
+				return true;
+			}
+
+			const emptyStateCount = await page.getByText(blogEmptyStateMarker).count();
+			return emptyStateCount > 0;
+		})
+		.toBeTruthy();
+
+	const cardCount = await page.locator('a.ui-card-link').count();
+	if (cardCount > 0) {
+		await expect(page.locator('a.ui-card-link').first()).toBeVisible();
+		return;
+	}
+
+	await expect(page.getByText(blogEmptyStateMarker).first()).toBeVisible();
+};
 
 for (const viewport of viewports) {
 	for (const theme of themes) {
@@ -30,7 +79,7 @@ for (const viewport of viewports) {
 
 			for (const route of routes) {
 				test(`smoke route ${route.path}`, async ({ page }) => {
-					const response = await page.goto(route.path);
+					const response = await gotoWithRetry(page, route.path);
 					expect(response, `No response for ${route.path}`).not.toBeNull();
 					expect(response!.ok(), `Unexpected status for ${route.path}: ${response!.status()}`).toBeTruthy();
 
@@ -43,7 +92,12 @@ for (const viewport of viewports) {
 
 					await expect(page.getByTestId('main-content')).toBeVisible();
 					await expect(page.getByTestId('site-footer')).toBeVisible();
-					await expect(page.getByText(route.marker).first()).toBeVisible();
+
+					if (route.marker) {
+						await expect(page.getByText(route.marker).first()).toBeVisible();
+					} else {
+						await assertBlogContentIsVisible(page);
+					}
 				});
 			}
 		});
