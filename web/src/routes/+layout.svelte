@@ -7,6 +7,8 @@
 	import { page } from '$app/state';
 	import { theme } from '$lib/stores/theme.svelte';
 	import { getPersonSchema, getWebsiteSchema } from '$lib/seo/schema';
+	import { getDictionary } from '$lib/i18n/dictionary';
+	import { localeFromPathname } from '$lib/i18n/locale';
 
 	let { children } = $props();
 
@@ -14,10 +16,11 @@
 		theme.init();
 	});
 
-	const personSchema = $derived(getPersonSchema(page.url.origin));
-	const websiteSchema = $derived(getWebsiteSchema(page.url.origin));
-	const stringifySchema = (payload: Record<string, unknown>): string =>
-		JSON.stringify(payload).replace(/</g, '\\u003c');
+	const locale = $derived(localeFromPathname(page.url.pathname));
+	const t = $derived(getDictionary(locale));
+	const personSchema = $derived(getPersonSchema(page.url.origin, locale));
+	const websiteSchema = $derived(getWebsiteSchema(page.url.origin, locale));
+	const stringifySchema = (payload: Record<string, unknown>): string => JSON.stringify(payload).replace(/</g, '\\u003c');
 </script>
 
 <svelte:head>
@@ -42,7 +45,7 @@
 	href="#main-content"
 	class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
 >
-	Skip to main content
+	{t.skipToContent}
 </a>
 
 <div class="layout-container flex min-h-screen grow flex-col">

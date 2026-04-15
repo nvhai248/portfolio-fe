@@ -1,14 +1,26 @@
 import { env } from '$env/dynamic/public';
+import { localeToOg, type Locale } from '$lib/i18n/config';
+
+const defaultMetaByLocale: Record<Locale, { title: string; description: string }> = {
+	vi: {
+		title: 'Nguyen Van Hai | Kỹ sư Backend & Kiến trúc sư Hệ thống',
+		description:
+			'Portfolio của Nguyen Van Hai — backend engineering, system architecture và ứng dụng AI thực tế cho sản phẩm mở rộng.'
+	},
+	en: {
+		title: 'Nguyen Van Hai | Backend Engineer & System Architect',
+		description:
+			'Portfolio of Nguyen Van Hai — backend engineering, system architecture, and practical AI integration for scalable products.'
+	}
+};
 
 export const siteConfig = {
 	name: 'Nguyen Van Hai',
 	siteName: 'Nguyen Van Hai Portfolio',
-	defaultLocale: 'en_US',
 	twitterHandle: '@nvhai2408',
-	defaultTitle: 'Nguyen Van Hai | Backend Engineer & System Architect',
-	defaultDescription:
-		'Portfolio of Nguyen Van Hai — backend engineering, system architecture, and practical AI integration for scalable products.',
-	defaultOgImagePath: '/og/cover.svg'
+	defaultOgImagePath: '/og/cover.svg',
+	defaultMetaByLocale,
+	defaultLocale: localeToOg.en
 } as const;
 
 export const authorProfile = {

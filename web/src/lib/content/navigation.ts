@@ -1,13 +1,15 @@
-export const primaryNavItems = [
-	{ href: '/', label: 'Home' },
-	{ href: '/about', label: 'About' },
-	{ href: '/projects', label: 'Projects' },
-	{ href: '/cv', label: 'CV' },
-	{ href: '/blog', label: 'Blog' }
+import type { Locale } from '$lib/i18n/config';
+
+export const getPrimaryNavItems = (locale: Locale) => [
+	{ href: `/${locale}`, label: locale === 'vi' ? 'Trang chủ' : 'Home' },
+	{ href: `/${locale}/about`, label: locale === 'vi' ? 'Giới thiệu' : 'About' },
+	{ href: `/${locale}/projects`, label: locale === 'vi' ? 'Dự án' : 'Projects' },
+	{ href: `/${locale}/cv`, label: 'CV' },
+	{ href: `/${locale}/blog`, label: 'Blog' }
 ];
 
-export const footerProfileLinks = [
+export const getFooterProfileLinks = (locale: Locale) => [
 	{ href: 'https://github.com', label: 'GitHub', external: true },
 	{ href: 'https://linkedin.com', label: 'LinkedIn', external: true },
-	{ href: '/blog', label: 'Insights' }
+	{ href: `/${locale}/blog`, label: locale === 'vi' ? 'Bài viết' : 'Insights' }
 ];

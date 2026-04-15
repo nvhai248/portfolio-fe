@@ -1,4 +1,5 @@
 import { client } from '$lib/sanity';
+import { fallbackLocale, type Locale } from '$lib/i18n/config';
 import { aboutContent as fallbackAboutContent } from '$lib/content/about';
 import { cvIntro, education, experienceItems, techSkillsContent } from '$lib/content/cv';
 import { projectsContent as fallbackProjectsContent } from '$lib/content/projects';
@@ -18,11 +19,19 @@ import type {
 	TechSkillsContent
 } from '$lib/types/content';
 
-const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
+const ABOUT_PAGE_QUERY = `*[_type == "aboutPage" && !defined(language)][0]{
 	seo,
 	intro,
 	cards,
 	contributionPanel
+}`;
+
+const AUTHOR_ABOUT_BY_LOCALE_QUERY = `coalesce(
+	*[_id == ("drafts.author-main-" + $locale)][0],
+	*[_id == ("author-main-" + $locale)][0],
+	*[_type == "author" && language == $locale && slug.current == "hai-nguyen" && !(_id in path("drafts.**"))][0]
+){
+	aboutPage
 }`;
 
 const AUTHOR_ABOUT_QUERY = `coalesce(
@@ -34,13 +43,19 @@ const AUTHOR_ABOUT_QUERY = `coalesce(
 	aboutPage
 }`;
 
-const PROJECTS_PAGE_QUERY = `*[_type == "projectsPage"][0]{
+const PROJECTS_PAGE_BY_LOCALE_QUERY = `*[_type == "projectsPage" && language == $locale][0]{
 	seo,
 	intro,
 	labels
 }`;
 
-const PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))] | order(sortOrder asc, _createdAt asc){
+const PROJECTS_PAGE_QUERY = `*[_type == "projectsPage" && !defined(language)][0]{
+	seo,
+	intro,
+	labels
+}`;
+
+const PROJECTS_QUERY_BY_LOCALE = `*[_type == "project" && language == $locale && !(_id in path("drafts.**"))] | order(sortOrder asc, _createdAt asc){
 	title,
 	"slug": slug.current,
 	role,
@@ -59,7 +74,7 @@ const PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))] | o
 	sortOrder
 }`;
 
-const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && !(_id in path("drafts.**"))][0]{
+const PROJECTS_QUERY = `*[_type == "project" && !defined(language) && !(_id in path("drafts.**"))] | order(sortOrder asc, _createdAt asc){
 	title,
 	"slug": slug.current,
 	role,
@@ -78,10 +93,48 @@ const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && 
 	sortOrder
 }`;
 
-const CV_QUERY = `coalesce(
-	*[_id == "drafts.cv-main"][0],
-	*[_id == "cv-main"][0],
-	*[_type == "cv" && !(_id in path("drafts.**"))][0]
+const PROJECT_BY_SLUG_QUERY_BY_LOCALE = `*[_type == "project" && language == $locale && slug.current == $slug && !(_id in path("drafts.**"))][0]{
+	title,
+	"slug": slug.current,
+	role,
+	domain,
+	overview,
+	detailLists[]{heading, items},
+	techStack,
+	problemStatement,
+	responsibilities,
+	architectureHighlights,
+	deliveryOutcomes,
+	lessonsLearned,
+	timeline,
+	teamContext,
+	links[]{label, url},
+	sortOrder
+}`;
+
+const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && !defined(language) && slug.current == $slug && !(_id in path("drafts.**"))][0]{
+	title,
+	"slug": slug.current,
+	role,
+	domain,
+	overview,
+	detailLists[]{heading, items},
+	techStack,
+	problemStatement,
+	responsibilities,
+	architectureHighlights,
+	deliveryOutcomes,
+	lessonsLearned,
+	timeline,
+	teamContext,
+	links[]{label, url},
+	sortOrder
+}`;
+
+const CV_BY_LOCALE_QUERY = `coalesce(
+	*[_id == ("drafts.cv-main-" + $locale)][0],
+	*[_id == ("cv-main-" + $locale)][0],
+	*[_type == "cv" && language == $locale && !(_id in path("drafts.**"))][0]
 ){
 	seo,
 	intro,
@@ -91,7 +144,29 @@ const CV_QUERY = `coalesce(
 	education
 }`;
 
-const CV_PAGE_QUERY = `*[_type == "cvPage"][0]{
+const CV_QUERY = `coalesce(
+	*[_id == "drafts.cv-main"][0],
+	*[_id == "cv-main"][0],
+	*[_type == "cv" && !defined(language) && !(_id in path("drafts.**"))][0]
+){
+	seo,
+	intro,
+	contactEmail,
+	experienceItems,
+	techSkills,
+	education
+}`;
+
+const CV_PAGE_BY_LOCALE_QUERY = `*[_type == "cvPage" && language == $locale][0]{
+	seo,
+	intro,
+	contactEmail,
+	experienceItems,
+	techSkills,
+	education
+}`;
+
+const CV_PAGE_QUERY = `*[_type == "cvPage" && !defined(language)][0]{
 	seo,
 	intro,
 	contactEmail,
@@ -258,14 +333,18 @@ const sanitizeProject = (value: unknown): ProjectContent | null => {
 	};
 };
 
-export const getAboutContent = async (): Promise<AboutContent> => {
+export const getAboutContent = async (locale: Locale = fallbackLocale): Promise<AboutContent> => {
 	try {
-		const [rawAuthor, rawAboutPage] = await Promise.all([
+		const [rawAuthorByLocale, rawAuthorFallback, rawAboutByLocale, rawAboutPage] = await Promise.all([
+			withTimeout(
+				client.fetch<{ aboutPage?: Partial<AboutContent> } | null>(AUTHOR_ABOUT_BY_LOCALE_QUERY, { locale })
+			),
 			withTimeout(client.fetch<{ aboutPage?: Partial<AboutContent> } | null>(AUTHOR_ABOUT_QUERY)),
+			withTimeout(client.fetch<Partial<AboutContent> | null>(`*[_type == "aboutPage" && language == $locale][0]{ seo, intro, cards, contributionPanel }`, { locale })),
 			withTimeout(client.fetch<Partial<AboutContent> | null>(ABOUT_PAGE_QUERY))
 		]);
 
-		const raw = rawAuthor?.aboutPage ?? rawAboutPage;
+		const raw = rawAuthorByLocale?.aboutPage ?? rawAuthorFallback?.aboutPage ?? rawAboutByLocale ?? rawAboutPage;
 
 		if (!raw) {
 			return fallbackAboutContent;
@@ -298,10 +377,17 @@ export const getAboutContent = async (): Promise<AboutContent> => {
 	}
 };
 
-const fetchProjectsFromSanity = async (): Promise<ProjectContent[]> => {
-	const rawProjects = await withTimeout(client.fetch<unknown[]>(PROJECTS_QUERY));
-	if (!Array.isArray(rawProjects)) {
-		return [];
+const fetchProjectsFromSanity = async (locale: Locale): Promise<ProjectContent[]> => {
+	const rawProjects = await withTimeout(client.fetch<unknown[]>(PROJECTS_QUERY_BY_LOCALE, { locale }));
+	if (!Array.isArray(rawProjects) || rawProjects.length === 0) {
+		const legacyProjects = await withTimeout(client.fetch<unknown[]>(PROJECTS_QUERY));
+		if (!Array.isArray(legacyProjects)) {
+			return [];
+		}
+
+		return legacyProjects
+			.map((project) => sanitizeProject(project))
+			.filter((project): project is ProjectContent => project !== null);
 	}
 
 	return rawProjects
@@ -309,12 +395,15 @@ const fetchProjectsFromSanity = async (): Promise<ProjectContent[]> => {
 		.filter((project): project is ProjectContent => project !== null);
 };
 
-export const getProjectsContent = async (): Promise<ProjectsContent> => {
+export const getProjectsContent = async (locale: Locale = fallbackLocale): Promise<ProjectsContent> => {
 	try {
-		const [rawPage, projects] = await Promise.all([
+		const [rawPageByLocale, rawPageFallback, projects] = await Promise.all([
+			withTimeout(client.fetch<Partial<ProjectsContent> | null>(PROJECTS_PAGE_BY_LOCALE_QUERY, { locale })),
 			withTimeout(client.fetch<Partial<ProjectsContent> | null>(PROJECTS_PAGE_QUERY)),
-			fetchProjectsFromSanity()
+			fetchProjectsFromSanity(locale)
 		]);
+
+		const rawPage = rawPageByLocale ?? rawPageFallback;
 
 		if (!rawPage || projects.length === 0) {
 			return fallbackProjectsContent;
@@ -345,24 +434,36 @@ export const getProjectsContent = async (): Promise<ProjectsContent> => {
 	}
 };
 
-export const getProjectBySlug = async (slug: string): Promise<ProjectContent | null> => {
+export const getProjectBySlug = async (slug: string, locale: Locale = fallbackLocale): Promise<ProjectContent | null> => {
 	try {
 		const raw = await withTimeout(
+			client.fetch<unknown | null>(PROJECT_BY_SLUG_QUERY_BY_LOCALE, {
+				slug,
+				locale
+			})
+		);
+
+		if (raw) {
+			return sanitizeProject(raw);
+		}
+
+		const legacy = await withTimeout(
 			client.fetch<unknown | null>(PROJECT_BY_SLUG_QUERY, {
 				slug
 			})
 		);
 
-		if (!raw) {
+		if (!legacy) {
 			return null;
 		}
 
-		return sanitizeProject(raw);
+		return sanitizeProject(legacy);
 	} catch (error) {
 		console.error(`Failed to fetch project by slug "${slug}" from Sanity:`, error);
 		return null;
 	}
 };
+
 
 const safeTechSkills = (value: unknown, fallback: TechSkillsContent): TechSkillsContent => {
 	if (typeof value !== 'object' || !value) {
@@ -459,11 +560,25 @@ const toCvContent = (raw: Partial<CvPageContent>): CvPageContent => ({
 	education: safeEducation(raw.education, fallbackCvContent.education)
 });
 
-export const getCvContent = async (): Promise<CvPageContent> => {
+export const getCvContent = async (locale: Locale = fallbackLocale): Promise<CvPageContent> => {
 	try {
+		const rawCvByLocale = await withTimeout(
+			client.fetch<Partial<CvPageContent> | null>(CV_BY_LOCALE_QUERY, { locale })
+		);
+		if (rawCvByLocale) {
+			return toCvContent(rawCvByLocale);
+		}
+
 		const rawCv = await withTimeout(client.fetch<Partial<CvPageContent> | null>(CV_QUERY));
 		if (rawCv) {
 			return toCvContent(rawCv);
+		}
+
+		const rawCvPageByLocale = await withTimeout(
+			client.fetch<Partial<CvPageContent> | null>(CV_PAGE_BY_LOCALE_QUERY, { locale })
+		);
+		if (rawCvPageByLocale) {
+			return toCvContent(rawCvPageByLocale);
 		}
 
 		const rawCvPage = await withTimeout(client.fetch<Partial<CvPageContent> | null>(CV_PAGE_QUERY));

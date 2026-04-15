@@ -1,24 +1,27 @@
+import type { Locale } from '$lib/i18n/config';
+import { localeToSchemaLang } from '$lib/i18n/config';
 import type { ProjectContent } from '$lib/types/content';
 import { authorProfile, siteConfig, toAbsoluteUrl } from '$lib/seo/site';
 
-export const getPersonSchema = (origin?: string) => ({
+export const getPersonSchema = (origin?: string, locale: Locale = 'en') => ({
 	'@context': 'https://schema.org',
 	'@type': 'Person',
 	'@id': `${toAbsoluteUrl('/', origin)}#person`,
 	name: authorProfile.name,
 	jobTitle: authorProfile.jobTitle,
 	url: toAbsoluteUrl('/', origin),
-	email: authorProfile.email
+	email: authorProfile.email,
+	inLanguage: localeToSchemaLang[locale]
 });
 
-export const getWebsiteSchema = (origin?: string) => ({
+export const getWebsiteSchema = (origin?: string, locale: Locale = 'en') => ({
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
 	'@id': `${toAbsoluteUrl('/', origin)}#website`,
 	url: toAbsoluteUrl('/', origin),
 	name: siteConfig.siteName,
-	description: siteConfig.defaultDescription,
-	inLanguage: 'en'
+	description: siteConfig.defaultMetaByLocale[locale].description,
+	inLanguage: localeToSchemaLang[locale]
 });
 
 interface ArticleSchemaInput {
@@ -29,6 +32,7 @@ interface ArticleSchemaInput {
 	datePublished: string;
 	dateModified?: string;
 	tags?: string[];
+	locale?: Locale;
 }
 
 export const getArticleSchema = ({
@@ -38,7 +42,8 @@ export const getArticleSchema = ({
 	description,
 	datePublished,
 	dateModified,
-	tags
+	tags,
+	locale = 'en'
 }: ArticleSchemaInput) => ({
 	'@context': 'https://schema.org',
 	'@type': 'Article',
@@ -57,25 +62,27 @@ export const getArticleSchema = ({
 	datePublished,
 	dateModified: dateModified ?? datePublished,
 	keywords: tags?.join(', '),
-	inLanguage: 'en'
+	inLanguage: localeToSchemaLang[locale]
 });
 
 interface ProjectsSchemaInput {
 	origin?: string;
 	pathname: string;
 	projects: ProjectContent[];
+	locale?: Locale;
 }
 
-export const getProjectsSchema = ({ origin, pathname, projects }: ProjectsSchemaInput) => ({
+export const getProjectsSchema = ({ origin, pathname, projects, locale = 'en' }: ProjectsSchemaInput) => ({
 	'@context': 'https://schema.org',
 	'@type': 'CollectionPage',
 	url: toAbsoluteUrl(pathname, origin),
-	name: 'Projects',
+	name: locale === 'vi' ? 'Dự án' : 'Projects',
+	inLanguage: localeToSchemaLang[locale],
 	hasPart: projects.map((project) => ({
 		'@type': 'CreativeWork',
 		name: project.title,
 		description: project.overview,
-		url: toAbsoluteUrl(`/projects/${project.slug}`, origin),
+		url: toAbsoluteUrl(`/${locale}/projects/${project.slug}`, origin),
 		about: project.domain,
 		keywords: project.techStack.join(', ')
 	}))
@@ -85,12 +92,14 @@ interface ProjectDetailSchemaInput {
 	origin?: string;
 	pathname: string;
 	project: ProjectContent;
+	locale?: Locale;
 }
 
 export const getProjectDetailSchema = ({
 	origin,
 	pathname,
-	project
+	project,
+	locale = 'en'
 }: ProjectDetailSchemaInput) => ({
 	'@context': 'https://schema.org',
 	'@type': 'CreativeWork',
@@ -99,6 +108,7 @@ export const getProjectDetailSchema = ({
 	url: toAbsoluteUrl(pathname, origin),
 	about: project.domain,
 	keywords: project.techStack.join(', '),
+	inLanguage: localeToSchemaLang[locale],
 	author: {
 		'@type': 'Person',
 		name: authorProfile.name

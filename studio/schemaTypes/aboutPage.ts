@@ -8,6 +8,20 @@ export default {
   },
   fields: [
     {
+      name: 'language',
+      title: 'Language',
+      type: 'string',
+      initialValue: 'en',
+      options: {
+        list: [
+          {title: 'English', value: 'en'},
+          {title: 'Vietnamese', value: 'vi'}
+        ],
+        layout: 'radio'
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'seo',
       title: 'SEO',
       type: 'object',

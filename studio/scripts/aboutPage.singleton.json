@@ -1,6 +1,7 @@
 {
   "_id": "aboutPage.singleton",
   "_type": "aboutPage",
+  "language": "en",
   "seo": {
     "title": "About | Nguyen Van Hai",
     "description": "Detailed profile of Nguyen Van Hai — backend engineer specializing in scalable service architecture, resilient delivery practices, and practical AI-enabled product execution."

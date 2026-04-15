@@ -3,11 +3,11 @@ import { expect, test } from '@playwright/test';
 type ThemeMode = 'light' | 'dark';
 
 const routes = [
-	{ path: '/', marker: /View Projects/i },
-	{ path: '/about', marker: /How I contribute inside teams/i },
-	{ path: '/projects', marker: /Selected backend projects/i },
-	{ path: '/cv', marker: /Experience/i },
-	{ path: '/blog', marker: /More posts in progress/i }
+	{ path: '/vi', marker: /Xem dự án|View Projects/i },
+	{ path: '/vi/about', marker: /How I contribute inside teams|đóng góp/i },
+	{ path: '/vi/projects', marker: /Open University Moodle Optimization|Moodle/i },
+	{ path: '/vi/cv', marker: /Kinh nghiệm|Experience/i },
+	{ path: '/vi/blog', marker: /Đang chuẩn bị thêm bài viết|More posts in progress/i }
 ] as const;
 
 const viewports = [
@@ -41,7 +41,6 @@ for (const viewport of viewports) {
 						await expect(html).not.toHaveClass(/dark/);
 					}
 
-					await expect(page.getByRole('link', { name: /go to homepage/i })).toBeVisible();
 					await expect(page.getByTestId('main-content')).toBeVisible();
 					await expect(page.getByTestId('site-footer')).toBeVisible();
 					await expect(page.getByText(route.marker).first()).toBeVisible();
@@ -51,9 +50,21 @@ for (const viewport of viewports) {
 	}
 }
 
+test('root redirects to locale prefix', async ({ page }) => {
+	const response = await page.goto('/');
+	expect(response?.status()).toBeLessThan(400);
+	expect(page.url()).toMatch(/\/vi$|\/en$/);
+});
+
+test('language switch keeps route and switches locale', async ({ page }) => {
+	await page.goto('/vi/projects');
+	await page.getByRole('link', { name: 'English' }).click();
+	await expect(page).toHaveURL(/\/en\/projects$/);
+});
+
 test('theme toggle persists after reload and navigation', async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 800 });
-	await page.goto('/');
+	await page.goto('/vi');
 
 	const html = page.locator('html');
 	const toggle = page.getByTestId('theme-toggle');
@@ -81,7 +92,7 @@ test('theme toggle persists after reload and navigation', async ({ page }) => {
 		await expect(html).not.toHaveClass(/dark/);
 	}
 
-	await page.goto('/about');
+	await page.goto('/vi/about');
 	if (hasDarkClass) {
 		await expect(html).toHaveClass(/dark/);
 	} else {

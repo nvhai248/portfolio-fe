@@ -1,13 +1,13 @@
 {
-  "_id": "cv-main",
+  "_id": "cv-main-vi",
   "_type": "cv",
-  "language": "en",
+  "language": "vi",
   "seo": {
-    "title": "CV | Nguyen Van Hai",
+    "title": "Hồ sơ năng lực | Nguyen Van Hai",
     "description": "CV of Nguyen Van Hai — backend engineering experience, technical capabilities, and measurable project outcomes."
   },
   "intro": {
-    "eyebrow": "Curriculum Vitae",
+    "eyebrow": "Hồ sơ năng lực",
     "title": "Nguyen Van Hai",
     "description": "Backend Engineer focused on scalable architecture, platform reliability, and pragmatic AI integration for production systems."
   },

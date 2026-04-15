@@ -1,7 +1,7 @@
 {
-  "_id": "author-main",
+  "_id": "author-main-vi",
   "_type": "author",
-  "language": "en",
+  "language": "vi",
   "name": "Nguyen Van Hai",
   "slug": {
     "_type": "slug",
@@ -25,11 +25,11 @@
   ],
   "aboutPage": {
     "seo": {
-      "title": "About | Nguyen Van Hai",
+      "title": "Giới thiệu | Nguyen Van Hai",
       "description": "Detailed profile of Nguyen Van Hai — backend engineer specializing in scalable service architecture, resilient delivery practices, and practical AI-enabled product execution."
     },
     "intro": {
-      "eyebrow": "About",
+      "eyebrow": "Giới thiệu",
       "title": "I design backend platforms that make product delivery faster, safer, and easier to scale over time.",
       "description": "Over the last 5+ years, I have worked across LMS modernization, AI-enabled products, and cloud-native backend systems. My approach combines architecture clarity, disciplined execution, and operational feedback loops so teams can ship continuously without accumulating hidden risk. I care about outcomes that are visible to both users and business stakeholders: latency, reliability, release confidence, and development velocity."
     },

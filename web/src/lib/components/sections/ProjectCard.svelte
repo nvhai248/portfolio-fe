@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import { localeFromPathname } from '$lib/i18n/locale';
 	import type { ProjectContent } from '$lib/types/content';
 
 	interface Props {
@@ -8,15 +10,18 @@
 	}
 
 	let { project, overviewHeading, stackHeading }: Props = $props();
+	const locale = $derived(localeFromPathname(page.url.pathname));
+	const roleLabel = $derived(locale === 'vi' ? 'Vai trò' : 'Role');
+	const detailLinkLabel = $derived(locale === 'vi' ? 'Xem chi tiết dự án →' : 'View project details →');
 </script>
 
 <article class="ui-panel rounded-2xl p-5 sm:p-6">
 	<div class="flex flex-wrap items-start justify-between gap-4">
 		<div class="min-w-0">
 			<h2 class="ui-heading-2 break-words">
-				<a class="transition-colors hover:text-primary" href={`/projects/${project.slug}`}>{project.title}</a>
+				<a class="transition-colors hover:text-primary" href={`/${locale}/projects/${project.slug}`}>{project.title}</a>
 			</h2>
-			<p class="ui-muted mt-1 break-words">Role: {project.role}</p>
+			<p class="ui-muted mt-1 break-words">{roleLabel}: {project.role}</p>
 		</div>
 		<span class="ui-chip max-w-full whitespace-normal break-words px-3 uppercase tracking-wide">{project.domain}</span>
 	</div>
@@ -42,7 +47,7 @@
 		<h3 class="text-sm font-semibold [color:var(--ui-text)]">{stackHeading}</h3>
 		<p class="mt-2 text-sm [color:var(--ui-text-muted)] break-words">{project.techStack.join(', ')}</p>
 		<div class="mt-4">
-			<a class="ui-link text-sm" href={`/projects/${project.slug}`}>View project details →</a>
+			<a class="ui-link text-sm" href={`/${locale}/projects/${project.slug}`}>{detailLinkLabel}</a>
 		</div>
 	</div>
 </article>

@@ -1,13 +1,13 @@
 {
-  "_id": "projectsPage.singleton",
+  "_id": "projectsPage.vi.singleton",
   "_type": "projectsPage",
-  "language": "en",
+  "language": "vi",
   "seo": {
-    "title": "Projects | Nguyen Van Hai",
+    "title": "Dự án | Nguyen Van Hai",
     "description": "Selected projects by Nguyen Van Hai with role, impact, stack, and measurable delivery outcomes."
   },
   "intro": {
-    "eyebrow": "Projects",
+    "eyebrow": "Dự án",
     "title": "Selected backend projects where architecture decisions translated into measurable product impact.",
     "description": "Each project highlights context, ownership, core contributions, and outcomes that mattered for product and operations."
   },
