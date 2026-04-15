@@ -16,7 +16,12 @@
 
 <header class="sticky top-0 z-50 border-b ui-divider bg-[var(--ui-bg)] backdrop-blur-md">
 	<div class="page-shell flex h-16 items-center justify-between">
-		<a class="group inline-flex min-w-0 items-center gap-3" href={`${base}/`} onclick={closeMenu}>
+		<a
+			class="group inline-flex min-w-0 items-center gap-3"
+			href={`${base}/`}
+			onclick={closeMenu}
+			aria-label="Go to homepage"
+		>
 			<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
 				<span class="material-symbols-outlined text-lg">deployed_code</span>
 			</div>
