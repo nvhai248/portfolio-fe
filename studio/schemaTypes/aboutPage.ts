@@ -1,7 +1,11 @@
 export default {
   name: 'aboutPage',
-  title: 'About Page',
+  title: 'About Page (Legacy)',
   type: 'document',
+  readOnly: true,
+  deprecated: {
+    reason: 'Legacy duplicate. Canonical /about source is author-main.aboutPage.'
+  },
   fields: [
     {
       name: 'seo',

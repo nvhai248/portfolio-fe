@@ -1,7 +1,11 @@
 export default {
   name: 'cvPage',
-  title: 'CV Page',
+  title: 'CV Page (Legacy)',
   type: 'document',
+  readOnly: true,
+  deprecated: {
+    reason: 'Legacy duplicate. Canonical /cv source is cv-main (type: cv).'
+  },
   fields: [
     {
       name: 'seo',
