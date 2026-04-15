@@ -69,6 +69,19 @@ const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && 
 	sortOrder
 }`;
 
+const CV_QUERY = `coalesce(
+	*[_id == "drafts.cv-main"][0],
+	*[_id == "cv-main"][0],
+	*[_type == "cv" && !(_id in path("drafts.**"))][0]
+){
+	seo,
+	intro,
+	contactEmail,
+	experienceItems,
+	techSkills,
+	education
+}`;
+
 const CV_PAGE_QUERY = `*[_type == "cvPage"][0]{
 	seo,
 	intro,
@@ -354,8 +367,48 @@ const safeTechSkills = (value: unknown, fallback: TechSkillsContent): TechSkills
 	});
 };
 
-const safeExperienceItems = (value: unknown, fallback: ExperienceItem[]): ExperienceItem[] =>
-	Array.isArray(value) && value.length > 0 ? (value as ExperienceItem[]) : fallback;
+const safeExperienceItems = (value: unknown, fallback: ExperienceItem[]): ExperienceItem[] => {
+	if (!Array.isArray(value) || value.length === 0) {
+		return fallback;
+	}
+
+	const items = value
+		.map((entry) => {
+			if (typeof entry !== 'object' || !entry) {
+				return null;
+			}
+
+			const item = entry as Partial<ExperienceItem>;
+			if (!isNonEmptyString(item.role) || !isNonEmptyString(item.focus) || !isNonEmptyString(item.duration)) {
+				return null;
+			}
+
+			const achievements = safeStringArray(item.achievements);
+			if (achievements.length === 0) {
+				return null;
+			}
+
+			const normalized: ExperienceItem = {
+				role: item.role.trim(),
+				focus: item.focus.trim(),
+				duration: item.duration.trim(),
+				achievements,
+				company: isNonEmptyString(item.company) ? item.company.trim() : undefined,
+				employmentType: isNonEmptyString(item.employmentType)
+					? item.employmentType.trim()
+					: undefined,
+				location: isNonEmptyString(item.location) ? item.location.trim() : undefined,
+				impactSummary: isNonEmptyString(item.impactSummary) ? item.impactSummary.trim() : undefined,
+				stack: safeStringArray(item.stack),
+				highlights: safeStringArray(item.highlights)
+			};
+
+			return normalized;
+		})
+		.filter((item): item is ExperienceItem => item !== null);
+
+	return items.length > 0 ? items : fallback;
+};
 
 const safeEducation = (value: unknown, fallback: EducationContent): EducationContent => {
 	if (typeof value !== 'object' || !value) {
@@ -369,37 +422,44 @@ const safeEducation = (value: unknown, fallback: EducationContent): EducationCon
 	}
 
 	return {
-		school: edu.school,
-		degree: edu.degree,
-		details: edu.details
+		school: edu.school.trim(),
+		degree: edu.degree.trim(),
+		details: edu.details.trim(),
+		specialization: isNonEmptyString(edu.specialization) ? edu.specialization.trim() : undefined,
+		coursework: safeStringArray(edu.coursework),
+		awards: safeStringArray(edu.awards)
 	};
 };
 
+const toCvContent = (raw: Partial<CvPageContent>): CvPageContent => ({
+	seo: {
+		title: isNonEmptyString(raw.seo?.title) ? raw.seo.title : fallbackCvContent.seo.title,
+		description: isNonEmptyString(raw.seo?.description)
+			? raw.seo.description
+			: fallbackCvContent.seo.description
+	},
+	intro: safeIntro(raw.intro, fallbackCvContent.intro, 'cv.intro'),
+	contactEmail: isNonEmptyString(raw.contactEmail) ? raw.contactEmail : fallbackCvContent.contactEmail,
+	experienceItems: safeExperienceItems(raw.experienceItems, fallbackCvContent.experienceItems),
+	techSkills: safeTechSkills(raw.techSkills, fallbackCvContent.techSkills),
+	education: safeEducation(raw.education, fallbackCvContent.education)
+});
+
 export const getCvContent = async (): Promise<CvPageContent> => {
 	try {
-		const raw = await withTimeout(client.fetch<Partial<CvPageContent> | null>(CV_PAGE_QUERY));
-
-		if (!raw) {
-			return fallbackCvContent;
+		const rawCv = await withTimeout(client.fetch<Partial<CvPageContent> | null>(CV_QUERY));
+		if (rawCv) {
+			return toCvContent(rawCv);
 		}
 
-		return {
-			seo: {
-				title: isNonEmptyString(raw.seo?.title) ? raw.seo.title : fallbackCvContent.seo.title,
-				description: isNonEmptyString(raw.seo?.description)
-					? raw.seo.description
-					: fallbackCvContent.seo.description
-			},
-			intro: safeIntro(raw.intro, fallbackCvContent.intro, 'cv.intro'),
-			contactEmail: isNonEmptyString(raw.contactEmail)
-				? raw.contactEmail
-				: fallbackCvContent.contactEmail,
-			experienceItems: safeExperienceItems(raw.experienceItems, fallbackCvContent.experienceItems),
-			techSkills: safeTechSkills(raw.techSkills, fallbackCvContent.techSkills),
-			education: safeEducation(raw.education, fallbackCvContent.education)
-		};
+		const rawCvPage = await withTimeout(client.fetch<Partial<CvPageContent> | null>(CV_PAGE_QUERY));
+		if (rawCvPage) {
+			return toCvContent(rawCvPage);
+		}
+
+		return fallbackCvContent;
 	} catch (error) {
-		console.error('Failed to fetch CV page content from Sanity:', error);
+		console.error('Failed to fetch CV content from Sanity:', error);
 		return fallbackCvContent;
 	}
 };

@@ -78,6 +78,12 @@ export interface ExperienceItem {
 	focus: string;
 	duration: string;
 	achievements: string[];
+	company?: string;
+	employmentType?: string;
+	location?: string;
+	impactSummary?: string;
+	stack?: string[];
+	highlights?: string[];
 }
 
 export interface TechSkillCategory {
@@ -97,6 +103,9 @@ export interface EducationContent {
 	school: string;
 	degree: string;
 	details: string;
+	specialization?: string;
+	coursework?: string[];
+	awards?: string[];
 }
 
 export interface CvPageContent {

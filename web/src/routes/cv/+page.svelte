@@ -43,12 +43,35 @@
 </section>
 
 <section class="page-shell max-w-5xl pb-20 pt-2">
-	<div class="ui-panel p-5 sm:p-6 lg:max-w-2xl">
+	<div class="ui-panel p-5 sm:p-6 lg:max-w-3xl">
 		<h2 class="ui-heading-3">Education</h2>
 		<div class="mt-4 space-y-2 text-sm [color:var(--ui-text-muted)]">
 			<p><strong class="[color:var(--ui-text)]">{cvContent.education.school}</strong></p>
 			<p>{cvContent.education.degree}</p>
 			<p>{cvContent.education.details}</p>
+			{#if cvContent.education.specialization}
+				<p>Specialization: {cvContent.education.specialization}</p>
+			{/if}
 		</div>
+		{#if cvContent.education.coursework && cvContent.education.coursework.length > 0}
+			<div class="mt-4">
+				<p class="ui-body-sm [color:var(--ui-text)]">Relevant coursework</p>
+				<ul class="mt-2 list-disc space-y-1 pl-5 text-sm [color:var(--ui-text-muted)]">
+					{#each cvContent.education.coursework as course}
+						<li>{course}</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+		{#if cvContent.education.awards && cvContent.education.awards.length > 0}
+			<div class="mt-4">
+				<p class="ui-body-sm [color:var(--ui-text)]">Notable achievements</p>
+				<ul class="mt-2 list-disc space-y-1 pl-5 text-sm [color:var(--ui-text-muted)]">
+					{#each cvContent.education.awards as award}
+						<li>{award}</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
 	</div>
 </section>
