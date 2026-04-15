@@ -1,14 +1,6 @@
 import { client } from '$lib/sanity';
+import { getBlogPosts } from '$lib/content/sanity-content';
 import type { PageServerLoad } from './$types';
-
-const postsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3] {
-	title,
-	slug,
-	mainImage,
-	categories,
-	publishedAt,
-	body
-}`;
 
 const settingsQuery = `*[_type == "settings"][0] {
 	socials
@@ -29,7 +21,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
 	try {
 		const [posts, settings] = await Promise.all([
-			withTimeout(client.fetch(postsQuery), 2500),
+			getBlogPosts(3),
 			withTimeout(client.fetch(settingsQuery), 2500)
 		]);
 
@@ -46,3 +38,4 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		};
 	}
 };
+

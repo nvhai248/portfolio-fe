@@ -19,6 +19,7 @@
 		--ui-primary-strong: #084f92;
 		--ui-primary-soft: rgb(17 115 212 / 0.1);
 		--ui-primary-softer: rgb(17 115 212 / 0.06);
+		--ui-grid-line: rgb(15 23 42 / 0.04);
 	}
 
 	html.dark {
@@ -32,6 +33,7 @@
 		--ui-text-subtle: #94a3b8;
 		--ui-border: #334155;
 		--ui-border-subtle: #1e293b;
+		--ui-grid-line: rgb(255 255 255 / 0.03);
 	}
 
 	* {
@@ -47,6 +49,9 @@
 		font-family: 'Inter', sans-serif;
 		scroll-behavior: smooth;
 		background-color: var(--ui-bg);
+		background-image: linear-gradient(var(--ui-grid-line) 1px, transparent 1px),
+			linear-gradient(90deg, var(--ui-grid-line) 1px, transparent 1px);
+		background-size: 40px 40px;
 		color: var(--ui-text);
 		@apply antialiased;
 	}
@@ -228,5 +233,151 @@
 	.ui-icon-btn:hover {
 		background-color: var(--ui-bg-muted);
 		color: var(--ui-text);
+	}
+
+	.ui-body-sm {
+		@apply text-xs leading-6 sm:text-sm;
+		color: var(--ui-text-muted);
+	}
+
+	.ui-skeleton {
+		position: relative;
+		overflow: hidden;
+		background-color: var(--ui-bg-muted);
+	}
+
+	.ui-skeleton::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		transform: translateX(-100%);
+		background: linear-gradient(
+			90deg,
+			rgb(255 255 255 / 0),
+			rgb(255 255 255 / 0.45),
+			rgb(255 255 255 / 0)
+		);
+		animation: ui-skeleton-shimmer 1.3s ease-in-out infinite;
+	}
+}
+
+@keyframes ui-skeleton-shimmer {
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ui-skeleton::after {
+		animation: none;
+	}
+}
+
+/* ────────────────────────────────────────────────────────
+   Print styles — CV page optimization (Phase 5)
+   ──────────────────────────────────────────────────────── */
+@media print {
+	/* Force light theme regardless of dark mode */
+	:root,
+	html.dark {
+		--ui-bg: #ffffff;
+		--ui-bg-muted: #f8f9fa;
+		--ui-surface: #ffffff;
+		--ui-surface-soft: #f8f9fa;
+		--ui-text: #000000;
+		--ui-text-muted: #1a1a1a;
+		--ui-text-subtle: #4a4a4a;
+		--ui-border: #d4d4d4;
+		--ui-border-subtle: #e5e5e5;
+		--ui-primary: #000000;
+		--ui-primary-strong: #000000;
+	}
+
+	body {
+		background: white !important;
+		color: black !important;
+		font-size: 11pt;
+		line-height: 1.4;
+	}
+
+	/* Hide non-content UI elements */
+	header,
+	footer,
+	nav,
+	.print\:hidden,
+	[data-print-hidden],
+	.skip-to-content,
+	.ui-btn,
+	.ui-icon-btn,
+	.ui-tag {
+		display: none !important;
+	}
+
+	/* Remove decorative styles */
+	.ui-panel,
+	.ui-panel-soft {
+		border: 1px solid #d4d4d4 !important;
+		background: white !important;
+		box-shadow: none !important;
+		border-radius: 4px !important;
+	}
+
+	/* Ensure content fills the page */
+	.page-shell {
+		max-width: 100% !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+
+	.layout-container {
+		min-height: auto !important;
+	}
+
+	main {
+		padding: 0 !important;
+	}
+
+	/* Typography for print */
+	.ui-heading-hero,
+	.ui-heading-1 {
+		font-size: 20pt !important;
+	}
+
+	.ui-heading-2 {
+		font-size: 14pt !important;
+	}
+
+	.ui-heading-3 {
+		font-size: 12pt !important;
+	}
+
+	/* Page break control */
+	section {
+		break-inside: avoid;
+	}
+
+	.ui-panel {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+
+	/* Links — show URL for reference */
+	a[href^="http"]::after {
+		content: " (" attr(href) ")";
+		font-size: 9pt;
+		color: #666;
+		word-break: break-all;
+	}
+
+	a.ui-link::after,
+	a.ui-btn::after {
+		content: none;
+	}
+
+	/* Remove hover transforms */
+	* {
+		transform: none !important;
+		transition: none !important;
+		animation: none !important;
 	}
 }

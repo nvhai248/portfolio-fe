@@ -1,6 +1,6 @@
 import type {StructureResolver} from 'sanity/structure'
 
-const HIDDEN_FROM_ROOT = new Set(['author', 'cv', 'projectsPage', 'aboutPage', 'cvPage'])
+const HIDDEN_FROM_ROOT = new Set(['author', 'cv', 'projectsPage', 'aboutPage', 'cvPage', 'contactSubmission', 'settings'])
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -24,9 +24,20 @@ export const structure: StructureResolver = (S) =>
               S.divider(),
               S.documentTypeListItem('project').title('Project items'),
               S.documentTypeListItem('post').title('Blog posts'),
-              S.documentTypeListItem('settings').title('Site settings')
             ])
         ),
+      S.divider(),
+      S.listItem()
+        .title('Site settings')
+        .child(S.document().schemaType('settings').documentId('settings-singleton')),
+      S.listItem()
+        .title('Contact submissions')
+        .child(
+          S.documentTypeList('contactSubmission')
+            .title('Contact submissions')
+            .defaultOrdering([{field: 'submittedAt', direction: 'desc'}])
+        ),
+      S.divider(),
       S.listItem()
         .title('Legacy / archived')
         .child(

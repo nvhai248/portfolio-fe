@@ -4,9 +4,24 @@ export default {
     type: 'document',
     fields: [
         {
+            name: 'language',
+            title: 'Language',
+            type: 'string',
+            initialValue: 'en',
+            options: {
+                list: [
+                    {title: 'English', value: 'en'},
+                    {title: 'Vietnamese', value: 'vi'}
+                ],
+                layout: 'radio'
+            },
+            validation: (Rule: any) => Rule.required()
+        },
+        {
             name: 'title',
             title: 'Title',
             type: 'string',
+            validation: (Rule: any) => Rule.required().min(3),
         },
         {
             name: 'slug',
@@ -16,6 +31,7 @@ export default {
                 source: 'title',
                 maxLength: 96,
             },
+            validation: (Rule: any) => Rule.required(),
         },
         {
             name: 'author',
@@ -32,10 +48,24 @@ export default {
             },
         },
         {
+            name: 'excerpt',
+            title: 'Excerpt',
+            description: 'Short summary for SEO meta descriptions and post listing cards.',
+            type: 'text',
+            rows: 3,
+            validation: (Rule: any) => Rule.max(300),
+        },
+        {
             name: 'categories',
             title: 'Categories',
             type: 'array',
             of: [{ type: 'string' }],
+        },
+        {
+            name: 'readTime',
+            title: 'Read time',
+            description: 'Estimated reading time (e.g. "8 min read").',
+            type: 'string',
         },
         {
             name: 'publishedAt',
@@ -47,13 +77,35 @@ export default {
             title: 'Body',
             type: 'array',
             of: [
-                { type: 'block' },
+                {
+                    type: 'block',
+                    styles: [
+                        {title: 'Normal', value: 'normal'},
+                        {title: 'H2', value: 'h2'},
+                        {title: 'H3', value: 'h3'},
+                        {title: 'H4', value: 'h4'},
+                        {title: 'Quote', value: 'blockquote'},
+                    ],
+                },
                 {
                     type: 'image',
                     options: { hotspot: true }
                 },
-                // We can add code blocks here later
+                {
+                    type: 'code',
+                    title: 'Code Block',
+                    options: {
+                        withFilename: true,
+                    },
+                },
             ],
         },
     ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'publishedAt',
+            media: 'mainImage',
+        },
+    },
 }

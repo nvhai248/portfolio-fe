@@ -3,24 +3,65 @@
 	import '../app.css';
 	import Header from '$lib/components/layout/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
+	import RouteLoadingBar from '$lib/components/ui/RouteLoadingBar.svelte';
 	import { onMount } from 'svelte';
-	import { page } from '$app/state';
+	import { navigating, page } from '$app/state';
 	import { theme } from '$lib/stores/theme.svelte';
 	import { getPersonSchema, getWebsiteSchema } from '$lib/seo/schema';
 	import { getDictionary } from '$lib/i18n/dictionary';
 	import { localeFromPathname } from '$lib/i18n/locale';
 
 	let { children } = $props();
+	let showNavigationFeedback = $state(false);
+
+	let revealTimer: ReturnType<typeof setTimeout> | undefined;
+	let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
 	onMount(() => {
 		theme.init();
+
+		return () => {
+			if (revealTimer) clearTimeout(revealTimer);
+			if (hideTimer) clearTimeout(hideTimer);
+		};
 	});
 
+	const isNavigating = $derived(Boolean(navigating.to));
 	const locale = $derived(localeFromPathname(page.url.pathname));
 	const t = $derived(getDictionary(locale));
 	const personSchema = $derived(getPersonSchema(page.url.origin, locale));
 	const websiteSchema = $derived(getWebsiteSchema(page.url.origin, locale));
 	const stringifySchema = (payload: Record<string, unknown>): string => JSON.stringify(payload).replace(/</g, '\\u003c');
+
+	$effect(() => {
+		if (isNavigating) {
+			if (hideTimer) {
+				clearTimeout(hideTimer);
+				hideTimer = undefined;
+			}
+
+			if (!showNavigationFeedback && !revealTimer) {
+				revealTimer = setTimeout(() => {
+					showNavigationFeedback = true;
+					revealTimer = undefined;
+				}, 120);
+			}
+
+			return;
+		}
+
+		if (revealTimer) {
+			clearTimeout(revealTimer);
+			revealTimer = undefined;
+		}
+
+		if (showNavigationFeedback && !hideTimer) {
+			hideTimer = setTimeout(() => {
+				showNavigationFeedback = false;
+				hideTimer = undefined;
+			}, 180);
+		}
+	});
 </script>
 
 <svelte:head>
@@ -48,10 +89,19 @@
 	{t.skipToContent}
 </a>
 
+<RouteLoadingBar active={showNavigationFeedback} />
+
 <div class="layout-container flex min-h-screen grow flex-col">
 	<Header />
-	<main id="main-content" class="flex-1" data-testid="main-content">
-		{@render children()}
-	</main>
+	<div class="relative flex-1">
+		<main
+			id="main-content"
+			class="flex-1 transition-opacity duration-200 {showNavigationFeedback ? 'opacity-50 pointer-events-none blur-[1px]' : ''}"
+			data-testid="main-content"
+			aria-busy={showNavigationFeedback ? 'true' : undefined}
+		>
+			{@render children()}
+		</main>
+	</div>
 	<Footer />
 </div>

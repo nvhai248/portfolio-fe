@@ -7,6 +7,7 @@ import settings from './settings'
 import aboutPage from './aboutPage'
 import projectsPage from './projectsPage'
 import cvPage from './cvPage'
+import contactSubmission from './contactSubmission'
 
 export const schemaTypes = [
   post,
@@ -17,4 +18,5 @@ export const schemaTypes = [
   aboutPage,
   projectsPage,
   cvPage,
+  contactSubmission,
 ]

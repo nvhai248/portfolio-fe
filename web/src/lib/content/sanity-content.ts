@@ -1,4 +1,4 @@
-import { client } from '$lib/sanity';
+import { serverSanityClient as client } from '$lib/server/sanity.server';
 import { fallbackLocale, type Locale } from '$lib/i18n/config';
 import { aboutContent as fallbackAboutContent } from '$lib/content/about';
 import { cvIntro, education, experienceItems, techSkillsContent } from '$lib/content/cv';
@@ -13,6 +13,7 @@ import type {
 	CvPageContent,
 	EducationContent,
 	ExperienceItem,
+	PostContent,
 	ProjectContent,
 	ProjectsContent,
 	SectionIntroContent,
@@ -590,5 +591,104 @@ export const getCvContent = async (locale: Locale = fallbackLocale): Promise<CvP
 	} catch (error) {
 		console.error('Failed to fetch CV content from Sanity:', error);
 		return fallbackCvContent;
+	}
+};
+
+// ────────────────────────────────────────────────────────
+// Blog queries
+// ────────────────────────────────────────────────────────
+
+const BLOG_POST_PROJECTION = `{
+	_id,
+	title,
+	"slug": slug.current,
+	excerpt,
+	mainImage,
+	categories,
+	readTime,
+	publishedAt,
+	body,
+	author->{name, image}
+}`;
+
+const BLOG_POSTS_QUERY = `*[
+	_type == "post" &&
+	defined(slug.current) &&
+	!(_id in path("drafts.**")) &&
+	(!defined(language) || language == $locale)
+] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]${BLOG_POST_PROJECTION}`;
+
+const BLOG_POSTS_FALLBACK_QUERY = `*[
+	_type == "post" &&
+	defined(slug.current) &&
+	!(_id in path("drafts.**"))
+] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]${BLOG_POST_PROJECTION}`;
+
+const BLOG_POST_BY_SLUG_QUERY = `*[
+	_type == "post" &&
+	slug.current == $slug &&
+	!(_id in path("drafts.**")) &&
+	(!defined(language) || language == $locale)
+][0]${BLOG_POST_PROJECTION}`;
+
+const BLOG_POST_BY_SLUG_FALLBACK_QUERY = `*[
+	_type == "post" &&
+	slug.current == $slug &&
+	!(_id in path("drafts.**"))
+][0]${BLOG_POST_PROJECTION}`;
+
+const BLOG_POST_LIMIT_DEFAULT = 100;
+const BLOG_POST_LIMIT_MAX = 100;
+
+const toLimit = (value?: number): number => {
+	if (typeof value !== 'number' || Number.isNaN(value)) {
+		return BLOG_POST_LIMIT_DEFAULT;
+	}
+
+	return Math.min(Math.max(Math.floor(value), 1), BLOG_POST_LIMIT_MAX);
+};
+
+export const getBlogPosts = async (
+	limit?: number,
+	locale: Locale = fallbackLocale
+): Promise<PostContent[]> => {
+	try {
+		const safeLimit = toLimit(limit);
+		const posts = await withTimeout(
+			client.fetch<PostContent[]>(BLOG_POSTS_QUERY, { locale, limit: safeLimit })
+		);
+		if (Array.isArray(posts) && posts.length > 0) {
+			return posts;
+		}
+
+		const fallbackPosts = await withTimeout(
+			client.fetch<PostContent[]>(BLOG_POSTS_FALLBACK_QUERY, { limit: safeLimit })
+		);
+		return Array.isArray(fallbackPosts) ? fallbackPosts : [];
+	} catch (error) {
+		console.error('Failed to fetch blog posts from Sanity:', error);
+		return [];
+	}
+};
+
+export const getBlogPostBySlug = async (
+	slug: string,
+	locale: Locale = fallbackLocale
+): Promise<PostContent | null> => {
+	try {
+		const post = await withTimeout(
+			client.fetch<PostContent | null>(BLOG_POST_BY_SLUG_QUERY, { slug, locale })
+		);
+		if (post) {
+			return post;
+		}
+
+		const fallbackPost = await withTimeout(
+			client.fetch<PostContent | null>(BLOG_POST_BY_SLUG_FALLBACK_QUERY, { slug })
+		);
+		return fallbackPost ?? null;
+	} catch (error) {
+		console.error(`Failed to fetch blog post "${slug}" from Sanity:`, error);
+		return null;
 	}
 };

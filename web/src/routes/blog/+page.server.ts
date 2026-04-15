@@ -1,23 +1,5 @@
-import { client } from '$lib/sanity';
+import { getBlogPosts } from '$lib/content/sanity-content';
 import type { PageServerLoad } from './$types';
-
-const postsQuery = `*[_type == "post"] | order(publishedAt desc){
-  _id,
-  title,
-  slug,
-  mainImage,
-  categories,
-  publishedAt,
-  body
-}`;
-
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs = 2500): Promise<T> => {
-	const timeoutPromise = new Promise<never>((_, reject) => {
-		setTimeout(() => reject(new Error(`Timed out after ${timeoutMs}ms`)), timeoutMs);
-	});
-
-	return Promise.race([promise, timeoutPromise]);
-};
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	setHeaders({
@@ -25,7 +7,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	});
 
 	try {
-		const posts = await withTimeout(client.fetch(postsQuery), 2500);
+		const posts = await getBlogPosts();
 
 		return {
 			posts
@@ -38,3 +20,4 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		};
 	}
 };
+

@@ -29,7 +29,9 @@
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
+		"@portabletext/svelte": "^3.0.1",
 		"@sanity/client": "^7.14.1",
-		"@sanity/image-url": "^2.0.3"
+		"@sanity/image-url": "^2.0.3",
+		"shiki": "^4.0.2"
 	}
 }

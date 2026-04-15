@@ -8,9 +8,14 @@
 	}
 
 	let { post }: Props = $props();
+
+	const postSlug = $derived(
+		typeof post.slug === 'string' ? post.slug : post.slug?.current
+	);
+	const postExcerpt = $derived(post.excerpt || getPostExcerpt(post));
 </script>
 
-<a href={post.slug?.current ? `${base}/blog/${post.slug.current}` : `${base}/blog`} class="ui-card-link">
+<a href={postSlug ? `${base}/blog/${postSlug}` : `${base}/blog`} class="ui-card-link">
 	{#if post.mainImage}
 		<img
 			src={urlFor(post.mainImage).width(900).height(520).url()}
@@ -28,7 +33,8 @@
 	<div class="flex flex-1 flex-col gap-3 p-5">
 		<p class="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Insight</p>
 		<h3 class="ui-card-title">{post.title}</h3>
-		<p class="line-clamp-3 ui-body">{getPostExcerpt(post)}</p>
+		<p class="line-clamp-3 ui-body">{postExcerpt}</p>
 		<p class="mt-auto text-xs [color:var(--ui-text-subtle)]">{formatPublishedDate(post.publishedAt)}</p>
 	</div>
 </a>
+

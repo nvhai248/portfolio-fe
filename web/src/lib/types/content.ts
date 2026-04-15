@@ -130,3 +130,23 @@ export interface SocialProfile {
 	platform: string;
 	url: string;
 }
+
+export interface PostContent {
+	_id: string;
+	title: string;
+	slug: string;
+	excerpt?: string;
+	mainImage?: {
+		asset: { _ref: string };
+		alt?: string;
+		hotspot?: { x: number; y: number };
+	};
+	categories?: string[];
+	readTime?: string;
+	publishedAt?: string;
+	body?: any[];
+	author?: {
+		name: string;
+		image?: any;
+	};
+}
