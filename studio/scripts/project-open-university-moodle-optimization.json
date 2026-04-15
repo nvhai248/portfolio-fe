@@ -1,0 +1,71 @@
+{
+  "_id": "project-open-university-moodle-optimization",
+  "_type": "project",
+  "title": "Open University Moodle Optimization",
+  "slug": {
+    "_type": "slug",
+    "current": "open-university-moodle-optimization"
+  },
+  "role": "Backend Engineer • Enterprise LMS modernization",
+  "domain": "Education Tech",
+  "overview": "The platform needed AI-assisted tutoring while keeping student data private and maintaining stable performance under semester-level traffic spikes.",
+  "problemStatement": "Open University needed to modernize Moodle with AI-assisted learning flows, but strict privacy requirements prohibited sending student conversations to external LLM providers. At the same time, peak semester traffic regularly exposed bottlenecks in API response times and query-heavy tutor interactions.",
+  "detailLists": [
+    {
+      "_key": "moodle-contrib",
+      "heading": "Key contributions",
+      "items": [
+        "Built Moodle plugin integrations with an API layer for local LLM orchestration.",
+        "Implemented Redis-backed cache strategy for repeated tutor and recommendation flows.",
+        "Introduced safer rollout patterns and monitoring for feature reliability."
+      ]
+    },
+    {
+      "_key": "moodle-impact",
+      "heading": "Impact",
+      "items": [
+        "Reduced database load by ~40% on heavy query paths.",
+        "Improved perceived response time for AI tutor interactions.",
+        "Enabled privacy-conscious deployment by running models on internal infrastructure."
+      ]
+    }
+  ],
+  "responsibilities": [
+    "Owned backend integration architecture between Moodle plugins and AI service endpoints.",
+    "Defined caching and invalidation strategy for high-frequency recommendation and tutor requests.",
+    "Partnered with QA and ops to design release gates, rollback plans, and observability baselines."
+  ],
+  "architectureHighlights": [
+    "Local LLM gateway pattern so Moodle could call internal model-serving endpoints without external data exposure.",
+    "Redis cache-aside approach on repeated recommendation queries with targeted TTL and invalidation rules.",
+    "Structured logging and endpoint-level latency instrumentation for release-time regression detection."
+  ],
+  "deliveryOutcomes": [
+    "API/database pressure was reduced on critical learner paths during traffic spikes.",
+    "AI tutor feature became production-usable for real coursework flows with stable latency.",
+    "Stakeholders approved broader AI experimentation due to improved privacy posture and operational control."
+  ],
+  "lessonsLearned": [
+    "AI features in education must be designed as reliability work, not only model integration work.",
+    "Performance gains compound when caching strategy is aligned with real user journey repeat patterns.",
+    "Adoption speed increases when architecture decisions are documented in risk/impact language for non-engineering stakeholders."
+  ],
+  "timeline": "2023 — 2024",
+  "teamContext": "Cross-functional delivery with backend engineers, Moodle specialists, QA, and platform operations.",
+  "links": [
+    {
+      "_key": "moodle-link-1",
+      "label": "Read architecture article",
+      "url": "/blog/optimizing-moodle-with-ollama-ai"
+    }
+  ],
+  "sortOrder": 1,
+  "techStack": [
+    "PHP 8.2",
+    "Moodle plugin architecture",
+    "Redis",
+    "Ollama",
+    "REST APIs",
+    "Azure DevOps"
+  ]
+}

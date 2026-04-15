@@ -25,15 +25,37 @@ const assertStringList = (value: string[], path: string) => {
 
 const validateProjectItem = (project: ProjectContent, path: string) => {
 	assertNonEmptyString(project.title, `${path}.title`);
+	assertNonEmptyString(project.slug, `${path}.slug`);
 	assertNonEmptyString(project.role, `${path}.role`);
 	assertNonEmptyString(project.domain, `${path}.domain`);
 	assertNonEmptyString(project.overview, `${path}.overview`);
+	assertNonEmptyString(project.problemStatement, `${path}.problemStatement`);
 	assertNonEmptyArray(project.detailLists, `${path}.detailLists`);
 	project.detailLists.forEach((detail, index) => {
 		assertNonEmptyString(detail.heading, `${path}.detailLists[${index}].heading`);
 		assertStringList(detail.items, `${path}.detailLists[${index}].items`);
 	});
 	assertStringList(project.techStack, `${path}.techStack`);
+	assertStringList(project.responsibilities, `${path}.responsibilities`);
+	assertStringList(project.architectureHighlights, `${path}.architectureHighlights`);
+	assertStringList(project.deliveryOutcomes, `${path}.deliveryOutcomes`);
+	assertStringList(project.lessonsLearned, `${path}.lessonsLearned`);
+
+	if (project.timeline) {
+		assertNonEmptyString(project.timeline, `${path}.timeline`);
+	}
+
+	if (project.teamContext) {
+		assertNonEmptyString(project.teamContext, `${path}.teamContext`);
+	}
+
+	if (project.links) {
+		assertNonEmptyArray(project.links, `${path}.links`);
+		project.links.forEach((link, index) => {
+			assertNonEmptyString(link.label, `${path}.links[${index}].label`);
+			assertNonEmptyString(link.url, `${path}.links[${index}].url`);
+		});
+	}
 };
 
 const validateSkillCategory = (category: TechSkillCategory, path: string) => {

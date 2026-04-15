@@ -75,7 +75,32 @@ export const getProjectsSchema = ({ origin, pathname, projects }: ProjectsSchema
 		'@type': 'CreativeWork',
 		name: project.title,
 		description: project.overview,
+		url: toAbsoluteUrl(`/projects/${project.slug}`, origin),
 		about: project.domain,
 		keywords: project.techStack.join(', ')
 	}))
+});
+
+interface ProjectDetailSchemaInput {
+	origin?: string;
+	pathname: string;
+	project: ProjectContent;
+}
+
+export const getProjectDetailSchema = ({
+	origin,
+	pathname,
+	project
+}: ProjectDetailSchemaInput) => ({
+	'@context': 'https://schema.org',
+	'@type': 'CreativeWork',
+	name: project.title,
+	description: project.overview,
+	url: toAbsoluteUrl(pathname, origin),
+	about: project.domain,
+	keywords: project.techStack.join(', '),
+	author: {
+		'@type': 'Person',
+		name: authorProfile.name
+	}
 });

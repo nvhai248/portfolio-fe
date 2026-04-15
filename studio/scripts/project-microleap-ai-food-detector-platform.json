@@ -1,0 +1,64 @@
+{
+  "_id": "project-microleap-ai-food-detector-platform",
+  "_type": "project",
+  "title": "Microleap AI Food Detector Platform",
+  "slug": {
+    "_type": "slug",
+    "current": "microleap-ai-food-detector-platform"
+  },
+  "role": "Backend Developer • Real-time inference platform",
+  "domain": "AI Product",
+  "overview": "The product required near real-time food recognition with stable processing throughput and consistent releases across multiple environments.",
+  "problemStatement": "Microleap was scaling an AI food detection product where inference quality, processing throughput, and deployment consistency all had to improve in parallel. The platform was constrained by uneven environment setups and weak service contracts between ingestion, inference, and metadata pipelines.",
+  "detailLists": [
+    {
+      "_key": "microleap-contrib",
+      "heading": "Key contributions",
+      "items": [
+        "Developed event-driven Golang services for image processing and metadata workflows.",
+        "Integrated vector search using Qdrant to improve similarity matching quality.",
+        "Standardized containerized deployment with Kubernetes-first operational patterns."
+      ]
+    },
+    {
+      "_key": "microleap-impact",
+      "heading": "Impact",
+      "items": [
+        "Improved release confidence through repeatable CI/CD and environment parity.",
+        "Scaled processing capacity with clearer service isolation and queue-driven execution.",
+        "Reduced production incidents by tightening contracts between backend components."
+      ]
+    }
+  ],
+  "responsibilities": [
+    "Implemented backend services for asynchronous image processing and metadata enrichment.",
+    "Defined service boundaries and message contracts across ingestion, inference, and retrieval layers.",
+    "Contributed deployment hardening for multi-environment CI/CD workflows."
+  ],
+  "architectureHighlights": [
+    "Queue-first workload orchestration to smooth burst traffic and stabilize inference workers.",
+    "Vector search integration with Qdrant to support more accurate similarity lookup in detection flows.",
+    "Kubernetes deployment templates and health checks to reduce environment drift and release surprises."
+  ],
+  "deliveryOutcomes": [
+    "Inference throughput improved with clearer asynchronous execution boundaries.",
+    "Production deploys became more predictable across staging and live clusters.",
+    "Team velocity improved due to cleaner component ownership and fewer integration regressions."
+  ],
+  "lessonsLearned": [
+    "AI product speed depends as much on delivery architecture as on model quality.",
+    "Environment parity eliminates a large class of avoidable release incidents.",
+    "Event contracts should be treated as product interfaces with strict ownership and versioning discipline."
+  ],
+  "timeline": "2021 — 2023",
+  "teamContext": "Backend-focused collaboration with ML engineers, DevOps, and product stakeholders shipping rapid iterations.",
+  "sortOrder": 2,
+  "techStack": [
+    "Golang",
+    "Azure Functions",
+    "Qdrant",
+    "Docker",
+    "Kubernetes",
+    "PostgreSQL"
+  ]
+}

@@ -12,6 +12,7 @@ import type {
 	CvPageContent,
 	EducationContent,
 	ExperienceItem,
+	ProjectContent,
 	ProjectsContent,
 	SectionIntroContent,
 	TechSkillsContent
@@ -27,8 +28,45 @@ const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
 const PROJECTS_PAGE_QUERY = `*[_type == "projectsPage"][0]{
 	seo,
 	intro,
-	labels,
-	items
+	labels
+}`;
+
+const PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))] | order(sortOrder asc, _createdAt asc){
+	title,
+	"slug": slug.current,
+	role,
+	domain,
+	overview,
+	detailLists[]{heading, items},
+	techStack,
+	problemStatement,
+	responsibilities,
+	architectureHighlights,
+	deliveryOutcomes,
+	lessonsLearned,
+	timeline,
+	teamContext,
+	links[]{label, url},
+	sortOrder
+}`;
+
+const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && !(_id in path("drafts.**"))][0]{
+	title,
+	"slug": slug.current,
+	role,
+	domain,
+	overview,
+	detailLists[]{heading, items},
+	techStack,
+	problemStatement,
+	responsibilities,
+	architectureHighlights,
+	deliveryOutcomes,
+	lessonsLearned,
+	timeline,
+	teamContext,
+	links[]{label, url},
+	sortOrder
 }`;
 
 const CV_PAGE_QUERY = `*[_type == "cvPage"][0]{
@@ -86,6 +124,118 @@ const safeIntro = (
 	};
 };
 
+const safeStringArray = (value: unknown): string[] =>
+	Array.isArray(value)
+		? value.filter((item): item is string => isNonEmptyString(item)).map((item) => item.trim())
+		: [];
+
+const safeDetailLists = (
+	value: unknown
+): Array<{
+	heading: string;
+	items: string[];
+}> => {
+	if (!Array.isArray(value)) {
+		return [];
+	}
+
+	return value
+		.map((detail) => {
+			if (typeof detail !== 'object' || !detail) {
+				return null;
+			}
+
+			const heading = isNonEmptyString((detail as { heading?: unknown }).heading)
+				? (detail as { heading: string }).heading.trim()
+				: '';
+			const items = safeStringArray((detail as { items?: unknown }).items);
+
+			if (!heading || items.length === 0) {
+				return null;
+			}
+
+			return { heading, items };
+		})
+		.filter((item): item is { heading: string; items: string[] } => item !== null);
+};
+
+const sanitizeProject = (value: unknown): ProjectContent | null => {
+	if (typeof value !== 'object' || !value) {
+		return null;
+	}
+
+	const project = value as Partial<ProjectContent> & {
+		teamContext?: unknown;
+	};
+
+	if (
+		!isNonEmptyString(project.title) ||
+		!isNonEmptyString(project.slug) ||
+		!isNonEmptyString(project.role) ||
+		!isNonEmptyString(project.domain) ||
+		!isNonEmptyString(project.overview) ||
+		!isNonEmptyString(project.problemStatement)
+	) {
+		return null;
+	}
+
+	const detailLists = safeDetailLists(project.detailLists);
+	const techStack = safeStringArray(project.techStack);
+	const responsibilities = safeStringArray(project.responsibilities);
+	const architectureHighlights = safeStringArray(project.architectureHighlights);
+	const deliveryOutcomes = safeStringArray(project.deliveryOutcomes);
+	const lessonsLearned = safeStringArray(project.lessonsLearned);
+
+	if (
+		detailLists.length === 0 ||
+		techStack.length === 0 ||
+		responsibilities.length === 0 ||
+		architectureHighlights.length === 0 ||
+		deliveryOutcomes.length === 0 ||
+		lessonsLearned.length === 0
+	) {
+		return null;
+	}
+
+	const links = Array.isArray(project.links)
+		? project.links
+				.map((link) => {
+					if (typeof link !== 'object' || !link) {
+						return null;
+					}
+
+					const label = isNonEmptyString((link as { label?: unknown }).label)
+						? (link as { label: string }).label.trim()
+						: '';
+					const url = isNonEmptyString((link as { url?: unknown }).url)
+						? (link as { url: string }).url.trim()
+						: '';
+
+					return label && url ? { label, url } : null;
+				})
+				.filter((item): item is { label: string; url: string } => item !== null)
+		: [];
+
+	return {
+		title: project.title.trim(),
+		slug: project.slug.trim(),
+		role: project.role.trim(),
+		domain: project.domain.trim(),
+		overview: project.overview.trim(),
+		problemStatement: project.problemStatement.trim(),
+		detailLists,
+		techStack,
+		responsibilities,
+		architectureHighlights,
+		deliveryOutcomes,
+		lessonsLearned,
+		timeline: isNonEmptyString(project.timeline) ? project.timeline.trim() : undefined,
+		teamContext: isNonEmptyString(project.teamContext) ? project.teamContext.trim() : undefined,
+		links: links.length > 0 ? links : undefined,
+		sortOrder: typeof project.sortOrder === 'number' ? project.sortOrder : undefined
+	};
+};
+
 export const getAboutContent = async (): Promise<AboutContent> => {
 	try {
 		const raw = await withTimeout(client.fetch<Partial<AboutContent> | null>(ABOUT_PAGE_QUERY));
@@ -121,36 +271,69 @@ export const getAboutContent = async (): Promise<AboutContent> => {
 	}
 };
 
+const fetchProjectsFromSanity = async (): Promise<ProjectContent[]> => {
+	const rawProjects = await withTimeout(client.fetch<unknown[]>(PROJECTS_QUERY));
+	if (!Array.isArray(rawProjects)) {
+		return [];
+	}
+
+	return rawProjects
+		.map((project) => sanitizeProject(project))
+		.filter((project): project is ProjectContent => project !== null);
+};
+
 export const getProjectsContent = async (): Promise<ProjectsContent> => {
 	try {
-		const raw = await withTimeout(client.fetch<Partial<ProjectsContent> | null>(PROJECTS_PAGE_QUERY));
+		const [rawPage, projects] = await Promise.all([
+			withTimeout(client.fetch<Partial<ProjectsContent> | null>(PROJECTS_PAGE_QUERY)),
+			fetchProjectsFromSanity()
+		]);
 
-		if (!raw) {
+		if (!rawPage || projects.length === 0) {
 			return fallbackProjectsContent;
 		}
 
 		return defineProjectsContent({
 			seo: {
-				title: isNonEmptyString(raw.seo?.title)
-					? raw.seo.title
+				title: isNonEmptyString(rawPage.seo?.title)
+					? rawPage.seo.title
 					: fallbackProjectsContent.seo.title,
-				description: isNonEmptyString(raw.seo?.description)
-					? raw.seo.description
+				description: isNonEmptyString(rawPage.seo?.description)
+					? rawPage.seo.description
 					: fallbackProjectsContent.seo.description
 			},
-			intro: safeIntro(raw.intro, fallbackProjectsContent.intro, 'projects.intro'),
+			intro: safeIntro(rawPage.intro, fallbackProjectsContent.intro, 'projects.intro'),
 			labels:
-				isNonEmptyString(raw.labels?.overview) && isNonEmptyString(raw.labels?.techStack)
+				isNonEmptyString(rawPage.labels?.overview) && isNonEmptyString(rawPage.labels?.techStack)
 					? {
-						overview: raw.labels.overview,
-						techStack: raw.labels.techStack
+						overview: rawPage.labels.overview,
+						techStack: rawPage.labels.techStack
 					  }
 					: fallbackProjectsContent.labels,
-			items: Array.isArray(raw.items) && raw.items.length > 0 ? raw.items : fallbackProjectsContent.items
+			items: projects
 		});
 	} catch (error) {
-		console.error('Failed to fetch projects page content from Sanity:', error);
+		console.error('Failed to fetch projects content from Sanity:', error);
 		return fallbackProjectsContent;
+	}
+};
+
+export const getProjectBySlug = async (slug: string): Promise<ProjectContent | null> => {
+	try {
+		const raw = await withTimeout(
+			client.fetch<unknown | null>(PROJECT_BY_SLUG_QUERY, {
+				slug
+			})
+		);
+
+		if (!raw) {
+			return null;
+		}
+
+		return sanitizeProject(raw);
+	} catch (error) {
+		console.error(`Failed to fetch project by slug "${slug}" from Sanity:`, error);
+		return null;
 	}
 };
 

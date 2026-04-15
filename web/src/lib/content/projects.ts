@@ -21,10 +21,13 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 	items: [
 		{
 			title: 'Open University Moodle Optimization',
+			slug: 'open-university-moodle-optimization',
 			role: 'Backend Engineer • Enterprise LMS modernization',
 			domain: 'Education Tech',
 			overview:
 				'The platform needed AI-assisted tutoring while keeping student data private and maintaining stable performance under semester-level traffic spikes.',
+			problemStatement:
+				'Open University needed to modernize Moodle with AI-assisted learning flows, but strict privacy requirements prohibited sending student conversations to external LLM providers. At the same time, peak semester traffic regularly exposed bottlenecks in API response times and query-heavy tutor interactions.',
 			detailLists: [
 				{
 					heading: 'Key contributions',
@@ -43,6 +46,35 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 					]
 				}
 			],
+			responsibilities: [
+				'Owned backend integration architecture between Moodle plugins and AI service endpoints.',
+				'Defined caching and invalidation strategy for high-frequency recommendation and tutor requests.',
+				'Partnered with QA and ops to design release gates, rollback plans, and observability baselines.'
+			],
+			architectureHighlights: [
+				'Local LLM gateway pattern so Moodle could call internal model-serving endpoints without external data exposure.',
+				'Redis cache-aside approach on repeated recommendation queries with targeted TTL and invalidation rules.',
+				'Structured logging and endpoint-level latency instrumentation for release-time regression detection.'
+			],
+			deliveryOutcomes: [
+				'API/database pressure was reduced on critical learner paths during traffic spikes.',
+				'AI tutor feature became production-usable for real coursework flows with stable latency.',
+				'Stakeholders approved broader AI experimentation due to improved privacy posture and operational control.'
+			],
+			lessonsLearned: [
+				'AI features in education must be designed as reliability work, not only model integration work.',
+				'Performance gains compound when caching strategy is aligned with real user journey repeat patterns.',
+				'Adoption speed increases when architecture decisions are documented in risk/impact language for non-engineering stakeholders.'
+			],
+			timeline: '2023 — 2024',
+			teamContext: 'Cross-functional delivery with backend engineers, Moodle specialists, QA, and platform operations.',
+			links: [
+				{
+					label: 'Read architecture article',
+					url: '/blog/optimizing-moodle-with-ollama-ai'
+				}
+			],
+			sortOrder: 1,
 			techStack: [
 				'PHP 8.2',
 				'Moodle plugin architecture',
@@ -54,10 +86,13 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 		},
 		{
 			title: 'Microleap AI Food Detector Platform',
+			slug: 'microleap-ai-food-detector-platform',
 			role: 'Backend Developer • Real-time inference platform',
 			domain: 'AI Product',
 			overview:
 				'The product required near real-time food recognition with stable processing throughput and consistent releases across multiple environments.',
+			problemStatement:
+				'Microleap was scaling an AI food detection product where inference quality, processing throughput, and deployment consistency all had to improve in parallel. The platform was constrained by uneven environment setups and weak service contracts between ingestion, inference, and metadata pipelines.',
 			detailLists: [
 				{
 					heading: 'Key contributions',
@@ -76,6 +111,30 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 					]
 				}
 			],
+			responsibilities: [
+				'Implemented backend services for asynchronous image processing and metadata enrichment.',
+				'Defined service boundaries and message contracts across ingestion, inference, and retrieval layers.',
+				'Contributed deployment hardening for multi-environment CI/CD workflows.'
+			],
+			architectureHighlights: [
+				'Queue-first workload orchestration to smooth burst traffic and stabilize inference workers.',
+				'Vector search integration with Qdrant to support more accurate similarity lookup in detection flows.',
+				'Kubernetes deployment templates and health checks to reduce environment drift and release surprises.'
+			],
+			deliveryOutcomes: [
+				'Inference throughput improved with clearer asynchronous execution boundaries.',
+				'Production deploys became more predictable across staging and live clusters.',
+				'Team velocity improved due to cleaner component ownership and fewer integration regressions.'
+			],
+			lessonsLearned: [
+				'AI product speed depends as much on delivery architecture as on model quality.',
+				'Environment parity eliminates a large class of avoidable release incidents.',
+				'Event contracts should be treated as product interfaces with strict ownership and versioning discipline.'
+			],
+			timeline: '2021 — 2023',
+			teamContext:
+				'Backend-focused collaboration with ML engineers, DevOps, and product stakeholders shipping rapid iterations.',
+			sortOrder: 2,
 			techStack: [
 				'Golang',
 				'Azure Functions',
@@ -87,10 +146,13 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 		},
 		{
 			title: 'LMS API Reliability & Performance Program',
+			slug: 'lms-api-reliability-performance-program',
 			role: 'Software Engineer • Platform hardening initiative',
 			domain: 'Platform Engineering',
 			overview:
 				'Growing LMS adoption created API bottlenecks and operational friction during peak usage periods, requiring a structured reliability push.',
+			problemStatement:
+				'As LMS usage scaled, platform teams faced recurring latency spikes, fragile deployments, and incident-heavy release cycles. The challenge was to improve service responsiveness and operational confidence without halting feature delivery commitments.',
 			detailLists: [
 				{
 					heading: 'Key contributions',
@@ -109,6 +171,29 @@ export const projectsContent: ProjectsContent = defineProjectsContent({
 					]
 				}
 			],
+			responsibilities: [
+				'Led profiling and optimization of latency-critical endpoints serving core LMS workloads.',
+				'Defined release-readiness checks around performance regression thresholds.',
+				'Collaborated with incident responders to convert recurring outages into preventive engineering tasks.'
+			],
+			architectureHighlights: [
+				'Query-plan optimization and endpoint-level caching on high-volume API paths.',
+				'Observability-first release process with latency/error SLO dashboards as deployment gates.',
+				'Operational runbooks mapped to common failure modes to speed response and reduce repeat incidents.'
+			],
+			deliveryOutcomes: [
+				'Improved user-facing API performance during high-concurrency learning periods.',
+				'Decrease in post-release incidents and improved rollback confidence.',
+				'Engineering planning became more predictable through measurable performance baselines.'
+			],
+			lessonsLearned: [
+				'Reliability programs succeed when tied to explicit release governance, not ad-hoc fixes.',
+				'Latency work needs shared metrics language across engineering, QA, and product.',
+				'Small iterative hardening loops outperform large one-off optimization efforts.'
+			],
+			timeline: '2022 — 2024',
+			teamContext: 'Platform engineering initiative across backend, QA, and site reliability stakeholders.',
+			sortOrder: 3,
 			techStack: [
 				'PHP',
 				'PostgreSQL',

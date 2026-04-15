@@ -39,13 +39,28 @@ export interface ProjectDetailList {
 	items: string[];
 }
 
+export interface ProjectLink {
+	label: string;
+	url: string;
+}
+
 export interface ProjectContent {
 	title: string;
+	slug: string;
 	role: string;
 	domain: string;
 	overview: string;
 	detailLists: ProjectDetailList[];
 	techStack: string[];
+	problemStatement: string;
+	responsibilities: string[];
+	architectureHighlights: string[];
+	deliveryOutcomes: string[];
+	lessonsLearned: string[];
+	timeline?: string;
+	teamContext?: string;
+	links?: ProjectLink[];
+	sortOrder?: number;
 }
 
 export interface ProjectsContent {

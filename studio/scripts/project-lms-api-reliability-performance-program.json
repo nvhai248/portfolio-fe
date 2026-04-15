@@ -1,0 +1,63 @@
+{
+  "_id": "project-lms-api-reliability-performance-program",
+  "_type": "project",
+  "title": "LMS API Reliability & Performance Program",
+  "slug": {
+    "_type": "slug",
+    "current": "lms-api-reliability-performance-program"
+  },
+  "role": "Software Engineer • Platform hardening initiative",
+  "domain": "Platform Engineering",
+  "overview": "Growing LMS adoption created API bottlenecks and operational friction during peak usage periods, requiring a structured reliability push.",
+  "problemStatement": "As LMS usage scaled, platform teams faced recurring latency spikes, fragile deployments, and incident-heavy release cycles. The challenge was to improve service responsiveness and operational confidence without halting feature delivery commitments.",
+  "detailLists": [
+    {
+      "_key": "reliability-contrib",
+      "heading": "Key contributions",
+      "items": [
+        "Refactored high-traffic endpoints and optimized SQL/query plans for critical paths.",
+        "Introduced performance baselines and observability dashboards for release gates.",
+        "Codified incident learnings into repeatable runbooks and delivery checklists."
+      ]
+    },
+    {
+      "_key": "reliability-impact",
+      "heading": "Impact",
+      "items": [
+        "Improved key API response times by approximately 40%.",
+        "Raised deployment stability with clearer quality gates and rollback readiness.",
+        "Reduced firefighting by increasing visibility into latency and failure trends."
+      ]
+    }
+  ],
+  "responsibilities": [
+    "Led profiling and optimization of latency-critical endpoints serving core LMS workloads.",
+    "Defined release-readiness checks around performance regression thresholds.",
+    "Collaborated with incident responders to convert recurring outages into preventive engineering tasks."
+  ],
+  "architectureHighlights": [
+    "Query-plan optimization and endpoint-level caching on high-volume API paths.",
+    "Observability-first release process with latency/error SLO dashboards as deployment gates.",
+    "Operational runbooks mapped to common failure modes to speed response and reduce repeat incidents."
+  ],
+  "deliveryOutcomes": [
+    "Improved user-facing API performance during high-concurrency learning periods.",
+    "Decrease in post-release incidents and improved rollback confidence.",
+    "Engineering planning became more predictable through measurable performance baselines."
+  ],
+  "lessonsLearned": [
+    "Reliability programs succeed when tied to explicit release governance, not ad-hoc fixes.",
+    "Latency work needs shared metrics language across engineering, QA, and product.",
+    "Small iterative hardening loops outperform large one-off optimization efforts."
+  ],
+  "timeline": "2022 — 2024",
+  "teamContext": "Platform engineering initiative across backend, QA, and site reliability stakeholders.",
+  "sortOrder": 3,
+  "techStack": [
+    "PHP",
+    "PostgreSQL",
+    "Redis",
+    "API profiling tools",
+    "Azure monitoring stack"
+  ]
+}
