@@ -4,11 +4,13 @@
 	import Header from '$lib/components/layout/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import RouteLoadingBar from '$lib/components/ui/RouteLoadingBar.svelte';
+	import InteractiveGrid from '$lib/components/layout/InteractiveGrid.svelte';
 	import { onMount } from 'svelte';
 	import { navigating, page } from '$app/state';
 	import { theme } from '$lib/stores/theme.svelte';
 	import { getPersonSchema, getWebsiteSchema } from '$lib/seo/schema';
 	import { getDictionary } from '$lib/i18n/dictionary';
+	import { onNavigate } from '$app/navigation';
 	import { localeFromPathname } from '$lib/i18n/locale';
 
 	let { children } = $props();
@@ -62,6 +64,17 @@
 			}, 180);
 		}
 	});
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 </script>
 
 <svelte:head>
@@ -90,6 +103,7 @@
 </a>
 
 <RouteLoadingBar active={showNavigationFeedback} />
+<InteractiveGrid />
 
 <div class="layout-container flex min-h-screen grow flex-col">
 	<Header />

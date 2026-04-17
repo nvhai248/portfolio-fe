@@ -22,7 +22,15 @@
 			<h1 class="ui-heading-1 mt-3 break-words">{cvContent.intro.title}</h1>
 			<p class="ui-body-lg mt-3 max-w-2xl break-words">{cvContent.intro.description}</p>
 		</div>
-		<a href={`mailto:${cvContent.contactEmail}`} class="ui-btn ui-btn-primary print:hidden md:shrink-0">Request full CV (PDF)</a>
+		<a 
+			href="/NguyenVanHai-SE.pdf" 
+			target="_blank" 
+			rel="noopener noreferrer"
+			class="ui-btn ui-btn-primary group print:hidden md:shrink-0"
+		>
+			Open Full CV (PDF)
+			<span class="material-symbols-outlined ml-2 text-sm transition-transform group-hover:rotate-45">open_in_new</span>
+		</a>
 	</div>
 </section>
 

@@ -8,43 +8,70 @@
 	let { item }: Props = $props();
 </script>
 
-<article class="ui-panel p-5 sm:p-6">
-	<div class="flex flex-wrap items-start justify-between gap-3">
-		<div class="min-w-0">
-			<h3 class="ui-heading-3 break-words">{item.role}{item.company ? ` — ${item.company}` : ''}</h3>
-			<p class="ui-muted break-words">{item.focus}</p>
+<article class="glass-panel group relative overflow-hidden rounded-[2rem] p-6 shadow-2xl transition-all duration-500 hover:border-blue-500/20 md:p-8">
+	<div class="flex flex-wrap items-start justify-between gap-6">
+		<div class="min-w-0 space-y-2">
+			<div class="flex items-center gap-3">
+				<div class="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></div>
+				<h3 class="text-xl font-black tracking-tight text-white md:text-2xl">
+					{item.role}{item.company ? ` @ ${item.company}` : ''}
+				</h3>
+			</div>
+			
+			<p class="font-mono text-[0.7rem] font-bold uppercase tracking-widest text-slate-400">
+				{item.focus}
+			</p>
+			
 			{#if item.location || item.employmentType}
-				<p class="mt-1 text-xs [color:var(--ui-text-muted)] break-words">
+				<div class="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-slate-500">
+					<span class="material-symbols-outlined text-sm">location_on</span>
 					{[item.location, item.employmentType].filter(Boolean).join(' • ')}
-				</p>
+				</div>
 			{/if}
 		</div>
-		<span class="ui-chip max-w-full whitespace-normal break-words">{item.duration}</span>
+		
+		<div class="rounded-xl border border-blue-500/10 bg-blue-500/5 px-4 py-2 font-mono text-[0.7rem] font-bold tracking-tighter text-blue-400">
+			{item.duration}
+		</div>
 	</div>
 
 	{#if item.impactSummary}
-		<p class="mt-4 ui-body break-words">{item.impactSummary}</p>
+		<p class="mt-8 ui-body-lg border-l-2 border-blue-500/20 pl-6 italic text-slate-300">
+			"{item.impactSummary}"
+		</p>
 	{/if}
 
-	{#if item.stack && item.stack.length > 0}
-		<div class="mt-4 flex flex-wrap gap-2">
-			{#each item.stack as tech}
-				<span class="ui-chip">{tech}</span>
-			{/each}
+	<div class="mt-8 grid gap-8 lg:grid-cols-[1fr_auto]">
+		<div class="space-y-4">
+			<ul class="space-y-4">
+				{#each item.achievements as achievement}
+					<li class="flex items-start gap-4 text-sm leading-relaxed text-slate-400">
+						<span class="material-symbols-outlined mt-1 text-[10px] text-blue-500">terminal</span>
+						<span class="break-words">{achievement}</span>
+					</li>
+				{/each}
+			</ul>
+			
+			{#if item.highlights && item.highlights.length > 0}
+				<ul class="mt-4 space-y-3 border-t border-white/5 pt-4">
+					{#each item.highlights as highlight}
+						<li class="flex items-start gap-3 text-xs font-medium text-slate-500">
+							<span class="mt-1.5 h-1 w-1 rounded-full bg-slate-600"></span>
+							<span class="break-words">{highlight}</span>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
-	{/if}
 
-	{#if item.highlights && item.highlights.length > 0}
-		<ul class="mt-4 list-disc space-y-2 pl-5 ui-body">
-			{#each item.highlights as highlight}
-				<li class="break-words">{highlight}</li>
-			{/each}
-		</ul>
-	{/if}
-
-	<ul class="mt-4 list-disc space-y-2 pl-5 ui-body">
-		{#each item.achievements as achievement}
-			<li class="break-words">{achievement}</li>
-		{/each}
-	</ul>
+		{#if item.stack && item.stack.length > 0}
+			<div class="flex flex-wrap gap-2 lg:w-48 lg:flex-none">
+				{#each item.stack as tech}
+					<span class="rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[0.6rem] font-black uppercase tracking-widest text-slate-500 transition-colors hover:border-blue-500/20 hover:text-slate-300">
+						{tech}
+					</span>
+				{/each}
+			</div>
+		{/if}
+	</div>
 </article>

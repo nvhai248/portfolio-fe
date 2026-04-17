@@ -18,7 +18,7 @@
 			class="ui-btn-ghost border ui-divider text-xs"
 			aria-label={`${social.platform} profile (opens in a new tab)`}
 		>
-			<span class="material-symbols-outlined text-base">{getSocialIcon(social.platform)}</span>
+			<span class="material-symbols-outlined text-base" aria-hidden="true">{getSocialIcon(social.platform)}</span>
 			{social.platform}
 		</a>
 	{/each}

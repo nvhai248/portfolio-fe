@@ -16,7 +16,14 @@ const homeContent = {
 		] satisfies MetricItem[],
 		recentInsights: {
 			title: 'Bài viết gần đây',
-			description: 'Chia sẻ kỹ thuật về kiến trúc, vận hành nền tảng và triển khai AI.'
+			description: 'Chia sẻ kỹ thuật về kiến trúc, vận hành nền tảng và triển khai AI.',
+			fallbackTitle: 'Sắp có bài viết mới',
+			fallbackDescription: 'Chưa có bài viết nào được xuất bản. Các bài viết mới về kiến trúc backend và triển khai sản phẩm AI sẽ sớm được thêm vào.'
+		},
+		opportunityCTA: {
+			title: 'Sẵn sàng cho các dự án và cơ hội hợp tác mới.',
+			description: 'Nếu bạn đang cần giải quyết các bài toán về hiệu suất backend hay tích hợp AI vào quy trình hiện có, hãy kết nối ngay.',
+			buttonLabel: 'Gửi tin nhắn'
 		}
 	},
 	en: {
@@ -33,16 +40,18 @@ const homeContent = {
 		] satisfies MetricItem[],
 		recentInsights: {
 			title: 'Recent insights',
-			description: 'Technical writing on architecture, platform delivery, and AI implementation.'
+			description: 'Technical writing on architecture, platform delivery, and AI implementation.',
+			fallbackTitle: 'Insights coming soon',
+			fallbackDescription: 'No published posts yet. New articles about backend architecture and AI product delivery will be added soon.'
+		},
+		opportunityCTA: {
+			title: 'Open to new projects and professional collaborations.',
+			description: "Let's connect if you need to solve complex backend challenges or integrate AI components into your existing workflows.",
+			buttonLabel: "Let's Talk"
 		}
 	}
 } as const;
 
-export const getHomeContent = (locale: Locale): {
-	homeIntro: SectionIntroContent;
-	homeTagline: string;
-	homeHighlights: MetricItem[];
-	recentInsights: { title: string; description: string };
-} => homeContent[locale];
+export const getHomeContent = (locale: Locale) => homeContent[locale];
 
 export const { homeIntro, homeTagline, homeHighlights, recentInsights } = homeContent.en;

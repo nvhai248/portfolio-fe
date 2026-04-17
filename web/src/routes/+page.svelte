@@ -1,74 +1,86 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { base } from '$app/paths';
 	import { page } from '$app/state';
-	import { homeHighlights, homeIntro, homeTagline, recentInsights } from '$lib/content/home';
-	import MetricList from '$lib/components/ui/MetricList.svelte';
-	import SocialLinkList from '$lib/components/ui/SocialLinkList.svelte';
-	import RecentPostCard from '$lib/components/sections/RecentPostCard.svelte';
-	import CtaBlock from '$lib/components/ui/CtaBlock.svelte';
+	import { getHomeContent } from '$lib/content/home';
+	import { localeFromPathname } from '$lib/i18n/locale';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 
+	// Home Components
+	import Hero from '$lib/components/home/Hero.svelte';
+	import QuickProfile from '$lib/components/home/QuickProfile.svelte';
+	import RecentInsights from '$lib/components/home/RecentInsights.svelte';
+	import OpportunityCTA from '$lib/components/home/OpportunityCTA.svelte';
+
 	let { data }: { data: PageData } = $props();
+
+	const locale = $derived(localeFromPathname(page.url.pathname));
+	const homeContent = $derived(getHomeContent(locale));
+
+	// CMS Fallback Logic
+	const homeData = $derived(data.homePageData);
+	const heroTagline = $derived(homeData?.heroTagline || homeContent.homeTagline);
+	const heroIntro = $derived({
+		title: homeData?.heroTitle || homeContent.homeIntro.title,
+		description: homeData?.heroDescription || homeContent.homeIntro.description
+	});
+	const ctaPrimary = $derived(
+		homeData?.primaryCtaLabel || (locale === 'vi' ? 'Xem dự án' : 'View Projects')
+	);
+	const ctaSecondary = $derived(
+		homeData?.secondaryCtaLabel || (locale === 'vi' ? 'Xem CV' : 'Read CV')
+	);
+	const show3DHero = $derived(homeData?.show3DHero ?? true);
+
+	const opportunityTitle = $derived(homeData?.opportunityTitle || homeContent.opportunityCTA.title);
+	const opportunityDescription = $derived(
+		homeData?.opportunityDescription || homeContent.opportunityCTA.description
+	);
+	const opportunityButtonLabel = $derived(
+		homeData?.opportunityButtonLabel || homeContent.opportunityCTA.buttonLabel
+	);
 </script>
 
 <SeoHead
-	title="Nguyen Van Hai | Backend Engineer & System Architect"
-	description="Portfolio of Nguyen Van Hai — backend engineering, system architecture, and practical AI integration for scalable products."
+	title={heroIntro.title}
+	description={heroIntro.description}
 	pathname={page.url.pathname}
 	type="profile"
 />
 
-<section class="page-shell pb-16 pt-14 lg:pt-20">
-	<div class="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-end">
-		<div class="space-y-6">
-			<p class="ui-tag">
-				<span class="material-symbols-outlined text-sm">auto_awesome</span>
-				{homeTagline}
-			</p>
-			<h1 class="ui-heading-hero max-w-3xl">{homeIntro.title}</h1>
-			<p class="ui-body-lg max-w-2xl">{homeIntro.description}</p>
-			<div class="flex flex-wrap gap-3">
-				<a href={`${base}/projects`} class="ui-btn ui-btn-primary">View Projects</a>
-				<a href={`${base}/cv`} class="ui-btn ui-btn-secondary">Read CV</a>
-			</div>
-		</div>
-
-		<div class="ui-panel rounded-2xl p-6 shadow-sm">
-			<h2 class="text-sm font-semibold uppercase tracking-[0.16em] [color:var(--ui-text-subtle)]">Quick profile</h2>
-			<div class="mt-4">
-				<MetricList items={homeHighlights} />
-			</div>
-			{#if data.settings?.socials?.length}
-				<div class="mt-6">
-					<SocialLinkList items={data.settings.socials} />
-				</div>
-			{/if}
-		</div>
-	</div>
-</section>
-
-<section class="page-shell pb-16">
-	<div class="mb-8 flex items-end justify-between gap-4 border-t ui-divider pt-8">
-		<div>
-			<h2 class="ui-heading-2">{recentInsights.title}</h2>
-			<p class="ui-body mt-2">{recentInsights.description}</p>
-		</div>
-		<a href={`${base}/blog`} class="ui-link text-sm">See all posts</a>
-	</div>
-
-	{#if data.posts?.length}
-		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{#each data.posts as post}
-				<RecentPostCard {post} />
-			{/each}
-		</div>
-	{:else}
-		<CtaBlock
-			title="Insights coming soon"
-			description="No published posts yet. New articles about backend architecture and AI product delivery will be added soon."
-			href={`${base}/blog`}
-			label="Visit Blog"
+<div class="page-shell overflow-hidden">
+	<!-- Hero Section -->
+	<section class="pb-16 pt-14 lg:pt-20">
+		<Hero
+			tagline={heroTagline}
+			intro={heroIntro}
+			primaryCtaLabel={ctaPrimary}
+			secondaryCtaLabel={ctaSecondary}
+			{show3DHero}
 		/>
-	{/if}
-</section>
+	</section>
+
+	<!-- Quick Profile (Floating Section) -->
+	<section class="pb-24">
+		<div class="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-start">
+			<div class="space-y-12">
+				<RecentInsights
+					title={homeContent.recentInsights.title}
+					description={homeContent.recentInsights.description}
+					posts={data.posts}
+				/>
+			</div>
+			<div class="sticky top-24">
+				<QuickProfile highlights={homeContent.homeHighlights} socials={data.settings?.socials} />
+			</div>
+		</div>
+	</section>
+
+	<!-- Opportunity Section -->
+	<section class="pb-24">
+		<OpportunityCTA
+			title={opportunityTitle}
+			description={opportunityDescription}
+			buttonLabel={opportunityButtonLabel}
+		/>
+	</section>
+</div>

@@ -8,7 +8,9 @@ export const dictionary = {
 			letTalk: 'Liên hệ',
 			toggleTheme: 'Đổi giao diện',
 			toggleMenu: 'Mở menu',
-			jobTitle: 'Kỹ sư Backend'
+			jobTitle: 'Kỹ sư Backend',
+			language: 'Ngôn ngữ',
+			toggleLanguage: 'Chọn ngôn ngữ'
 		},
 		footer: {
 			eyebrow: 'Sẵn sàng cho cơ hội phù hợp',
@@ -58,6 +60,31 @@ export const dictionary = {
 			lessonsLearned: 'Bài học rút ra',
 			contributions: 'Đóng góp và tác động chính',
 			techStack: 'Tech stack'
+		},
+		contact: {
+			seoTitle: 'Liên hệ | Nguyen Van Hai',
+			seoDescription: 'Kết nối với Nguyen Van Hai cho các cơ hội hợp tác backend engineering và AI.',
+			title: 'Liên hệ',
+			description: 'Bạn có ý tưởng hay cần tư vấn kỹ thuật? Hãy để lại lời nhắn, tôi sẽ phản hồi sớm nhất có thể.',
+			form: {
+				name: 'Họ tên',
+				email: 'Email',
+				subject: 'Chủ đề',
+				message: 'Nội dung',
+				send: 'Gửi lời nhắn',
+				sending: 'Đang gửi...',
+				successTitle: 'Gửi thành công!',
+				successMessage: 'Cảm ơn bạn đã liên hệ. Tôi sẽ phản hồi qua email sớm nhất có thể.',
+				errorTitle: 'Có lỗi xảy ra',
+				errorMessage: 'Không thể gửi tin nhắn lúc này. Vui lòng thử lại sau hoặc gửi trực tiếp qua email.',
+				validation: {
+					nameRequired: 'Vui lòng nhập họ tên',
+					emailRequired: 'Vui lòng nhập email',
+					emailInvalid: 'Email không hợp lệ',
+					subjectRequired: 'Vui lòng nhập chủ đề',
+					messageRequired: 'Vui lòng nhập nội dung'
+				}
+			}
 		}
 	},
 	en: {
@@ -67,7 +94,9 @@ export const dictionary = {
 			letTalk: "Let's Talk",
 			toggleTheme: 'Toggle color theme',
 			toggleMenu: 'Toggle mobile menu',
-			jobTitle: 'Backend Engineer'
+			jobTitle: 'Backend Engineer',
+			language: 'Language',
+			toggleLanguage: 'Toggle language'
 		},
 		footer: {
 			eyebrow: 'Open to selected opportunities',
@@ -117,6 +146,31 @@ export const dictionary = {
 			lessonsLearned: 'Lessons learned',
 			contributions: 'Key contributions and impact',
 			techStack: 'Tech stack'
+		},
+		contact: {
+			seoTitle: 'Contact | Nguyen Van Hai',
+			seoDescription: 'Connect with Nguyen Van Hai for backend engineering and AI collaboration opportunities.',
+			title: 'Get in Touch',
+			description: 'Have an idea or need technical advice? Drop a message and I will get back to you as soon as possible.',
+			form: {
+				name: 'Full Name',
+				email: 'Email Address',
+				subject: 'Subject',
+				message: 'Message',
+				send: 'Send Message',
+				sending: 'Sending...',
+				successTitle: 'Message Sent!',
+				successMessage: "Thank you for reaching out. I'll get back to you via email as soon as possible.",
+				errorTitle: 'Something went wrong',
+				errorMessage: 'Could not send message right now. Please try again later or email me directly.',
+				validation: {
+					nameRequired: 'Name is required',
+					emailRequired: 'Email is required',
+					emailInvalid: 'Invalid email address',
+					subjectRequired: 'Subject is required',
+					messageRequired: 'Message is required'
+				}
+			}
 		}
 	}
 } as const;

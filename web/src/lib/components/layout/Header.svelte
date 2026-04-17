@@ -8,6 +8,7 @@
 	import { theme } from '$lib/stores/theme.svelte';
 
 	let isMenuOpen = $state(false);
+	let isLangOpen = $state(false);
 
 	const locale = $derived(localeFromPathname(page.url.pathname));
 	const t = $derived(getDictionary(locale));
@@ -20,10 +21,10 @@
 	};
 </script>
 
-<header class="sticky top-0 z-50 border-b ui-divider bg-[var(--ui-bg)] backdrop-blur-md">
-	<div class="page-shell flex h-16 items-center justify-between">
+<header class="fixed top-4 left-1/2 z-50 w-[95%] max-w-7xl -translate-x-1/2">
+	<div class="glass-card flex h-16 items-center justify-between rounded-2xl px-4 py-2 shadow-2xl backdrop-blur-xl border-white/10 sm:px-6">
 		<a
-			class="group inline-flex min-w-0 items-center gap-3"
+			class="group inline-flex min-w-0 items-center gap-2.5"
 			href={`${base}/${locale}`}
 			onclick={closeMenu}
 			aria-label={t.header.homeAriaLabel}
@@ -39,24 +40,57 @@
 
 		<nav class="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
 			{#each navItems as item}
-				<a href={`${base}${item.href}`} class={`ui-nav-link ${isActive(item.href) ? 'ui-nav-link-active' : ''}`}>
+				<a 
+					href={`${base}${item.href}`} 
+					class={`px-4 py-2 text-[0.7rem] font-bold uppercase tracking-[0.15em] transition-all duration-300 hover:text-blue-400 ${isActive(item.href) ? 'text-blue-400 bg-blue-500/5 rounded-lg' : 'text-slate-400'}`}
+				>
 					{item.label}
 				</a>
 			{/each}
 		</nav>
 
 		<div class="flex items-center gap-2">
-			<div class="hidden items-center rounded-md border ui-divider px-1 py-1 sm:flex">
-				{#each locales as code}
-					<a
-						href={localizePath(page.url.pathname, code)}
-						class={`rounded px-2 py-1 text-xs ${code === locale ? 'bg-primary text-white' : '[color:var(--ui-text-muted)]'}`}
+			<!-- Language Switcher (Desktop) -->
+			<div class="relative hidden sm:block">
+				<button
+					type="button"
+					onclick={() => (isLangOpen = !isLangOpen)}
+					class="ui-icon-btn"
+					aria-label={t.header.toggleLanguage || 'Toggle Language'}
+					aria-expanded={isLangOpen}
+				>
+					<span class="material-symbols-outlined text-xl">language</span>
+				</button>
+
+				{#if isLangOpen}
+					<div
+						class="ui-dropdown animate-in fade-in slide-in-from-top-2 duration-200"
+						role="menu"
+						tabindex="-1"
+						aria-orientation="vertical"
 					>
-						{localeLabels[code]}
-					</a>
-				{/each}
+						{#each locales as code}
+							<a
+								href={localizePath(page.url.pathname, code)}
+								class={`ui-dropdown-item ${code === locale ? 'ui-dropdown-item-active' : ''}`}
+								onclick={() => (isLangOpen = false)}
+								role="menuitem"
+							>
+								<span class="truncate">{localeLabels[code]}</span>
+								{#if code === locale}
+									<span class="material-symbols-outlined ml-auto text-sm">check</span>
+								{/if}
+							</a>
+						{/each}
+					</div>
+
+					<!-- Click outside backdrop -->
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div class="fixed inset-0 z-40 h-screen w-screen" onclick={() => (isLangOpen = false)}></div>
+				{/if}
 			</div>
-			<a href="mailto:nvhai2408@gmail.com" class="ui-btn ui-btn-primary hidden h-10 px-4 sm:inline-flex">{t.header.letTalk}</a>
+			<a href={`${base}/${locale}/contact`} class="ui-btn ui-btn-primary hidden h-10 px-4 sm:inline-flex">{t.header.letTalk}</a>
 			<button
 				type="button"
 				onclick={() => theme.toggle()}
@@ -81,25 +115,36 @@
 	</div>
 
 	{#if isMenuOpen}
-		<nav id="mobile-navigation" class="border-t ui-divider md:hidden" aria-label="Mobile navigation">
-			<div class="page-shell flex flex-col gap-1 py-3">
-				<div class="mb-2 flex items-center gap-2">
-					{#each locales as code}
-						<a
-							href={localizePath(page.url.pathname, code)}
-							onclick={closeMenu}
-							class={`rounded px-2 py-1 text-xs ${code === locale ? 'bg-primary text-white' : '[color:var(--ui-text-muted)]'}`}
-						>
-							{localeLabels[code]}
-						</a>
-					{/each}
+		<nav id="mobile-navigation" class="mt-3 animate-in fade-in slide-in-from-top-4 duration-300 md:hidden" aria-label="Mobile navigation">
+			<div class="glass-panel flex flex-col gap-2 rounded-2xl p-4 shadow-3xl">
+				<div class="mb-2 flex flex-col gap-2 border-b border-white/5 pb-4">
+					<span class="px-2 text-[10px] font-black uppercase tracking-[0.2em] text-blue-500/60">
+						{t.header.language || 'Language'}
+					</span>
+					<div class="flex flex-wrap gap-2">
+						{#each locales as code}
+							<a
+								href={localizePath(page.url.pathname, code)}
+								onclick={closeMenu}
+								class={`rounded-lg px-3 py-1.5 text-[0.7rem] font-bold uppercase tracking-widest transition-all ${
+									code === locale ? 'bg-blue-500/20 text-blue-400' : 'text-slate-500 hover:bg-white/5 h-8'
+								}`}
+							>
+								{localeLabels[code]}
+							</a>
+						{/each}
+					</div>
 				</div>
 				{#each navItems as item}
-					<a href={`${base}${item.href}`} onclick={closeMenu} class={`ui-nav-link ${isActive(item.href) ? 'ui-nav-link-active' : ''}`}>
+					<a 
+						href={`${base}${item.href}`} 
+						onclick={closeMenu} 
+						class={`rounded-xl px-4 py-3 text-[0.75rem] font-bold uppercase tracking-[0.2em] transition-all ${isActive(item.href) ? 'bg-blue-500/10 text-blue-400' : 'text-slate-400 hover:bg-white/5'}`}
+					>
 						{item.label}
 					</a>
 				{/each}
-				<a href="mailto:nvhai2408@gmail.com" onclick={closeMenu} class="ui-btn ui-btn-primary mt-2 h-10">{t.header.letTalk}</a>
+				<a href={`${base}/${locale}/contact`} onclick={closeMenu} class="ui-btn ui-btn-primary mt-4 rounded-xl h-12 text-[0.75rem]">{t.header.letTalk}</a>
 			</div>
 		</nav>
 	{/if}
