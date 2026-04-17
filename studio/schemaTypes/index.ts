@@ -9,6 +9,8 @@ import projectsPage from './projectsPage'
 import cvPage from './cvPage'
 import contactSubmission from './contactSubmission'
 
+import homePage from './homePage'
+
 export const schemaTypes = [
   post,
   project,
@@ -19,4 +21,5 @@ export const schemaTypes = [
   projectsPage,
   cvPage,
   contactSubmission,
+  homePage,
 ]
