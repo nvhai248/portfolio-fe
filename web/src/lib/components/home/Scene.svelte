@@ -20,7 +20,7 @@
 </script>
 
 <div class="h-full w-full">
-	<Canvas dpr={isMobile ? 1 : [1, 1.5]}>
+	<Canvas dpr={isMobile ? 1 : 1.5}>
 		<NetworkGraph {isDark} {isMobile} {isTablet} {pointer} {scrollProgress} />
 	</Canvas>
 </div>

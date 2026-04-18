@@ -41,7 +41,7 @@
 				if (path === 'name') errors.name = t.validation.nameRequired;
 				if (path === 'email')
 					errors.email =
-						issue.code === 'invalid_string' ? t.validation.emailInvalid : t.validation.emailRequired;
+						(issue as any).code === 'invalid_string' ? t.validation.emailInvalid : t.validation.emailRequired;
 				if (path === 'subject') errors.subject = t.validation.subjectRequired;
 				if (path === 'message') errors.message = t.validation.messageRequired;
 			});

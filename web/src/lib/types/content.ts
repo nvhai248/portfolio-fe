@@ -150,3 +150,6 @@ export interface PostContent {
 		image?: any;
 	};
 }
+
+export type Post = PostContent;
+

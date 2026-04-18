@@ -35,43 +35,50 @@
 	let scrollProgress = $state(0);
 	let sectionElement: HTMLElement;
 
-	onMount(async () => {
-		if (!show3DHero) return; // Honor CMS toggle
+	onMount(() => {
+		if (!show3DHero) return;
 
-		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const isLikelyLowEnd =
-			(navigator as any).deviceMemory !== undefined && (navigator as any).deviceMemory < 4;
+		let cleanup: (() => void) | undefined;
 
-		if (!prefersReducedMotion && !isLikelyLowEnd) {
-			// Lazy load the heavy 3D components
-			const { default: LoadedScene } = await import('./Scene.svelte');
-			SceneComponent = LoadedScene;
+		const init = async () => {
+			const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			const isLikelyLowEnd =
+				(navigator as any).deviceMemory !== undefined && (navigator as any).deviceMemory < 4;
 
-			const timer = setTimeout(() => {
-				show3D = true;
-			}, 800);
+			if (!prefersReducedMotion && !isLikelyLowEnd) {
+				const { default: LoadedScene } = await import('./Scene.svelte');
+				SceneComponent = LoadedScene;
 
-			const onPointerMove = (e: PointerEvent) => {
-				pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-				pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
-			};
+				const timer = setTimeout(() => {
+					show3D = true;
+				}, 800);
 
-			const onScroll = () => {
-				if (!sectionElement) return;
-				scrollProgress = Math.min(window.scrollY / sectionElement.offsetHeight, 1.2);
-			};
+				const onPointerMove = (e: PointerEvent) => {
+					pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+					pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+				};
 
-			window.addEventListener('pointermove', onPointerMove);
-			window.addEventListener('scroll', onScroll);
+				const onScroll = () => {
+					if (!sectionElement) return;
+					scrollProgress = Math.min(window.scrollY / sectionElement.offsetHeight, 1.2);
+				};
 
-			return () => {
-				clearTimeout(timer);
-				window.removeEventListener('pointermove', onPointerMove);
-				window.removeEventListener('scroll', onScroll);
-			};
-		} else {
-			isLowPerformance = true;
-		}
+				window.addEventListener('pointermove', onPointerMove);
+				window.addEventListener('scroll', onScroll);
+
+				cleanup = () => {
+					clearTimeout(timer);
+					window.removeEventListener('pointermove', onPointerMove);
+					window.removeEventListener('scroll', onScroll);
+				};
+			} else {
+				isLowPerformance = true;
+			}
+		};
+
+		init();
+
+		return () => cleanup?.();
 	});
 </script>
 

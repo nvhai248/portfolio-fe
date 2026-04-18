@@ -18,6 +18,7 @@
 			const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
 			
 			const count = posts.filter(p => {
+				if (!p.publishedAt) return false;
 				const postDate = new Date(p.publishedAt);
 				return postDate.getFullYear() === d.getFullYear() && postDate.getMonth() === d.getMonth();
 			}).length;
