@@ -67,9 +67,10 @@
 		</div>
 
 		{#if item.stack && item.stack.length > 0}
-			<div class="flex flex-wrap gap-2.5 lg:w-52 lg:flex-none">
+			<div class="flex flex-wrap gap-2 lg:w-48 lg:flex-none">
 				{#each item.stack as tech}
-					<span class="rounded-lg border [border-color:var(--ui-border)] [background-color:var(--ui-surface-soft)] px-3 py-1.5 text-[0.6rem] font-black uppercase tracking-widest [color:var(--ui-text-muted)] transition-all hover:border-primary/30 hover:[color:var(--ui-primary)] dark:hover:border-blue-500/30 dark:hover:text-blue-400">
+					<span class="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-primary/[0.03] px-3 py-1 text-[0.62rem] font-bold uppercase tracking-widest text-primary transition-all duration-300 hover:scale-105 hover:border-primary/30 hover:bg-primary/[0.08] hover:shadow-[0_0_15px_rgba(30,64,175,0.1)] dark:border-blue-500/10 dark:bg-blue-500/[0.03] dark:text-blue-400 dark:hover:border-blue-500/30 dark:hover:bg-blue-500/[0.08] dark:hover:shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+						<span class="h-1 w-1 rounded-full bg-primary/40 dark:bg-blue-500/40"></span>
 						{tech}
 					</span>
 				{/each}

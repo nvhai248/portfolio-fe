@@ -85,6 +85,24 @@ export const dictionary = {
 					messageRequired: 'Vui lòng nhập nội dung'
 				}
 			}
+		},
+		tools: {
+			seoTitle: 'Công cụ & Tiện ích | Nguyen Van Hai',
+			seoDescription: 'Tổng hợp các công cụ tiện ích: tính lương Gross/Net, chỉnh sửa ảnh, nghe nhạc và hơn thế nữa.',
+			title: 'Công cụ & Tiện ích',
+			description: 'Tập hợp các công cụ nhỏ giúp tối ưu công việc hàng ngày của bạn.',
+			salary: {
+				title: 'Tính lương Gross / Net',
+				description: 'Công cụ quy đổi lương thực nhận (Net) và lương gộp (Gross) theo chuẩn quy định mới.',
+			},
+			image: {
+				title: 'Chỉnh sửa ảnh',
+				description: 'Công cụ chỉnh sửa ảnh cơ bản trực tiếp trên trình duyệt, an toàn và nhanh chóng.',
+			},
+			music: {
+				title: 'Nghe nhạc',
+				description: 'Trình phát nhạc với danh sách các bài hát thư giãn.',
+			}
 		}
 	},
 	en: {
@@ -170,6 +188,24 @@ export const dictionary = {
 					subjectRequired: 'Subject is required',
 					messageRequired: 'Message is required'
 				}
+			}
+		},
+		tools: {
+			seoTitle: 'Tools & Utilities | Nguyen Van Hai',
+			seoDescription: 'A collection of useful tools: Gross/Net salary calculator, image editor, music player, and more.',
+			title: 'Tools & Utilities',
+			description: 'A collection of small utilities built to optimize your daily workflow.',
+			salary: {
+				title: 'Gross / Net Salary',
+				description: 'Convert between Gross and Net salary based on the latest regional regulations.',
+			},
+			image: {
+				title: 'Image Editor',
+				description: 'Basic image editing tool running entirely in your browser, fast and secure.',
+			},
+			music: {
+				title: 'Music Player',
+				description: 'A relaxing music player with a curated playlist.',
 			}
 		}
 	}

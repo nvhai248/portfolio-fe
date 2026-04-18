@@ -12,6 +12,7 @@
 	import { getDictionary } from '$lib/i18n/dictionary';
 	import { onNavigate } from '$app/navigation';
 	import { localeFromPathname } from '$lib/i18n/locale';
+	import GlobalMusicFab from '$lib/components/ui/GlobalMusicFab.svelte';
 
 	let { children } = $props();
 	let showNavigationFeedback = $state(false);
@@ -118,4 +119,6 @@
 		</main>
 	</div>
 	<Footer />
+
+	<GlobalMusicFab />
 </div>

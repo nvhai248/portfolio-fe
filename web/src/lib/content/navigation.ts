@@ -5,6 +5,7 @@ export const getPrimaryNavItems = (locale: Locale) => [
 	{ href: `/${locale}/about`, label: locale === 'vi' ? 'Giới thiệu' : 'About' },
 	{ href: `/${locale}/projects`, label: locale === 'vi' ? 'Dự án' : 'Projects' },
 	{ href: `/${locale}/cv`, label: 'CV' },
+	{ href: `/${locale}/tools`, label: locale === 'vi' ? 'Công cụ' : 'Tools' },
 	{ href: `/${locale}/blog`, label: 'Blog' }
 ];
 

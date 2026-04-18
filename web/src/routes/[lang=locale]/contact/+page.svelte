@@ -16,17 +16,24 @@
 	type="website"
 />
 
-<div class="page-shell py-16 lg:py-24">
-	<div class="mx-auto max-w-3xl">
-		<Reveal type="slide-up">
-			<div class="mb-12 text-center">
-				<h1 class="ui-heading-hero mb-4">{t.title}</h1>
-				<p class="ui-body-lg mx-auto max-w-xl">{t.description}</p>
-			</div>
-		</Reveal>
+<div class="relative overflow-hidden pt-12">
+	<!-- Background Decorative Elements -->
+	<div class="pointer-events-none absolute -top-24 left-1/2 -z-10 size-[600px] -translate-x-1/2 rounded-full bg-primary/5 blur-[120px] dark:bg-primary/10"></div>
+	<div class="pointer-events-none absolute top-1/2 left-0 -z-10 size-[400px] -translate-y-1/2 rounded-full bg-blue-400/5 blur-[100px] dark:bg-blue-400/10"></div>
 
-		<Reveal type="fade" delay={200}>
-			<ContactForm locale={data.locale} />
-		</Reveal>
+	<div class="page-shell pb-24 pt-16 lg:pb-32 lg:pt-24">
+		<div class="mx-auto max-w-3xl">
+			<Reveal type="slide-up">
+				<div class="mb-16 text-center">
+					<p class="ui-eyebrow mb-4">Get in Touch</p>
+					<h1 class="ui-heading-hero mb-6">{t.title}</h1>
+					<p class="ui-body-lg mx-auto max-w-xl text-balance opacity-80">{t.description}</p>
+				</div>
+			</Reveal>
+
+			<div class="relative">
+				<ContactForm locale={data.locale} />
+			</div>
+		</div>
 	</div>
 </div>

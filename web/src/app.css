@@ -3,6 +3,8 @@
 
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
 	--shadow-3xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
 }
