@@ -16,31 +16,36 @@
 
 <Reveal type="slide-up" duration={1200} threshold={0.2}>
 	<div
-		class="glass-panel relative overflow-hidden rounded-[2.5rem] p-10 shadow-2xl md:p-14 lg:p-20 transition-all duration-700 hover:shadow-blue-500/10"
+		class="ui-panel relative overflow-hidden rounded-[3rem] p-12 shadow-3xl md:p-16 lg:p-24 transition-all duration-700 hover:shadow-primary/10"
 	>
-		<!-- Advanced decorative gradients -->
-		<div class="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-blue-500/10 blur-[100px] animate-pulse-slow"></div>
-		<div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-indigo-500/5 blur-[100px]"></div>
+		<!-- Refined decorative elements -->
+		<div class="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-[120px] dark:bg-blue-500/10 animate-pulse-slow"></div>
+		<div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-primary/2 blur-[100px] dark:bg-indigo-500/5"></div>
 
-		<div class="relative z-10 mx-auto max-w-3xl text-center">
+		<div class="relative z-10 mx-auto max-w-4xl text-center">
 			<Reveal type="slide-up" delay={100}>
-				<h2 class="ui-heading-2 mb-6 text-4xl font-extrabold tracking-tight md:text-5xl">
+				<div class="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.2em] [color:var(--ui-primary)] dark:text-blue-400">
+					Open for Collaboration
+				</div>
+			</Reveal>
+			<Reveal type="slide-up" delay={200}>
+				<h2 class="ui-heading-hero mb-8 text-4xl sm:text-5xl lg:text-6xl">
 					{title}
 				</h2>
 			</Reveal>
-			<Reveal type="slide-up" delay={200}>
-				<p class="ui-body-lg mb-12 text-slate-400">
+			<Reveal type="slide-up" delay={300}>
+				<p class="ui-body-lg mb-12 mx-auto max-w-2xl">
 					{description}
 				</p>
 			</Reveal>
-			<Reveal type="slide-up" delay={300}>
+			<Reveal type="slide-up" delay={400}>
 				<a
 					href={`${base}/${locale}/contact`}
-					class="ui-btn ui-btn-primary glow-on-hover h-14 min-w-[240px] rounded-2xl text-[0.8rem] transition-all"
+					class="ui-btn ui-btn-primary glow-on-hover h-16 min-w-[280px] rounded-2xl text-[0.85rem] transition-all"
 				>
 					{buttonLabel}
 					<span
-						class="material-symbols-outlined ml-3 text-lg transition-transform duration-300 group-hover:translate-x-1"
+						class="material-symbols-outlined ml-3 text-xl transition-transform duration-300 group-hover:translate-x-1"
 					>
 						rocket_launch
 					</span>

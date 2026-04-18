@@ -13,6 +13,7 @@
 	import QuickProfile from '$lib/components/home/QuickProfile.svelte';
 	import RecentInsights from '$lib/components/home/RecentInsights.svelte';
 	import OpportunityCTA from '$lib/components/home/OpportunityCTA.svelte';
+	import CurrencyTicker from '$lib/components/home/CurrencyTicker.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const locale = $derived(data.locale);
@@ -51,8 +52,8 @@
 />
 
 <div class="page-shell overflow-hidden">
-	<!-- Hero Section -->
-	<section class="pb-16 pt-14 lg:pt-20">
+	<!-- Hero Section: Identity & Real-time Context -->
+	<section class="pb-24 pt-14 lg:pt-20">
 		<Hero
 			tagline={heroTagline}
 			intro={heroIntro}
@@ -62,24 +63,25 @@
 		/>
 	</section>
 
-	<!-- Quick Profile (Floating Section) -->
-	<section class="pb-24">
-		<div class="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-			<div class="space-y-12">
-				<RecentInsights
-					title={homeContent.recentInsights.title}
-					description={homeContent.recentInsights.description}
-					posts={data.posts}
-				/>
-			</div>
-			<div class="sticky top-24">
-				<QuickProfile highlights={homeContent.homeHighlights} socials={data.settings?.socials} />
-			</div>
-		</div>
+	<!-- Market Dynamics Section: Currency & Global Data -->
+	<section class="py-24 lg:py-32">
+		<CurrencyTicker />
 	</section>
 
-	<!-- Opportunity Section -->
-	<section class="pb-24">
+	<!-- Technical Capacity Section: System Status & Metrics -->
+	<section class="py-24 lg:py-32">
+		<QuickProfile highlights={homeContent.homeHighlights} socials={data.settings?.socials} />
+	</section>
+
+	<!-- Knowledge Transfer Section: Recent Technical Writing -->
+	<RecentInsights
+		title={homeContent.recentInsights.title}
+		description={homeContent.recentInsights.description}
+		posts={data.posts}
+	/>
+
+	<!-- Opportunity Acquisition Section -->
+	<section class="pb-32 pt-24 lg:pt-32">
 		<OpportunityCTA
 			title={opportunityTitle}
 			description={opportunityDescription}

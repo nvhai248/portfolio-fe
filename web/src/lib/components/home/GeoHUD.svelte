@@ -84,31 +84,31 @@
 </script>
 
 <Reveal type="fade" delay={800} duration={1000}>
-	<div class="glass-card flex flex-col items-end gap-2 overflow-hidden rounded-[2.5rem] p-7 shadow-3xl backdrop-blur-2xl transition-all duration-500 hover:border-blue-500/20">
+	<div class="glass-card flex flex-col items-end gap-2 overflow-hidden rounded-[2.5rem] p-7 shadow-3xl transition-all duration-500 hover:border-primary/20 dark:hover:border-blue-500/20">
 		<div class="flex flex-col items-end">
-			<span class="font-mono text-4xl font-black tracking-tighter text-white sm:text-5xl">
+			<span class="font-mono text-4xl font-black tracking-tighter [color:var(--ui-text)] sm:text-5xl">
 				{formatTime(time)}<span class="animate-pulse opacity-50">:</span><span class="text-2xl opacity-40">{time.getSeconds().toString().padStart(2, '0')}</span>
 			</span>
-			<span class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-slate-500">
+			<span class="text-[0.7rem] font-black uppercase tracking-[0.3em] [color:var(--ui-text-subtle)]">
 				{formatDate(time)}
 			</span>
 		</div>
 
-		<div class="mt-4 flex items-center gap-4 border-t border-white/5 pt-5">
+		<div class="mt-4 flex items-center gap-4 border-t [border-color:var(--ui-border)] pt-5">
 			{#if isLoading}
 				<div class="flex items-center gap-2 animate-pulse">
-					<div class="h-6 w-6 rounded-full bg-white/5"></div>
-					<div class="h-4 w-16 rounded bg-white/5"></div>
+					<div class="h-6 w-6 rounded-full [background-color:var(--ui-bg-muted)]"></div>
+					<div class="h-4 w-16 rounded [background-color:var(--ui-bg-muted)]"></div>
 				</div>
 			{:else if weather}
 				<div class="flex flex-col items-end">
 					<div class="flex items-center gap-4">
-						<span class="material-symbols-outlined text-3xl text-blue-400">
+						<span class="material-symbols-outlined text-3xl [color:var(--ui-primary)] dark:text-blue-400">
 							{getWeatherIcon(weather.code)}
 						</span>
-						<span class="text-2xl font-black text-white">{weather.temp}°C</span>
+						<span class="text-2xl font-black [color:var(--ui-text)]">{weather.temp}°C</span>
 					</div>
-					<span class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500">
+					<span class="text-[0.65rem] font-bold uppercase tracking-widest [color:var(--ui-text-subtle)]">
 						{weather.city}
 					</span>
 				</div>

@@ -3,40 +3,45 @@
 
 @import 'tailwindcss';
 
+@theme {
+	--shadow-3xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+}
+
+
 @layer base {
 	:root {
 		color-scheme: light;
-		--ui-bg: #f6f8fb;
-		--ui-bg-muted: #eef2f7;
+		--ui-bg: #ffffff;
+		--ui-bg-muted: #f8fafc;
 		--ui-surface: #ffffff;
-		--ui-surface-soft: #f8fafc;
-		--ui-text: #0f172a;
-		--ui-text-muted: #334155;
-		--ui-text-subtle: #64748b;
-		--ui-border: #cbd5e1;
+		--ui-surface-soft: #f1f5f9;
+		--ui-text: #020617; /* Slate 950 */
+		--ui-text-muted: #1e293b; /* Slate 800 - Deep readability */
+		--ui-text-subtle: #475569; /* Slate 600 - Defined utility text */
+		--ui-border: #cbd5e1; /* Slate 300 */
 		--ui-border-subtle: #e2e8f0;
-		--ui-primary: #0b63b8;
-		--ui-primary-strong: #084f92;
-		--ui-primary-soft: rgb(17 115 212 / 0.1);
-		--ui-primary-softer: rgb(17 115 212 / 0.06);
-		--ui-grid-line: rgb(15 23 42 / 0.04);
+		--ui-primary: #1e40af; /* Blue 800 */
+		--ui-primary-strong: #1e3a8a;
+		--ui-primary-soft: rgb(30 64 175 / 0.08);
+		--ui-primary-softer: rgb(30 64 175 / 0.04);
+		--ui-grid-line: rgb(15 23 42 / 0.02);
 	}
 
 	html.dark {
 		color-scheme: dark;
-		--ui-bg: #030712; /* Slate 950 */
+		--ui-bg: #020617; /* Slate 950 */
 		--ui-bg-muted: #0f172a; /* Slate 900 */
-		--ui-surface: #111827; /* Gray 900 */
-		--ui-surface-soft: rgb(17 24 39 / 0.6);
-		--ui-text: #f8fafc;
-		--ui-text-muted: #cbd5e1;
-		--ui-text-subtle: #94a3b8;
-		--ui-border: #1e293b;
+		--ui-surface: #0f172a; 
+		--ui-surface-soft: rgb(15 23 42 / 0.8);
+		--ui-text: #f8fafc; /* Slate 50 */
+		--ui-text-muted: #94a3b8; /* Slate 400 */
+		--ui-text-subtle: #475569; /* Slate 600 */
+		--ui-border: #1e293b; /* Slate 800 */
 		--ui-border-subtle: #0f172a;
 		--ui-primary: #3b82f6; /* Blue 500 */
-		--ui-primary-strong: #2563eb;
-		--ui-accent: #22d3ee; /* Cyan 400 */
-		--ui-grid-line: rgb(255 255 255 / 0.025);
+		--ui-primary-strong: #60a5fa;
+		--ui-accent: #22d3ee;
+		--ui-grid-line: rgb(255 255 255 / 0.02);
 	}
 
 	* {
@@ -115,11 +120,13 @@
 	.ui-body-lg {
 		@apply text-base leading-relaxed sm:text-lg;
 		color: var(--ui-text-muted);
+		font-weight: 450;
 	}
 
 	.ui-body {
 		@apply text-sm leading-7 sm:text-[0.95rem];
 		color: var(--ui-text-muted);
+		font-weight: 450;
 	}
 
 	.ui-muted {
@@ -254,6 +261,34 @@
 		color: var(--ui-text-muted);
 	}
 
+	.ui-dropdown {
+		@apply absolute right-0 mt-2 min-w-[140px] overflow-hidden rounded-xl shadow-xl;
+		background-color: var(--ui-surface);
+		border: 1px solid var(--ui-border);
+		z-index: 100;
+	}
+
+	html.dark .ui-dropdown {
+		background-color: #0f172a; /* Solid slate-900 for dark mode dropdowns */
+		border-color: var(--ui-border);
+	}
+
+	.ui-dropdown-item {
+		@apply flex w-full items-center gap-2.5 px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] transition-all;
+		color: var(--ui-text-muted);
+	}
+
+	.ui-dropdown-item:hover {
+		background-color: var(--ui-primary-soft);
+		color: var(--ui-primary);
+	}
+
+	.ui-dropdown-item-active {
+		background-color: var(--ui-primary-soft);
+		color: var(--ui-primary);
+		@apply font-black;
+	}
+
 	.ui-skeleton {
 		position: relative;
 		overflow: hidden;
@@ -274,15 +309,19 @@
 		animation: ui-skeleton-shimmer 1.3s ease-in-out infinite;
 	}
 
-	/* Glassmorphism Classes */
+	/* Glassmorphism Classes - Improved for Light/Dark parity */
 	.glass-panel {
 		@apply backdrop-blur-2xl;
 		background: radial-gradient(
 			circle at top left,
-			rgb(255 255 255 / 0.04),
-			rgb(255 255 255 / 0)
+			rgb(var(--glass-base) / 0.05),
+			rgb(var(--glass-base) / 0.01)
 		);
-		border: 1px solid rgb(255 255 255 / 0.1);
+		border: 1px solid rgb(var(--glass-base) / 0.1);
+		box-shadow: 0 20px 50px -10px rgb(0 0 0 / 0.2);
+	}
+
+	html.dark .glass-panel {
 		box-shadow: 0 20px 50px -10px rgb(0 0 0 / 0.5);
 	}
 
@@ -290,10 +329,18 @@
 		@apply backdrop-blur-lg;
 		background: linear-gradient(
 			135deg,
-			rgb(255 255 255 / 0.05) 0%,
-			rgb(255 255 255 / 0.02) 100%
+			rgb(var(--glass-base) / 0.05) 0%,
+			rgb(var(--glass-base) / 0.02) 100%
 		);
-		border: 1px solid rgb(255 255 255 / 0.07);
+		border: 1px solid rgb(var(--glass-base) / 0.08);
+	}
+
+	:root {
+		--glass-base: 0 0 0; /* Black for light mode */
+	}
+
+	html.dark {
+		--glass-base: 255 255 255; /* White for dark mode */
 	}
 
 	.glow-on-hover:hover {

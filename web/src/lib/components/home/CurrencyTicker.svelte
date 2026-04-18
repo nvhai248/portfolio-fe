@@ -19,55 +19,61 @@
 </script>
 
 <div class="pointer-events-auto h-full w-full">
-	<Reveal type="fade" delay={600} duration={1000}>
-		<div class="glass-card inline-flex flex-col gap-6 overflow-hidden rounded-[2.5rem] p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:border-blue-500/20 md:p-10">
-			<div class="flex items-center justify-between border-b border-white/5 pb-5">
+	<Reveal type="fade" delay={400} duration={800}>
+		<div class="space-y-8">
+			<div class="flex items-center justify-between border-b pb-6 [border-color:var(--ui-border)]">
 				<div class="flex items-center gap-3">
 					<span class="relative flex h-2.5 w-2.5">
 						<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
 						<span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
 					</span>
-					<h3 class="text-[0.75rem] font-black uppercase tracking-[0.3em] text-emerald-500">
+					<h3 class="text-[0.75rem] font-black uppercase tracking-[0.35em] [color:var(--ui-primary)] dark:text-blue-400">
 						Global Market Data
 					</h3>
 				</div>
-				<span class="text-[0.65rem] font-black uppercase tracking-widest text-slate-500">
-					Reference: USD
+				<span class="text-[0.65rem] font-bold uppercase tracking-widest [color:var(--ui-text-subtle)]">
+					Ref: USD 
 				</span>
 			</div>
 
-			<div class="flex flex-wrap items-center gap-x-12 gap-y-8">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 				{#if isLoading}
 					{#each Array(5) as _}
-						<div class="h-14 w-32 animate-pulse rounded-xl bg-white/5"></div>
+						<div class="ui-panel-soft h-32 animate-pulse rounded-2xl"></div>
 					{/each}
 				{:else}
 					<!-- Reference (USA) -->
-					<div class="flex flex-col gap-2 border-r border-white/10 pr-12">
-						<div class="flex items-center gap-2">
-							<span class="text-[0.7rem] font-black tracking-[0.2em] text-emerald-400">USD</span>
-							<span class="text-[0.6rem] font-bold uppercase text-slate-500">USA (Base)</span>
-						</div>
-						<div class="flex items-baseline gap-2">
-							<span class="font-mono text-xl font-black tracking-tight text-white">$1.000</span>
+					<div class="ui-panel relative overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
+						<div class="absolute -right-4 -top-4 font-mono text-4xl font-black opacity-[0.03]">USD</div>
+						<div class="flex flex-col gap-3">
+							<div class="flex items-center gap-2">
+								<span class="text-[0.8rem] font-black tracking-widest [color:var(--ui-primary)]">USD</span>
+								<span class="text-[0.6rem] font-bold uppercase [color:var(--ui-text-subtle)]">USA (Base)</span>
+							</div>
+							<div class="flex items-baseline gap-2">
+								<span class="font-mono text-2xl font-black tracking-tight [color:var(--ui-text)]">$1.000</span>
+							</div>
 						</div>
 					</div>
 
 					{#each rates as item}
-						<div class="flex flex-col gap-2 group transition-transform hover:translate-y-[-4px]">
-							<div class="flex items-center gap-2">
-								<span class="text-[0.7rem] font-black tracking-[0.2em] text-blue-400 group-hover:text-blue-300">
-									{item.code}
-								</span>
-								<span class="text-[0.6rem] font-bold uppercase text-slate-500">{item.name}</span>
-							</div>
-							<div class="flex items-baseline gap-2">
-								<span class="font-mono text-xl font-black tracking-tight text-slate-100 group-hover:text-white transition-colors">
-									{item.symbol}{formatRate(item.rate, item.code)}
-								</span>
-								<div class="flex items-center text-[0.6rem] font-black text-emerald-400">
-									<span class="material-symbols-outlined text-[10px]">arrow_drop_up</span>
-									0.{Math.floor(Math.random() * 9)}1%
+						<div class="ui-panel relative overflow-hidden p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 group">
+							<div class="absolute -right-4 -top-4 font-mono text-4xl font-black opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">{item.code}</div>
+							<div class="flex flex-col gap-3">
+								<div class="flex items-center gap-2">
+									<span class="text-[0.8rem] font-black tracking-widest text-primary dark:text-blue-400">
+										{item.code}
+									</span>
+									<span class="text-[0.6rem] font-bold uppercase [color:var(--ui-text-subtle)]">{item.name}</span>
+								</div>
+								<div class="flex items-baseline gap-2">
+									<span class="font-mono text-2xl font-black tracking-tight [color:var(--ui-text)] transition-colors group-hover:text-primary dark:group-hover:text-blue-300">
+										{item.symbol}{formatRate(item.rate, item.code)}
+									</span>
+									<div class="flex items-center text-[0.65rem] font-black text-emerald-600 dark:text-emerald-400">
+										<span class="material-symbols-outlined text-xs">arrow_drop_up</span>
+										0.{Math.floor(Math.random() * 9)}1%
+									</div>
 								</div>
 							</div>
 						</div>

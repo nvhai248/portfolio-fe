@@ -42,7 +42,7 @@
 			{#each navItems as item}
 				<a 
 					href={`${base}${item.href}`} 
-					class={`px-4 py-2 text-[0.7rem] font-bold uppercase tracking-[0.15em] transition-all duration-300 hover:text-blue-400 ${isActive(item.href) ? 'text-blue-400 bg-blue-500/5 rounded-lg' : 'text-slate-400'}`}
+					class={`px-4 py-2 text-[0.7rem] font-extrabold uppercase tracking-[0.2em] transition-all duration-300 hover:text-primary dark:hover:text-blue-400 ${isActive(item.href) ? 'text-primary bg-primary/5 rounded-lg dark:text-blue-400 dark:bg-blue-500/5' : '[color:var(--ui-text-muted)]'}`}
 				>
 					{item.label}
 				</a>
@@ -55,7 +55,7 @@
 				<button
 					type="button"
 					onclick={() => (isLangOpen = !isLangOpen)}
-					class="ui-icon-btn"
+					class={`ui-icon-btn transition-transform active:scale-95 ${isLangOpen ? 'border-primary/30 bg-primary/5 text-primary' : ''}`}
 					aria-label={t.header.toggleLanguage || 'Toggle Language'}
 					aria-expanded={isLangOpen}
 				>
@@ -64,7 +64,7 @@
 
 				{#if isLangOpen}
 					<div
-						class="ui-dropdown animate-in fade-in slide-in-from-top-2 duration-200"
+						class="ui-dropdown animate-in fade-in slide-in-from-top-1 duration-200"
 						role="menu"
 						tabindex="-1"
 						aria-orientation="vertical"
@@ -78,7 +78,7 @@
 							>
 								<span class="truncate">{localeLabels[code]}</span>
 								{#if code === locale}
-									<span class="material-symbols-outlined ml-auto text-sm">check</span>
+									<span class="material-symbols-outlined ml-auto text-[14px]">check</span>
 								{/if}
 							</a>
 						{/each}
@@ -115,19 +115,24 @@
 	</div>
 
 	{#if isMenuOpen}
-		<nav id="mobile-navigation" class="mt-3 animate-in fade-in slide-in-from-top-4 duration-300 md:hidden" aria-label="Mobile navigation">
-			<div class="glass-panel flex flex-col gap-2 rounded-2xl p-4 shadow-3xl">
-				<div class="mb-2 flex flex-col gap-2 border-b border-white/5 pb-4">
-					<span class="px-2 text-[10px] font-black uppercase tracking-[0.2em] text-blue-500/60">
-						{t.header.language || 'Language'}
-					</span>
-					<div class="flex flex-wrap gap-2">
+		<nav id="mobile-navigation" class="mt-4 animate-in fade-in slide-in-from-top-4 duration-300 md:hidden" aria-label="Mobile navigation">
+			<div class="ui-panel flex flex-col gap-3 rounded-[2rem] p-6 shadow-3xl">
+				<div class="mb-4 flex flex-col gap-4 border-b [border-color:var(--ui-border-subtle)] pb-6">
+					<div class="flex items-center justify-between px-2">
+						<span class="text-[0.65rem] font-black uppercase tracking-[0.3em] [color:var(--ui-text-subtle)]">
+							{t.header.language || 'Domain'}
+						</span>
+						<span class="material-symbols-outlined text-lg [color:var(--ui-text-subtle)] opacity-40">public</span>
+					</div>
+					<div class="grid grid-cols-2 gap-3">
 						{#each locales as code}
 							<a
 								href={localizePath(page.url.pathname, code)}
 								onclick={closeMenu}
-								class={`rounded-lg px-3 py-1.5 text-[0.7rem] font-bold uppercase tracking-widest transition-all ${
-									code === locale ? 'bg-blue-500/20 text-blue-400' : 'text-slate-500 hover:bg-white/5 h-8'
+								class={`flex h-12 items-center justify-center rounded-xl text-[0.7rem] font-black uppercase tracking-widest transition-all ${
+									code === locale 
+										? 'bg-primary text-white shadow-lg shadow-primary/20 dark:bg-blue-600' 
+										: 'bg-primary/5 text-primary hover:bg-primary/10 dark:bg-blue-500/10 dark:text-blue-400'
 								}`}
 							>
 								{localeLabels[code]}

@@ -18,11 +18,11 @@
 			>
 				<div class="flex items-center gap-3">
 					<div class="h-1.5 w-1.5 rounded-full bg-blue-500/40 transition-colors group-hover:bg-blue-400"></div>
-					<span class="text-[0.7rem] font-bold uppercase tracking-widest text-slate-400">
+					<span class="text-[0.7rem] font-bold uppercase tracking-widest [color:var(--ui-text-muted)]">
 						{item.label}
 					</span>
 				</div>
-				<span class="font-mono text-sm font-medium tracking-tight text-slate-200">
+				<span class="font-mono text-sm font-medium tracking-tight [color:var(--ui-text)]">
 					{item.value}
 				</span>
 			</li>

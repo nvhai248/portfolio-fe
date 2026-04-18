@@ -4,7 +4,6 @@
 	import { theme } from '$lib/stores/theme.svelte';
 	import type { SectionIntroContent } from '$lib/types/content';
 	import Reveal from '$lib/components/ui/Reveal.svelte';
-	import CurrencyTicker from './CurrencyTicker.svelte';
 	import GeoHUD from './GeoHUD.svelte';
 
 	interface Props {
@@ -88,7 +87,7 @@
 	</div>
 	<div class="relative z-10 max-w-4xl space-y-8">
 		<Reveal type="slide-up" delay={100} duration={800}>
-			<div class="inline-flex items-center gap-2.5 rounded-full border border-blue-500/20 bg-blue-500/5 px-4 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-blue-400 backdrop-blur-md">
+			<div class="inline-flex items-center gap-2.5 rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-md dark:border-blue-500/20 dark:bg-blue-500/5 dark:text-blue-400">
 				<span class="relative flex h-2 w-2">
 					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
 					<span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
@@ -114,11 +113,6 @@
 				</a>
 			</div>
 		</Reveal>
-
-		<!-- New Currency Ticker Integration -->
-		<div class="pt-6">
-			<CurrencyTicker />
-		</div>
 	</div>
 
 	<!-- 3D Hero Canvas Container -->

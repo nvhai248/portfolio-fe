@@ -21,23 +21,25 @@
 </script>
 
 <Reveal type="fade" delay={200} duration={1200}>
-	<section class="pb-16 pt-8">
-		<div class="mb-12 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-			<div class="max-w-xl">
-				<h2 class="ui-heading-2">{title}</h2>
-				<p class="ui-body mt-3">{description}</p>
-				<a href={`${base}/blog`} class="ui-link mt-6 inline-flex items-center gap-2 text-sm">
-					See all posts
-					<span class="material-symbols-outlined text-sm">arrow_forward</span>
+	<section class="py-24 lg:py-32">
+		<div class="mb-20 flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
+			<div class="max-w-2xl">
+				<h2 class="ui-heading-1 mb-6 uppercase tracking-tighter">{title}</h2>
+				<p class="ui-body-lg max-w-xl">{description}</p>
+				<a href={`${base}/blog`} class="ui-link mt-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest">
+					Explore articles
+					<span class="material-symbols-outlined text-base">arrow_forward</span>
 				</a>
 			</div>
 			
 			<div class="w-full max-w-md">
-				<div class="mb-2 flex items-center justify-between px-1">
-					<span class="text-[0.6rem] font-bold uppercase tracking-widest text-slate-500">Writing Activity</span>
-					<span class="text-[0.6rem] font-medium text-slate-600">Last 12 Months</span>
+				<div class="mb-4 flex items-center justify-between px-1">
+					<span class="text-[0.65rem] font-black uppercase tracking-[0.2em] [color:var(--ui-text-subtle)]">Activity Index</span>
+					<span class="text-[0.65rem] font-bold [color:var(--ui-text-subtle)]">12M Window</span>
 				</div>
-				<BlogActivityChart {posts} />
+				<div class="rounded-2xl border [border-color:var(--ui-border)] bg-primary/2 dark:bg-white/2 p-2">
+					<BlogActivityChart {posts} />
+				</div>
 			</div>
 		</div>
 
