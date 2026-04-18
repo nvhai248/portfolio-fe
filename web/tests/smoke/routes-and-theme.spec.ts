@@ -111,9 +111,16 @@ test('root redirects to locale prefix', async ({ page }) => {
 });
 
 test('language switch keeps route and switches locale', async ({ page }) => {
+	await page.setViewportSize({ width: 1280, height: 800 });
 	await page.goto('/vi/projects');
-	await page.getByRole('link', { name: 'English' }).click();
-	await expect(page).toHaveURL(/\/en\/projects$/);
+
+	// Open the language switcher dropdown
+	await page.getByTestId('language-toggle').click();
+
+	// Click English
+	await page.getByTestId('language-link-en').click();
+
+	await expect(page).toHaveURL(/\/en\/projects\/?$/);
 });
 
 test('theme toggle persists after reload and navigation', async ({ page }) => {

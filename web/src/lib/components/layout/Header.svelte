@@ -58,6 +58,7 @@
 					class={`ui-icon-btn transition-transform active:scale-95 ${isLangOpen ? 'border-primary/30 bg-primary/5 text-primary' : ''}`}
 					aria-label={t.header.toggleLanguage || 'Toggle Language'}
 					aria-expanded={isLangOpen}
+					data-testid="language-toggle"
 				>
 					<span class="material-symbols-outlined text-xl">language</span>
 				</button>
@@ -75,6 +76,7 @@
 								class={`ui-dropdown-item ${code === locale ? 'ui-dropdown-item-active' : ''}`}
 								onclick={() => (isLangOpen = false)}
 								role="menuitem"
+								data-testid={`language-link-${code}`}
 							>
 								<span class="truncate">{localeLabels[code]}</span>
 								{#if code === locale}
@@ -134,6 +136,7 @@
 										? 'bg-primary text-white shadow-lg shadow-primary/20 dark:bg-blue-600' 
 										: 'bg-primary/5 text-primary hover:bg-primary/10 dark:bg-blue-500/10 dark:text-blue-400'
 								}`}
+								data-testid={`mobile-language-link-${code}`}
 							>
 								{localeLabels[code]}
 							</a>
