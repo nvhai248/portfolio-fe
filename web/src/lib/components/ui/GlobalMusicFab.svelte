@@ -2,11 +2,68 @@
 	import { musicStore } from '$lib/stores/music.svelte';
 	import { fade, scale } from 'svelte/transition';
 	import { page } from '$app/state';
+	import { browser } from '$app/environment';
 
 	let isExpanded = $state(false);
 
-	// Hidden Audio Element binding
 	let audio: HTMLAudioElement;
+	
+	// Cache for Blob URLs
+	let audioSrc = $state('');
+	const blobCache = new Map<string, string>();
+
+	// Async Cache Storage
+	$effect(() => {
+		const originalSrc = musicStore.currentTrack.src;
+		if (!browser || !window.caches) {
+			audioSrc = originalSrc;
+			return;
+		}
+
+		if (blobCache.has(originalSrc)) {
+			audioSrc = blobCache.get(originalSrc)!;
+			return;
+		}
+
+		let isCancelled = false;
+
+		(async () => {
+			try {
+				const cache = await caches.open('portfolio-music-v1');
+				let res = await cache.match(originalSrc);
+				if (!res) {
+					res = await fetch(originalSrc);
+					if (res.ok) {
+						await cache.put(originalSrc, res.clone());
+					}
+				}
+				if (!isCancelled && res) {
+					const blob = await res.blob();
+					const blobUrl = URL.createObjectURL(blob);
+					blobCache.set(originalSrc, blobUrl);
+					audioSrc = blobUrl;
+				}
+			} catch (e) {
+				if (!isCancelled) {
+					audioSrc = originalSrc;
+				}
+			}
+		})();
+
+		return () => {
+			isCancelled = true;
+		};
+	});
+
+	// Save persistent state
+	$effect(() => {
+		if (browser) {
+			localStorage.setItem('portfolio-music-state-v1', JSON.stringify({
+				currentTrackIndex: musicStore.currentTrackIndex,
+				volume: musicStore.volume
+			}));
+		}
+	});
 
 	// Note: We use an effect to sync the Svelte store with the audio element
 	// because direct bindings to a store's proxy sometimes require explicit syncing
@@ -23,7 +80,7 @@
 
 	// If src changes while playing, auto-play after change
 	$effect(() => {
-		const src = musicStore.currentTrack.src;
+		const currentSrc = audioSrc || musicStore.currentTrack.src;
 		if (audio && musicStore.isPlaying) {
 			setTimeout(() => {
 				audio?.play().catch(() => {});
@@ -57,12 +114,15 @@
 
 <audio
 	bind:this={audio}
-	src={musicStore.currentTrack.src}
+	src={audioSrc || musicStore.currentTrack.src}
 	preload="metadata"
 	bind:paused={musicStore.paused}
 	bind:currentTime={musicStore.currentTime}
 	bind:duration={musicStore.duration}
-	onended={() => musicStore.nextTrack()}
+	onended={() => {
+		musicStore.nextTrack();
+		musicStore.play();
+	}}
 ></audio>
 
 {#if showFab}

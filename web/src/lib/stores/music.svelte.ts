@@ -1,4 +1,5 @@
 // src/lib/stores/music.svelte.ts
+import { browser } from '$app/environment';
 
 const songFiles = [
 	"BTS - Dynamite (Audio).mp3",
@@ -99,3 +100,18 @@ class MusicStore {
 }
 
 export const musicStore = new MusicStore();
+
+if (browser) {
+	try {
+		const saved = localStorage.getItem('portfolio-music-state-v1');
+		if (saved) {
+			const parsed = JSON.parse(saved);
+			if (typeof parsed.currentTrackIndex === 'number' && parsed.currentTrackIndex < musicStore.playlist.length && parsed.currentTrackIndex >= 0) {
+				musicStore.currentTrackIndex = parsed.currentTrackIndex;
+			}
+			if (typeof parsed.volume === 'number') {
+				musicStore.volume = parsed.volume;
+			}
+		}
+	} catch (e) {}
+}

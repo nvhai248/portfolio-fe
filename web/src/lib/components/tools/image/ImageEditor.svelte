@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	// We will load fabric via CDN to avoid Node environment/install issues
 
 	let canvasElement: HTMLCanvasElement | undefined = $state();
@@ -7,23 +7,30 @@
 	let uploader: HTMLInputElement | undefined = $state();
 
 	let isFabricLoaded = $state(false);
-	let currentMode = $state('select'); // 'select', 'draw', 'text'
+	let currentMode = $state('select'); // 'select', 'draw', 'text', 'crop'
 	let drawColor = $state('#3b82f6');
 	let strokeWidth = $state(5);
+	
+	type HistoryState = { w: number; h: number; json: string };
+	let history = $state<HistoryState[]>([]);
+	let historyIndex = $state(-1);
+	let isHistoryUpdating = false;
+	let cropRect: any = null;
 	
 	onMount(() => {
 		// Load Fabric JS dynamically
 		if (!(window as any).fabric) {
 			const script = document.createElement('script');
 			script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js';
-			script.onload = () => {
+			script.onload = async () => {
 				isFabricLoaded = true;
+				await tick();
 				initCanvas();
 			};
 			document.head.appendChild(script);
 		} else {
 			isFabricLoaded = true;
-			initCanvas();
+			tick().then(() => initCanvas());
 		}
 
 		return () => {
@@ -37,9 +44,98 @@
 		fabricCanvas = new window.fabric.Canvas(canvasElement, {
 			width: 800,
 			height: 500,
-			backgroundColor: '#1E293B' // Slate 800 darkish bg
+			backgroundColor: 'rgba(0,0,0,0)' // Transparent bg
 		});
+
+		fabricCanvas.on('object:modified', saveHistory);
+		fabricCanvas.on('object:added', saveHistory);
+		fabricCanvas.on('object:removed', saveHistory);
+
 		setMode('select');
+		saveHistory();
+	}
+
+	function saveHistory() {
+		if (isHistoryUpdating || !fabricCanvas) return;
+		
+		isHistoryUpdating = true;
+		let hasCropRect = false;
+		if (cropRect && fabricCanvas.contains(cropRect)) {
+			fabricCanvas.remove(cropRect);
+			hasCropRect = true;
+		}
+
+		const state = {
+			w: fabricCanvas.getWidth(),
+			h: fabricCanvas.getHeight(),
+			json: JSON.stringify(fabricCanvas.toJSON())
+		};
+		
+		if (historyIndex < history.length - 1) {
+			history.splice(historyIndex + 1);
+		}
+		history.push(state);
+		historyIndex++;
+
+		if (hasCropRect) {
+			fabricCanvas.add(cropRect);
+			fabricCanvas.setActiveObject(cropRect);
+		}
+		history = [...history]; // trigger reactivity
+		isHistoryUpdating = false;
+	}
+
+	function loadHistoryState(idx: number) {
+		isHistoryUpdating = true;
+		const state = history[idx];
+		fabricCanvas.setWidth(state.w);
+		fabricCanvas.setHeight(state.h);
+		fabricCanvas.loadFromJSON(state.json, () => {
+			fabricCanvas.renderAll();
+			isHistoryUpdating = false;
+		});
+	}
+
+	function undo() {
+		if (historyIndex > 0) {
+			historyIndex--;
+			loadHistoryState(historyIndex);
+		}
+	}
+
+	function redo() {
+		if (historyIndex < history.length - 1) {
+			historyIndex++;
+			loadHistoryState(historyIndex);
+		}
+	}
+
+	function confirmCrop() {
+		if (currentMode !== 'crop' || !cropRect) return;
+		
+		const bound = cropRect.getBoundingRect();
+		
+		isHistoryUpdating = true;
+		fabricCanvas.remove(cropRect);
+		
+		const dataURL = fabricCanvas.toDataURL({
+			left: bound.left,
+			top: bound.top,
+			width: bound.width,
+			height: bound.height,
+		});
+
+		fabricCanvas.clear();
+		fabricCanvas.setWidth(bound.width);
+		fabricCanvas.setHeight(bound.height);
+		
+		// @ts-ignore
+		window.fabric.Image.fromURL(dataURL, (img: any) => {
+			fabricCanvas.add(img);
+			isHistoryUpdating = false;
+			saveHistory();
+			setMode('select');
+		});
 	}
 
 	function handleImageUpload(e: Event) {
@@ -74,6 +170,40 @@
 		if (mode === 'draw') {
 			fabricCanvas.freeDrawingBrush.color = drawColor;
 			fabricCanvas.freeDrawingBrush.width = strokeWidth;
+		}
+
+		if (mode === 'crop') {
+			if (!cropRect) {
+				// @ts-ignore
+				cropRect = new window.fabric.Rect({
+					fill: 'rgba(0,0,0,0.3)',
+					stroke: '#3b82f6',
+					strokeWidth: 2,
+					strokeDashArray: [5, 5],
+					width: 300,
+					height: 300,
+					cornerColor: '#3b82f6',
+					cornerStrokeColor: '#fff',
+					transparentCorners: false,
+					cornerSize: 12,
+					lockRotation: true,
+					lockSkewingX: true,
+					lockSkewingY: true
+				});
+			}
+			isHistoryUpdating = true;
+			if (!fabricCanvas.contains(cropRect)) {
+				fabricCanvas.add(cropRect);
+			}
+			fabricCanvas.centerObject(cropRect);
+			fabricCanvas.setActiveObject(cropRect);
+			isHistoryUpdating = false;
+		} else {
+			if (cropRect && fabricCanvas.contains(cropRect)) {
+				isHistoryUpdating = true;
+				fabricCanvas.remove(cropRect);
+				isHistoryUpdating = false;
+			}
 		}
 	}
 
@@ -150,19 +280,31 @@
 						<span class="hidden sm:inline">Tải ảnh lên</span>
 					</button>
 
+					<div class="flex items-center gap-1 mx-2">
+						<button class="ui-icon-btn {historyIndex > 0 ? 'text-primary hover:bg-primary/10' : 'text-slate-400 dark:text-slate-600 opacity-50 cursor-not-allowed'}" onclick={undo} disabled={historyIndex <= 0} title="Quay lại (Undo)">
+							<span class="material-symbols-outlined text-sm">undo</span>
+						</button>
+						<button class="ui-icon-btn {historyIndex < history.length - 1 ? 'text-primary hover:bg-primary/10' : 'text-slate-400 dark:text-slate-600 opacity-50 cursor-not-allowed'}" onclick={redo} disabled={historyIndex >= history.length - 1} title="Làm lại (Redo)">
+							<span class="material-symbols-outlined text-sm">redo</span>
+						</button>
+					</div>
+
 					<div class="w-px h-6 bg-border mx-2"></div>
 
-					<button class={`ui-icon-btn ${currentMode === 'select' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={() => setMode('select')} aria-label="Select Tool">
+					<button class={`ui-icon-btn ${currentMode === 'select' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={() => setMode('select')} aria-label="Select Tool" title="Di chuyển">
 						<span class="material-symbols-outlined text-sm">pan_tool_alt</span>
 					</button>
-					<button class={`ui-icon-btn ${currentMode === 'draw' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={() => setMode('draw')} aria-label="Draw Tool">
+					<button class={`ui-icon-btn ${currentMode === 'draw' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={() => setMode('draw')} aria-label="Draw Tool" title="Vẽ">
 						<span class="material-symbols-outlined text-sm">brush</span>
 					</button>
-					<button class={`ui-icon-btn ${currentMode === 'text' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={addText} aria-label="Text Tool">
+					<button class={`ui-icon-btn ${currentMode === 'text' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={addText} aria-label="Text Tool" title="Thêm chữ">
 						<span class="material-symbols-outlined text-sm">match_case</span>
 					</button>
+					<button class={`ui-icon-btn ${currentMode === 'crop' ? 'ring-2 ring-primary text-primary bg-primary/10' : ''}`} onclick={() => setMode('crop')} aria-label="Crop Tool" title="Cắt ảnh">
+						<span class="material-symbols-outlined text-sm">crop</span>
+					</button>
 					
-					<button class="ui-icon-btn text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10" onclick={removeSelected} aria-label="Remove Selected">
+					<button class="ui-icon-btn text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10" onclick={removeSelected} aria-label="Remove Selected" title="Xóa phần chọn">
 						<span class="material-symbols-outlined text-sm">delete</span>
 					</button>
 				</div>
@@ -173,12 +315,21 @@
 						<span class="material-symbols-outlined text-xs">line_weight</span>
 						<input type="range" min="1" max="50" bind:value={strokeWidth} class="w-20" />
 					</div>
-					{/if}
-					
 					<div class="flex items-center gap-2">
 						<span class="material-symbols-outlined text-xs">palette</span>
 						<input type="color" bind:value={drawColor} class="w-8 h-8 rounded shrink-0 cursor-pointer p-0 border-0 outline-none" />
 					</div>
+					{:else if currentMode === 'crop'}
+					<div class="flex items-center gap-2">
+						<button class="ui-btn bg-indigo-500 hover:bg-indigo-600 text-white !h-8 !px-3 !text-xs font-bold gap-1 transition-all" onclick={confirmCrop}>
+							<span class="material-symbols-outlined text-xs">check</span>
+							Áp dụng Cắt
+						</button>
+						<button class="ui-btn bg-transparent border border-border text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 !h-8 !px-3 !text-xs gap-1 transition-all" onclick={() => setMode('select')}>
+							Hủy
+						</button>
+					</div>
+					{/if}
 
 					<div class="w-px h-6 bg-border mx-2"></div>
 					

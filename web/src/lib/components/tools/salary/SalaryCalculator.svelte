@@ -6,7 +6,7 @@
 	let customInsuranceSalary = $state(20000000);
 
 	const formatVND = (val: number) => {
-		return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+		return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + ' đ';
 	};
 
 	// Logic constants 2026
@@ -121,9 +121,9 @@
 
 			<!-- Output Section -->
 			<div class="space-y-6 bg-white dark:bg-slate-900/80 border border-primary/10 dark:border-white/10 p-6 sm:p-8 rounded-3xl shadow-xl">
-				<div class="flex flex-col sm:flex-row justify-between sm:items-end border-b border-slate-200 dark:border-slate-700/80 pb-6 gap-2">
+				<div class="flex flex-col gap-1 border-b border-slate-200 dark:border-slate-700/80 pb-6">
 					<span class="text-sm font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase">Lương Thực Nhận (NET)</span>
-					<span class="text-4xl sm:text-5xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 drop-shadow-sm">
+					<span class="text-4xl sm:text-[2.8rem] leading-tight font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 drop-shadow-sm truncate">
 						{formatVND(net)}
 					</span>
 				</div>

@@ -102,6 +102,14 @@ export const dictionary = {
 			music: {
 				title: 'Nghe nhạc',
 				description: 'Trình phát nhạc với danh sách các bài hát thư giãn.',
+			},
+			diagram: {
+				title: 'Tạo Diagram',
+				description: 'Tạo sơ đồ flowchart, sequence, class, ER và nhiều loại khác từ mã Mermaid.',
+			},
+			database: {
+				title: 'Thiết kế Database',
+				description: 'Thiết kế cấu trúc bảng, quan hệ và tự động tạo mã SQL (PostgreSQL/MySQL).',
 			}
 		}
 	},
@@ -206,6 +214,14 @@ export const dictionary = {
 			music: {
 				title: 'Music Player',
 				description: 'A relaxing music player with a curated playlist.',
+			},
+			diagram: {
+				title: 'Diagram Generator',
+				description: 'Generate flowcharts, sequence diagrams, class diagrams, ER diagrams and more from Mermaid code.',
+			},
+			database: {
+				title: 'Database Designer',
+				description: 'Design table structures, relationships and generate SQL (PostgreSQL/MySQL) automatically.',
 			}
 		}
 	}

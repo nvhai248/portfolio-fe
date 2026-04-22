@@ -30,6 +30,20 @@
 			icon: 'headphones',
 			title: t.music.title,
 			description: t.music.description
+		},
+		{
+			id: 'diagram',
+			path: `/${locale}/tools/diagram`,
+			icon: 'schema',
+			title: t.diagram.title,
+			description: t.diagram.description
+		},
+		{
+			id: 'database',
+			path: `/${locale}/tools/database`,
+			icon: 'database',
+			title: t.database.title,
+			description: t.database.description
 		}
 	]);
 </script>
@@ -49,7 +63,7 @@
 			</div>
 		</Reveal>
 
-		<div class="mx-auto grid max-w-4xl gap-6 md:grid-cols-2 lg:grid-cols-3">
+		<div class="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
 			{#each toolsList as tool, index}
 				<Reveal type="slide-up" delay={150 * (index + 1)}>
 					<a href={tool.path} class="ui-card-link group block p-6">

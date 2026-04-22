@@ -59,13 +59,13 @@
 			<div class="w-full max-w-[420px]">
 				<!-- Track Info -->
 				<div class="mb-8 text-center lg:text-left">
-					<h2 class="text-3xl font-black tracking-tight text-[var(--ui-text)] sm:text-4xl">{musicStore.currentTrack.title}</h2>
-					<p class="mt-2 text-lg font-semibold uppercase tracking-widest text-[var(--ui-text-subtle)]">{musicStore.currentTrack.artist}</p>
+					<h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white drop-shadow-sm sm:text-4xl">{musicStore.currentTrack.title}</h2>
+					<p class="mt-2 text-lg font-semibold uppercase tracking-widest text-slate-600 dark:text-slate-300 drop-shadow-sm">{musicStore.currentTrack.artist}</p>
 				</div>
 
 				<!-- Progress Bar -->
 				<div class="mb-8 space-y-4">
-					<div class="group relative h-1.5 w-full rounded-full bg-primary/10">
+					<div class="group relative h-1.5 w-full rounded-full bg-slate-300/50 dark:bg-slate-600/50">
 						<input 
 							type="range" 
 							min="0" 
@@ -75,16 +75,16 @@
 							class="absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent accent-primary outline-none z-10 opacity-0"
 						/>
 						<div 
-							class="absolute left-0 top-0 bottom-0 pointer-events-none rounded-full bg-primary shadow-[0_0_10px_rgba(30,64,175,0.3)] transition-all"
+							class="absolute left-0 top-0 bottom-0 pointer-events-none rounded-full bg-primary dark:bg-blue-500 shadow-[0_0_10px_rgba(30,64,175,0.3)] transition-all"
 							style="width: {(musicStore.currentTime / (musicStore.duration || 1)) * 100}%"
 						></div>
 						<!-- Fake thumb for aesthetic -->
 						<div 
-							class="absolute top-1/2 -mt-2 size-4 bg-primary border-2 border-white rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+							class="absolute top-1/2 -mt-2 size-4 bg-primary dark:bg-blue-400 border-2 border-white rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
 							style="left: calc({(musicStore.currentTime / (musicStore.duration || 1)) * 100}% - 8px)"
 						></div>
 					</div>
-					<div class="flex justify-between font-mono text-[0.7rem] font-bold text-[var(--ui-text-subtle)]">
+					<div class="flex justify-between font-mono text-[0.7rem] font-bold text-slate-700 dark:text-slate-200 drop-shadow-sm">
 						<span>{formatTime(musicStore.currentTime)}</span>
 						<span>-{formatTime(musicStore.duration - musicStore.currentTime)}</span>
 					</div>
@@ -92,28 +92,28 @@
 
 				<!-- Controls -->
 				<div class="mb-10 flex items-center justify-center gap-8 lg:justify-start">
-					<button class="ui-icon-btn size-12 rounded-full border-none bg-transparent transition-transform hover:scale-110 active:scale-95" onclick={() => musicStore.prevTrack()}>
-						<span class="material-symbols-outlined text-3xl">skip_previous</span>
+					<button class="ui-icon-btn size-12 rounded-full border-none bg-transparent transition-transform hover:scale-110 active:scale-95 text-slate-800 dark:text-white hover:text-primary dark:hover:text-blue-400" onclick={() => musicStore.prevTrack()}>
+						<span class="material-symbols-outlined text-3xl drop-shadow-md">skip_previous</span>
 					</button>
 
 					<button 
-						class="flex size-20 items-center justify-center rounded-full bg-primary text-white shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95" 
+						class="flex size-20 items-center justify-center rounded-full bg-primary dark:bg-blue-600 text-white shadow-2xl shadow-primary/40 dark:shadow-blue-500/40 transition-all hover:scale-105 active:scale-95 border border-white/10" 
 						onclick={() => musicStore.toggle()}
 					>
-						<span class="material-symbols-outlined text-5xl">
+						<span class="material-symbols-outlined text-5xl drop-shadow-md">
 							{musicStore.isPlaying ? 'pause' : 'play_arrow'}
 						</span>
 					</button>
 
-					<button class="ui-icon-btn size-12 rounded-full border-none bg-transparent transition-transform hover:scale-110 active:scale-95" onclick={() => musicStore.nextTrack()}>
-						<span class="material-symbols-outlined text-3xl">skip_next</span>
+					<button class="ui-icon-btn size-12 rounded-full border-none bg-transparent transition-transform hover:scale-110 active:scale-95 text-slate-800 dark:text-white hover:text-primary dark:hover:text-blue-400" onclick={() => musicStore.nextTrack()}>
+						<span class="material-symbols-outlined text-3xl drop-shadow-md">skip_next</span>
 					</button>
 				</div>
 
 				<!-- Volume -->
-				<div class="flex items-center gap-4 px-2 opacity-60 transition-opacity hover:opacity-100 group">
-					<span class="material-symbols-outlined text-xl">volume_down</span>
-					<div class="relative h-1.5 w-full rounded-full bg-primary/10 overflow-hidden">
+				<div class="flex items-center gap-4 px-2 opacity-80 transition-opacity hover:opacity-100 group text-slate-800 dark:text-white">
+					<span class="material-symbols-outlined text-xl drop-shadow-sm">volume_down</span>
+					<div class="relative h-1.5 w-full rounded-full bg-slate-300/50 dark:bg-slate-600/50 overflow-hidden">
 						<input 
 							type="range" 
 							min="0" 
@@ -124,11 +124,11 @@
 							class="absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent accent-primary opacity-0 z-10"
 						/>
 						<div 
-							class="pointer-events-none h-full bg-primary absolute left-0 top-0 bottom-0 group-hover:bg-blue-500"
+							class="pointer-events-none h-full bg-primary dark:bg-blue-500 absolute left-0 top-0 bottom-0 group-hover:bg-blue-500 dark:group-hover:bg-blue-400"
 							style="width: {musicStore.volume * 100}%"
 						></div>
 					</div>
-					<span class="material-symbols-outlined text-xl">volume_up</span>
+					<span class="material-symbols-outlined text-xl drop-shadow-sm">volume_up</span>
 				</div>
 			</div>
 		</div>
