@@ -6,11 +6,15 @@ env:
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '.github/workflows/pipelines.yml'
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '.github/workflows/pipelines.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -68,7 +72,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: quality-gates
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Trigger on push to main or pull_request
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request')
+    
+    env:
+      # Determine if this is a production or preview deployment
+      IS_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      # Format environment for Vercel CLI
+      VERCEL_ENV: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && 'production' || 'preview' }}
 
     steps:
       - name: Checkout repository
@@ -81,17 +94,24 @@ jobs:
           cache: "npm"
           cache-dependency-path: web/package-lock.json
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel pull --yes \
+            --environment=$VERCEL_ENV \
+            --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web
 
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel build \
+            ${{ env.IS_PROD == 'true' && '--prod' || '' }} \
+            --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel deploy --prebuilt \
+            ${{ env.IS_PROD == 'true' && '--prod' || '' }} \
+            --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web
+
