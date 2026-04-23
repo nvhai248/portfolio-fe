@@ -45,6 +45,10 @@ const gotoWithRetry = async (page: Page, path: string): Promise<Response | null>
 	return null;
 };
 
+const waitForAppHydration = async (page: Page): Promise<void> => {
+	await expect(page.locator('html')).toHaveAttribute('data-app-hydrated', 'true');
+};
+
 const assertBlogContentIsVisible = async (page: Page): Promise<void> => {
 	await expect
 		.poll(async () => {
@@ -113,6 +117,7 @@ test('root redirects to locale prefix', async ({ page }) => {
 test('language switch keeps route and switches locale', async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 800 });
 	await page.goto('/vi/projects');
+	await waitForAppHydration(page);
 
 	// Open the language switcher dropdown
 	await page.getByTestId('language-toggle').click();
@@ -126,6 +131,7 @@ test('language switch keeps route and switches locale', async ({ page }) => {
 test('theme toggle persists after reload and navigation', async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 800 });
 	await page.goto('/vi');
+	await waitForAppHydration(page);
 
 	const html = page.locator('html');
 	const toggle = page.getByTestId('theme-toggle');

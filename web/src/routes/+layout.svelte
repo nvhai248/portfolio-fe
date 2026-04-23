@@ -22,8 +22,10 @@
 
 	onMount(() => {
 		theme.init();
+		document.documentElement.dataset.appHydrated = 'true';
 
 		return () => {
+			delete document.documentElement.dataset.appHydrated;
 			if (revealTimer) clearTimeout(revealTimer);
 			if (hideTimer) clearTimeout(hideTimer);
 		};
