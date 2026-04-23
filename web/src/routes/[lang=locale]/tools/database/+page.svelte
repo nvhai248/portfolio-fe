@@ -17,7 +17,7 @@
 	<div class="mx-auto max-w-6xl">
 		<Reveal type="slide-up">
 			<a href={`/${locale}/tools`} class="ui-link text-sm mb-6 inline-block">
-				&larr; {locale === 'vi' ? 'Quay lại Công cụ' : 'Back to Tools'}
+				&larr; {t.back}
 			</a>
 			<div class="mb-12">
 				<h1 class="ui-heading-hero mb-4">{t.title}</h1>

@@ -1,7 +1,37 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { page } from '$app/state';
+	import { browser } from '$app/environment';
+	import { onMount, tick, untrack } from 'svelte';
+	import { getDictionary } from '$lib/i18n/dictionary';
+	import { localeFromPathname } from '$lib/i18n/locale';
 
-	let mermaidCode = $state(`flowchart TD
+	type MermaidRenderResult = { svg: string };
+	type MermaidInstance = {
+		initialize: (config: Record<string, unknown>) => void;
+		render: (id: string, code: string) => Promise<MermaidRenderResult>;
+	};
+
+	type DiagramHistoryEntry = {
+		id: string;
+		code: string;
+		templateKey: string;
+		savedAt: string;
+	};
+
+	type PersistedDiagramDraft = {
+		version: 1;
+		currentCode: string;
+		currentTemplateKey: string;
+		history: DiagramHistoryEntry[];
+		historyIndex: number;
+		updatedAt: string;
+	};
+
+	type TemplateKey = 'flowchart' | 'sequence' | 'classDiagram' | 'gantt' | 'erDiagram' | 'pie';
+
+	const STORAGE_KEY = 'portfolio-diagram-draft-v1';
+	const HISTORY_LIMIT = 60;
+	const DEFAULT_MERMAID_CODE = `flowchart TD
     A[Bắt đầu] --> B[Người dùng gửi yêu cầu]
     B --> C[Hệ thống tiếp nhận]
     C --> D[Kiểm tra dữ liệu]
@@ -10,17 +40,10 @@
     E --> G[Lưu kết quả]
     G --> H[Phản hồi người dùng]
     F --> H
-    H --> I[Kết thúc]`);
+    H --> I[Kết thúc]`;
 
-	let previewContainer: HTMLDivElement | undefined = $state();
-	let isMermaidLoaded = $state(false);
-	let errorMessage = $state('');
-	let renderCounter = 0;
-	let selectedTemplate = $state('');
-
-	const templates: Record<string, { label: string; code: string }> = {
+	const templates: Record<TemplateKey, { code: string }> = {
 		flowchart: {
-			label: 'Flowchart',
 			code: `flowchart TD
     A[Start] --> B{Is it working?}
     B -->|Yes| C[Great!]
@@ -28,7 +51,6 @@
     D --> B`
 		},
 		sequence: {
-			label: 'Sequence',
 			code: `sequenceDiagram
     participant Client
     participant Server
@@ -39,7 +61,6 @@
     Server-->>Client: HTTP Response`
 		},
 		classDiagram: {
-			label: 'Class',
 			code: `classDiagram
     class User {
         +String name
@@ -55,7 +76,6 @@
     User "1" --> "*" Order : places`
 		},
 		gantt: {
-			label: 'Gantt',
 			code: `gantt
     title Project Timeline
     dateFormat YYYY-MM-DD
@@ -69,7 +89,6 @@
         QA Testing     :c1, after b1, 7d`
 		},
 		erDiagram: {
-			label: 'ER Diagram',
 			code: `erDiagram
     USER ||--o{ ORDER : places
     ORDER ||--|{ LINE_ITEM : contains
@@ -86,7 +105,6 @@
     }`
 		},
 		pie: {
-			label: 'Pie Chart',
 			code: `pie title Technology Usage
     "JavaScript" : 40
     "TypeScript" : 30
@@ -96,12 +114,225 @@
 		}
 	};
 
+	function createHistoryEntry(
+		code: string,
+		templateKey: string,
+		savedAt = new Date().toISOString()
+	): DiagramHistoryEntry {
+		return {
+			id: browser && typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+				? crypto.randomUUID()
+				: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+			code,
+			templateKey,
+			savedAt
+		};
+	}
+
+	function getMermaid(): MermaidInstance | undefined {
+		return (window as Window & { mermaid?: MermaidInstance }).mermaid;
+	}
+
+	function isDiagramHistoryEntry(value: unknown): value is DiagramHistoryEntry {
+		if (!value || typeof value !== 'object') return false;
+
+		const entry = value as Record<string, unknown>;
+		return (
+			typeof entry.id === 'string' &&
+			typeof entry.code === 'string' &&
+			typeof entry.templateKey === 'string' &&
+			typeof entry.savedAt === 'string'
+		);
+	}
+
+	function formatSavedAt(savedAt: string): string {
+		const parsed = new Date(savedAt);
+		if (Number.isNaN(parsed.getTime())) return '';
+		return parsed.toLocaleString();
+	}
+
+	function normalizePersistedDraft(raw: unknown): PersistedDiagramDraft | null {
+		if (!raw || typeof raw !== 'object') return null;
+
+		const draft = raw as Record<string, unknown>;
+		let normalizedHistory = Array.isArray(draft.history)
+			? draft.history.filter(isDiagramHistoryEntry)
+			: [];
+
+		if (!normalizedHistory.length) {
+			normalizedHistory = [createHistoryEntry(DEFAULT_MERMAID_CODE, '')];
+		}
+
+		let historyIndex = typeof draft.historyIndex === 'number'
+			? Math.trunc(draft.historyIndex)
+			: normalizedHistory.length - 1;
+
+		historyIndex = Math.min(Math.max(historyIndex, 0), normalizedHistory.length - 1);
+
+		const currentEntry = normalizedHistory[historyIndex];
+		const currentCode = typeof draft.currentCode === 'string' ? draft.currentCode : currentEntry.code;
+		const currentTemplateKey =
+			typeof draft.currentTemplateKey === 'string' ? draft.currentTemplateKey : currentEntry.templateKey;
+		const updatedAt = typeof draft.updatedAt === 'string' ? draft.updatedAt : currentEntry.savedAt;
+
+		if (
+			currentEntry.code !== currentCode ||
+			currentEntry.templateKey !== currentTemplateKey
+		) {
+			normalizedHistory = [...normalizedHistory, createHistoryEntry(currentCode, currentTemplateKey, updatedAt)];
+			if (normalizedHistory.length > HISTORY_LIMIT) {
+				normalizedHistory = normalizedHistory.slice(-HISTORY_LIMIT);
+			}
+			historyIndex = normalizedHistory.length - 1;
+		}
+
+		return {
+			version: 1,
+			currentCode,
+			currentTemplateKey,
+			history: normalizedHistory,
+			historyIndex,
+			updatedAt
+		};
+	}
+
+	const initialEntry = createHistoryEntry(DEFAULT_MERMAID_CODE, '');
+
+	let mermaidCode = $state(DEFAULT_MERMAID_CODE);
+	let selectedTemplate = $state('');
+	let previewContainer: HTMLDivElement | undefined = $state();
+	let isMermaidLoaded = $state(false);
+	let errorMessage = $state('');
+	let renderCounter = 0;
+	let history = $state<DiagramHistoryEntry[]>([initialEntry]);
+	let historyIndex = $state(0);
+	let lastSavedAt = $state(initialEntry.savedAt);
+	let restoredFromDraft = $state(false);
+	let hasHydratedDraft = false;
+	let isApplyingPersistedState = false;
+	let skipNextHistoryCommit = false;
+
+	let historyDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+	let renderDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+	const locale = $derived(localeFromPathname(page.url.pathname));
+	const t = $derived(getDictionary(locale).tools.diagram.ui);
+	const canUndo = $derived(historyIndex > 0);
+	const canRedo = $derived(historyIndex < history.length - 1);
+	const historySummary = $derived(history.length ? `${historyIndex + 1}/${history.length}` : '0/0');
+	const savedAtLabel = $derived(lastSavedAt ? formatSavedAt(lastSavedAt) : '');
+
+	function getTemplateLabel(key: TemplateKey): string {
+		return t.templateOptions[key];
+	}
+
+	function persistDraftState(updatedAt = new Date().toISOString()) {
+		if (!browser) return;
+
+		const payload: PersistedDiagramDraft = {
+			version: 1,
+			currentCode: mermaidCode,
+			currentTemplateKey: selectedTemplate,
+			history,
+			historyIndex,
+			updatedAt
+		};
+
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+			lastSavedAt = updatedAt;
+		} catch {
+			// Ignore storage write errors and keep the in-memory editor functional.
+		}
+	}
+
+	async function applyEditorState(
+		code: string,
+		templateKey: string,
+		options: { skipHistoryCommit?: boolean; persist?: boolean } = {}
+	) {
+		isApplyingPersistedState = true;
+		if (options.skipHistoryCommit) {
+			skipNextHistoryCommit = true;
+		}
+
+		mermaidCode = code;
+		selectedTemplate = templateKey;
+		await tick();
+		isApplyingPersistedState = false;
+
+		if (options.persist) {
+			persistDraftState();
+		}
+
+		if (isMermaidLoaded) {
+			await renderDiagram();
+		}
+	}
+
+	function commitHistorySnapshot(code: string, templateKey: string) {
+		const activeEntry = history[historyIndex];
+		if (activeEntry && activeEntry.code === code && activeEntry.templateKey === templateKey) {
+			persistDraftState(activeEntry.savedAt);
+			return;
+		}
+
+		const nextEntry = createHistoryEntry(code, templateKey);
+		let nextHistory = historyIndex < history.length - 1
+			? history.slice(0, historyIndex + 1)
+			: [...history];
+
+		nextHistory = [...nextHistory, nextEntry];
+		if (nextHistory.length > HISTORY_LIMIT) {
+			nextHistory = nextHistory.slice(-HISTORY_LIMIT);
+		}
+
+		history = nextHistory;
+		historyIndex = nextHistory.length - 1;
+		persistDraftState(nextEntry.savedAt);
+	}
+
+	async function restorePersistedDraft() {
+		if (!browser) return;
+
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			if (!raw) {
+				persistDraftState(initialEntry.savedAt);
+				hasHydratedDraft = true;
+				return;
+			}
+
+			const parsed = normalizePersistedDraft(JSON.parse(raw));
+			if (!parsed) {
+				persistDraftState(initialEntry.savedAt);
+				hasHydratedDraft = true;
+				return;
+			}
+
+			history = parsed.history;
+			historyIndex = parsed.historyIndex;
+			lastSavedAt = parsed.updatedAt;
+			restoredFromDraft = true;
+			await applyEditorState(parsed.currentCode, parsed.currentTemplateKey, {
+				skipHistoryCommit: true,
+				persist: true
+			});
+		} catch {
+			persistDraftState(initialEntry.savedAt);
+		} finally {
+			hasHydratedDraft = true;
+		}
+	}
+
 	onMount(() => {
-		if (!(window as any).mermaid) {
+		restorePersistedDraft();
+
+		if (!getMermaid()) {
 			const script = document.createElement('script');
 			script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
 			script.onload = async () => {
-				(window as any).mermaid.initialize({
+				getMermaid()?.initialize({
 					startOnLoad: false,
 					theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
 					securityLevel: 'loose',
@@ -116,13 +347,20 @@
 			isMermaidLoaded = true;
 			tick().then(() => renderDiagram());
 		}
+
+		return () => {
+			if (historyDebounceTimer) clearTimeout(historyDebounceTimer);
+			if (renderDebounceTimer) clearTimeout(renderDebounceTimer);
+		};
 	});
 
 	async function renderDiagram() {
 		if (!previewContainer || !isMermaidLoaded) return;
 		errorMessage = '';
 
-		const mermaid = (window as any).mermaid;
+		const mermaid = getMermaid();
+		if (!mermaid) return;
+
 		const currentId = `mermaid-preview-${++renderCounter}`;
 
 		try {
@@ -137,20 +375,65 @@
 					svgEl.style.height = 'auto';
 				}
 			}
-		} catch (err: any) {
-			errorMessage = err?.message || 'Invalid Mermaid syntax';
+		} catch (err: unknown) {
+			errorMessage = err instanceof Error ? err.message : t.invalidSyntax;
 			// Clean up failed render element
 			const failedEl = document.getElementById('d' + currentId);
 			if (failedEl) failedEl.remove();
 		}
 	}
 
-	function applyTemplate(key: string) {
-		if (templates[key]) {
-			mermaidCode = templates[key].code;
-			selectedTemplate = key;
-			renderDiagram();
+	function applyTemplate(key: TemplateKey) {
+		mermaidCode = templates[key].code;
+		selectedTemplate = key;
+	}
+
+	async function undo() {
+		if (!canUndo) return;
+
+		historyIndex -= 1;
+		const entry = history[historyIndex];
+		await applyEditorState(entry.code, entry.templateKey, {
+			skipHistoryCommit: true,
+			persist: true
+		});
+	}
+
+	async function redo() {
+		if (!canRedo) return;
+
+		historyIndex += 1;
+		const entry = history[historyIndex];
+		await applyEditorState(entry.code, entry.templateKey, {
+			skipHistoryCommit: true,
+			persist: true
+		});
+	}
+
+	async function clearDraft() {
+		if (!browser) return;
+
+		const shouldReset = window.confirm(
+			t.clearDraftConfirm
+		);
+		if (!shouldReset) return;
+
+		const freshEntry = createHistoryEntry(DEFAULT_MERMAID_CODE, '');
+		history = [freshEntry];
+		historyIndex = 0;
+		lastSavedAt = freshEntry.savedAt;
+		restoredFromDraft = false;
+
+		try {
+			localStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// Ignore storage removal errors.
 		}
+
+		await applyEditorState(freshEntry.code, freshEntry.templateKey, {
+			skipHistoryCommit: true,
+			persist: true
+		});
 	}
 
 	async function exportPng() {
@@ -199,14 +482,36 @@
 		URL.revokeObjectURL(url);
 	}
 
-	// Debounced auto-render
-	let debounceTimer: ReturnType<typeof setTimeout>;
 	$effect(() => {
-		const _code = mermaidCode;
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => {
-			if (isMermaidLoaded) renderDiagram();
-		}, 400);
+		const currentCode = mermaidCode;
+		const currentTemplateKey = selectedTemplate;
+
+		if (isApplyingPersistedState || !hasHydratedDraft) return;
+
+		const shouldSkipHistoryCommit = skipNextHistoryCommit;
+		skipNextHistoryCommit = false;
+
+		untrack(() => persistDraftState());
+
+		if (historyDebounceTimer) clearTimeout(historyDebounceTimer);
+		if (renderDebounceTimer) clearTimeout(renderDebounceTimer);
+
+		if (!shouldSkipHistoryCommit) {
+			historyDebounceTimer = setTimeout(() => {
+				commitHistorySnapshot(currentCode, currentTemplateKey);
+			}, 450);
+		}
+
+		renderDebounceTimer = setTimeout(() => {
+			if (isMermaidLoaded) {
+				renderDiagram();
+			}
+		}, 250);
+
+		return () => {
+			if (historyDebounceTimer) clearTimeout(historyDebounceTimer);
+			if (renderDebounceTimer) clearTimeout(renderDebounceTimer);
+		};
 	});
 </script>
 
@@ -218,38 +523,77 @@
 				<span class="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
 			</div>
 		{:else}
-			<!-- Template chips + Export buttons -->
-			<div class="flex flex-wrap items-center justify-between gap-4 bg-white/50 dark:bg-black/20 p-4 rounded-2xl border border-primary/10">
-				<div class="flex flex-wrap items-center gap-2">
-					<span class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mr-1">Templates:</span>
-					{#each Object.entries(templates) as [key, tmpl]}
+			<!-- Template chips + Actions -->
+			<div class="flex flex-col gap-4 bg-white/50 dark:bg-black/20 p-4 rounded-2xl border border-primary/10">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div class="flex flex-wrap items-center gap-2">
+						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mr-1">{t.templatesLabel}:</span>
+						{#each Object.keys(templates) as key}
+							<button
+								class="px-3 py-1.5 rounded-full text-[0.7rem] font-bold uppercase tracking-wider transition-all border
+									{selectedTemplate === key
+										? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+										: 'bg-white/60 dark:bg-white/5 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary'}"
+								onclick={() => applyTemplate(key as TemplateKey)}
+							>
+								{getTemplateLabel(key as TemplateKey)}
+							</button>
+						{/each}
+					</div>
+
+					<div class="flex flex-wrap items-center gap-2">
 						<button
-							class="px-3 py-1.5 rounded-full text-[0.7rem] font-bold uppercase tracking-wider transition-all border
-								{selectedTemplate === key
-									? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-									: 'bg-white/60 dark:bg-white/5 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary'}"
-							onclick={() => applyTemplate(key)}
+							onclick={undo}
+							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							disabled={!canUndo}
 						>
-							{tmpl.label}
+							<span class="material-symbols-outlined text-sm">undo</span>
+							{t.undo}
 						</button>
-					{/each}
+						<button
+							onclick={redo}
+							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							disabled={!canRedo}
+						>
+							<span class="material-symbols-outlined text-sm">redo</span>
+							{t.redo}
+						</button>
+						<button
+							onclick={clearDraft}
+							class="ui-btn bg-transparent border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 hover:border-red-400 hover:text-red-500 transition-colors"
+						>
+							<span class="material-symbols-outlined text-sm">delete_sweep</span>
+							{t.clearDraft}
+						</button>
+						<button
+							onclick={exportSvg}
+							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 hover:bg-primary hover:text-white transition-colors"
+						>
+							<span class="material-symbols-outlined text-sm">download</span>
+							{t.svg}
+						</button>
+						<button
+							onclick={exportPng}
+							class="ui-btn ui-btn-primary !h-9 !px-3 !text-xs gap-1.5"
+						>
+							<span class="material-symbols-outlined text-sm">image</span>
+							{t.png}
+						</button>
+					</div>
 				</div>
 
-				<div class="flex items-center gap-2">
-					<button
-						onclick={exportSvg}
-						class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 hover:bg-primary hover:text-white transition-colors"
-					>
-						<span class="material-symbols-outlined text-sm">download</span>
-						SVG
-					</button>
-					<button
-						onclick={exportPng}
-						class="ui-btn ui-btn-primary !h-9 !px-3 !text-xs gap-1.5"
-					>
-						<span class="material-symbols-outlined text-sm">image</span>
-						PNG
-					</button>
+				<div class="flex flex-wrap items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest">
+					<span class="rounded-full bg-primary/10 px-3 py-1 text-primary">
+						{restoredFromDraft ? t.draftRestored : t.draftAutosave}
+					</span>
+					<span class="rounded-full bg-slate-100 px-3 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
+						{t.historyLabel}: {historySummary}
+					</span>
+					{#if savedAtLabel}
+						<span class="rounded-full bg-slate-100 px-3 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
+							{t.lastSavedAt}: {savedAtLabel}
+						</span>
+					{/if}
 				</div>
 			</div>
 
@@ -258,8 +602,11 @@
 				<!-- Code Editor -->
 				<div class="flex flex-col gap-2">
 					<div class="flex items-center justify-between px-1">
-						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">Mermaid Code</span>
-						<span class="text-[0.6rem] font-mono text-slate-400">{mermaidCode.split('\n').length} dòng</span>
+						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">{t.editorTitle}</span>
+						<div class="flex items-center gap-3 text-[0.6rem] font-mono text-slate-400">
+							<span>{mermaidCode.split('\n').length} {t.lines}</span>
+							<span>{historySummary} {t.snapshots}</span>
+						</div>
 					</div>
 					<textarea
 						bind:value={mermaidCode}
@@ -267,18 +614,18 @@
 						class="flex-1 w-full resize-none rounded-2xl bg-slate-900 text-slate-100 font-mono text-sm leading-relaxed p-5
 							   border border-slate-700/50 outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/40 transition-all
 							   placeholder:text-slate-500 custom-scrollbar"
-						placeholder="Paste your Mermaid code here..."
+						placeholder={t.placeholder}
 					></textarea>
 				</div>
 
 				<!-- Preview -->
 				<div class="flex flex-col gap-2">
 					<div class="flex items-center justify-between px-1">
-						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">Preview</span>
+						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">{t.previewTitle}</span>
 						{#if errorMessage}
 							<span class="text-[0.6rem] font-bold text-red-500 flex items-center gap-1">
 								<span class="material-symbols-outlined text-xs">error</span>
-								Syntax Error
+								{t.syntaxError}
 							</span>
 						{/if}
 					</div>
@@ -290,7 +637,7 @@
 							<div class="absolute inset-0 flex items-center justify-center bg-red-50/80 dark:bg-red-950/30 backdrop-blur-sm rounded-2xl p-6">
 								<div class="text-center max-w-sm">
 									<span class="material-symbols-outlined text-4xl text-red-400 mb-3">code_off</span>
-									<p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">Lỗi cú pháp Mermaid</p>
+									<p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">{t.syntaxErrorTitle}</p>
 									<p class="text-xs text-red-500/70 dark:text-red-400/60 font-mono break-all leading-relaxed">{errorMessage}</p>
 								</div>
 							</div>
@@ -301,7 +648,7 @@
 			</div>
 
 			<p class="text-[0.65rem] font-bold text-primary tracking-widest uppercase opacity-70 text-center">
-				Nhập mã Mermaid bên trái → Xem trước realtime bên phải → Xuất ảnh PNG hoặc SVG.
+				{t.footerSummary}
 			</p>
 		{/if}
 	</div>
