@@ -14,7 +14,7 @@
 <SeoHead title={t.title} description={t.description} pathname={page.url.pathname} locale={locale} />
 
 <div class="page-shell pt-32 pb-24 lg:pt-40">
-	<div class="mx-auto max-w-6xl">
+	<div class="mx-auto max-w-5xl">
 		<Reveal type="slide-up">
 			<a href={`/${locale}/tools`} class="ui-link text-sm mb-6 inline-block">
 				&larr; {t.back}

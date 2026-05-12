@@ -3,12 +3,12 @@
 	import type { PageData } from './$types';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 	import Reveal from '$lib/components/ui/Reveal.svelte';
-	import DiagramGenerator from '$lib/components/tools/diagram/DiagramGenerator.svelte';
+	import ImageCompressor from '$lib/components/tools/image-compress/ImageCompressor.svelte';
 	import { getDictionary } from '$lib/i18n/dictionary';
 
 	let { data }: { data: PageData } = $props();
 	const locale = $derived(data.locale);
-	const t = $derived(getDictionary(locale).tools.diagram);
+	const t = $derived(getDictionary(locale).tools.imageCompress);
 </script>
 
 <SeoHead title={t.title} description={t.description} pathname={page.url.pathname} locale={locale} />
@@ -26,7 +26,7 @@
 		</Reveal>
 
 		<Reveal type="fade" delay={150}>
-			<DiagramGenerator />
+			<ImageCompressor />
 		</Reveal>
 	</div>
 </div>

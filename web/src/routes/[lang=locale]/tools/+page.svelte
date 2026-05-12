@@ -25,6 +25,13 @@
 			description: t.image.description
 		},
 		{
+			id: 'image-compress',
+			path: `/${locale}/tools/image-compress`,
+			icon: 'compress',
+			title: t.imageCompress.title,
+			description: t.imageCompress.description
+		},
+		{
 			id: 'music',
 			path: `/${locale}/tools/music`,
 			icon: 'headphones',

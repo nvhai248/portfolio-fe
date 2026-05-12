@@ -28,9 +28,11 @@
 	};
 
 	type TemplateKey = 'flowchart' | 'sequence' | 'classDiagram' | 'gantt' | 'erDiagram' | 'pie';
+	type RenderMode = 'preview' | 'export';
 
 	const STORAGE_KEY = 'portfolio-diagram-draft-v1';
 	const HISTORY_LIMIT = 60;
+	const EXPORT_BACKGROUND = '#f8fbff';
 	const DEFAULT_MERMAID_CODE = `flowchart TD
     A[Bắt đầu] --> B[Người dùng gửi yêu cầu]
     B --> C[Hệ thống tiếp nhận]
@@ -131,6 +133,146 @@
 
 	function getMermaid(): MermaidInstance | undefined {
 		return (window as Window & { mermaid?: MermaidInstance }).mermaid;
+	}
+
+	function isDarkMode(): boolean {
+		return document.documentElement.classList.contains('dark');
+	}
+
+	function getMermaidPalette(mode: RenderMode) {
+		const dark = mode === 'preview' && isDarkMode();
+
+		return {
+			background: dark ? '#08111f' : EXPORT_BACKGROUND,
+			text: dark ? '#e2e8f0' : '#0f172a',
+			line: dark ? '#93c5fd' : '#2563eb',
+			primaryFill: dark ? '#1e3a8a' : '#dbeafe',
+			primaryBorder: dark ? '#60a5fa' : '#2563eb',
+			secondaryFill: dark ? '#134e4a' : '#ccfbf1',
+			secondaryBorder: dark ? '#14b8a6' : '#0f766e',
+			tertiaryFill: dark ? '#78350f' : '#fef3c7',
+			tertiaryBorder: dark ? '#f59e0b' : '#d97706',
+			edgeLabelBackground: dark ? '#0f172a' : '#ffffff'
+		};
+	}
+
+	function getMermaidConfig(mode: RenderMode): Record<string, unknown> {
+		const dark = mode === 'preview' && isDarkMode();
+		const palette = getMermaidPalette(mode);
+
+		return {
+			startOnLoad: false,
+			theme: 'base',
+			securityLevel: 'loose',
+			fontFamily: 'Inter, sans-serif',
+			themeVariables: {
+				background: palette.background,
+				primaryColor: palette.primaryFill,
+				primaryTextColor: palette.text,
+				primaryBorderColor: palette.primaryBorder,
+				secondaryColor: palette.secondaryFill,
+				secondaryTextColor: palette.text,
+				secondaryBorderColor: palette.secondaryBorder,
+				tertiaryColor: palette.tertiaryFill,
+				tertiaryTextColor: palette.text,
+				tertiaryBorderColor: palette.tertiaryBorder,
+				lineColor: palette.line,
+				defaultLinkColor: palette.line,
+				textColor: palette.text,
+				nodeTextColor: palette.text,
+				mainBkg: palette.background,
+				edgeLabelBackground: palette.edgeLabelBackground,
+				clusterBkg: dark ? '#0f172a' : '#eff6ff',
+				clusterBorder: dark ? '#38bdf8' : '#2563eb',
+				actorBorder: palette.primaryBorder,
+				actorBkg: palette.primaryFill,
+				actorTextColor: palette.text,
+				labelBoxBkgColor: palette.edgeLabelBackground,
+				labelBoxBorderColor: palette.primaryBorder,
+				sequenceNumberColor: palette.text,
+				sectionBkgColor: dark ? '#0f172a' : '#eff6ff',
+				sectionBkgColor2: dark ? '#111c2d' : '#ffffff',
+				sectionTextColor: palette.text,
+				taskBkgColor: palette.primaryFill,
+				taskBorderColor: palette.primaryBorder,
+				taskTextColor: palette.text,
+				taskTextOutsideColor: palette.text,
+				pie1: '#2563eb',
+				pie2: '#0f766e',
+				pie3: '#f59e0b',
+				pie4: '#0891b2',
+				pie5: '#14b8a6',
+				pieTextColor: palette.text
+			}
+		};
+	}
+
+	function enhanceRenderedSvg(svgEl: SVGSVGElement, mode: RenderMode) {
+		const palette = getMermaidPalette(mode);
+
+		svgEl.style.maxWidth = '100%';
+		svgEl.style.height = 'auto';
+		svgEl.style.display = 'block';
+		svgEl.style.fontFamily = 'Inter, sans-serif';
+		svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+		svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+		let backgroundRect = svgEl.querySelector('[data-portfolio-diagram-bg="true"]') as SVGRectElement | null;
+		if (!backgroundRect) {
+			backgroundRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			backgroundRect.setAttribute('data-portfolio-diagram-bg', 'true');
+			backgroundRect.setAttribute('x', '0');
+			backgroundRect.setAttribute('y', '0');
+			backgroundRect.setAttribute('width', '100%');
+			backgroundRect.setAttribute('height', '100%');
+			backgroundRect.setAttribute('rx', '22');
+			svgEl.insertBefore(backgroundRect, svgEl.firstChild);
+		}
+		backgroundRect.setAttribute('fill', palette.background);
+
+		let styleNode = svgEl.querySelector('style[data-portfolio-diagram-style="true"]') as SVGStyleElement | null;
+		if (!styleNode) {
+			styleNode = document.createElementNS('http://www.w3.org/2000/svg', 'style') as unknown as SVGStyleElement;
+			styleNode.setAttribute('data-portfolio-diagram-style', 'true');
+			svgEl.insertBefore(styleNode, backgroundRect.nextSibling);
+		}
+
+		styleNode.textContent = `
+			text, tspan {
+				font-family: Inter, sans-serif;
+			}
+
+			.label, .nodeLabel, .edgeLabel, .cluster text, .sectionTitle, .taskText, .taskTextOutsideRight, .taskTextOutsideLeft {
+				fill: ${palette.text} !important;
+				color: ${palette.text} !important;
+				font-weight: 600;
+			}
+
+			.edgeLabel rect, .labelBkg {
+				fill: ${palette.edgeLabelBackground} !important;
+				opacity: 1 !important;
+				stroke: ${palette.primaryBorder} !important;
+			}
+		`;
+	}
+
+	async function renderSvgMarkup(mode: RenderMode, id: string): Promise<string> {
+		const mermaid = getMermaid();
+		if (!mermaid) return '';
+
+		mermaid.initialize(getMermaidConfig(mode));
+		const { svg } = await mermaid.render(id, mermaidCode.trim());
+		return svg;
+	}
+
+	function serializeSvgMarkup(svgMarkup: string, mode: RenderMode): string | null {
+		const wrapper = document.createElement('div');
+		wrapper.innerHTML = svgMarkup;
+		const svgEl = wrapper.querySelector('svg');
+		if (!(svgEl instanceof SVGSVGElement)) return null;
+
+		enhanceRenderedSvg(svgEl, mode);
+		return new XMLSerializer().serializeToString(svgEl);
 	}
 
 	function isDiagramHistoryEntry(value: unknown): value is DiagramHistoryEntry {
@@ -325,25 +467,21 @@
 		}
 	}
 
-	onMount(() => {
+		onMount(() => {
 		restorePersistedDraft();
 
 		if (!getMermaid()) {
 			const script = document.createElement('script');
 			script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
 			script.onload = async () => {
-				getMermaid()?.initialize({
-					startOnLoad: false,
-					theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-					securityLevel: 'loose',
-					fontFamily: 'Inter, sans-serif'
-				});
+				getMermaid()?.initialize(getMermaidConfig('preview'));
 				isMermaidLoaded = true;
 				await tick();
 				renderDiagram();
 			};
 			document.head.appendChild(script);
 		} else {
+			getMermaid()?.initialize(getMermaidConfig('preview'));
 			isMermaidLoaded = true;
 			tick().then(() => renderDiagram());
 		}
@@ -358,21 +496,15 @@
 		if (!previewContainer || !isMermaidLoaded) return;
 		errorMessage = '';
 
-		const mermaid = getMermaid();
-		if (!mermaid) return;
-
 		const currentId = `mermaid-preview-${++renderCounter}`;
 
 		try {
-			const { svg } = await mermaid.render(currentId, mermaidCode.trim());
+			const svg = await renderSvgMarkup('preview', currentId);
 			if (previewContainer) {
 				previewContainer.innerHTML = svg;
-
-				// Make SVG responsive
 				const svgEl = previewContainer.querySelector('svg');
-				if (svgEl) {
-					svgEl.style.maxWidth = '100%';
-					svgEl.style.height = 'auto';
+				if (svgEl instanceof SVGSVGElement) {
+					enhanceRenderedSvg(svgEl, 'preview');
 				}
 			}
 		} catch (err: unknown) {
@@ -437,25 +569,27 @@
 	}
 
 	async function exportPng() {
-		if (!previewContainer) return;
-		const svgEl = previewContainer.querySelector('svg');
-		if (!svgEl) return;
+		const svgMarkup = await renderSvgMarkup('export', `diagram-export-${++renderCounter}`);
+		const svgData = serializeSvgMarkup(svgMarkup, 'export');
+		if (!svgData) return;
 
-		const svgData = new XMLSerializer().serializeToString(svgEl);
 		const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
 		const url = URL.createObjectURL(svgBlob);
+		const palette = getMermaidPalette('export');
 
 		const img = new Image();
 		img.onload = () => {
 			const scale = 2;
+			const sourceWidth = img.naturalWidth || img.width;
+			const sourceHeight = img.naturalHeight || img.height;
+			const padding = 28;
 			const canvas = document.createElement('canvas');
-			canvas.width = img.width * scale;
-			canvas.height = img.height * scale;
+			canvas.width = sourceWidth * scale + padding * 2;
+			canvas.height = sourceHeight * scale + padding * 2;
 			const ctx = canvas.getContext('2d')!;
-			ctx.fillStyle = '#ffffff';
+			ctx.fillStyle = palette.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
-			ctx.scale(scale, scale);
-			ctx.drawImage(img, 0, 0);
+			ctx.drawImage(img, padding, padding, sourceWidth * scale, sourceHeight * scale);
 			URL.revokeObjectURL(url);
 
 			const pngUrl = canvas.toDataURL('image/png');
@@ -467,12 +601,11 @@
 		img.src = url;
 	}
 
-	function exportSvg() {
-		if (!previewContainer) return;
-		const svgEl = previewContainer.querySelector('svg');
-		if (!svgEl) return;
+	async function exportSvg() {
+		const svgMarkup = await renderSvgMarkup('export', `diagram-export-${++renderCounter}`);
+		const svgData = serializeSvgMarkup(svgMarkup, 'export');
+		if (!svgData) return;
 
-		const svgData = new XMLSerializer().serializeToString(svgEl);
 		const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
@@ -515,8 +648,8 @@
 	});
 </script>
 
-<div class="glass-panel w-full overflow-hidden rounded-[2.5rem] shadow-2xl p-1 relative">
-	<div class="bg-surface/80 relative z-10 w-full rounded-[2.4rem] backdrop-blur-3xl p-6 sm:p-8 flex flex-col gap-6">
+<div class="glass-panel relative w-full overflow-hidden rounded-[2rem] p-px shadow-xl">
+	<div class="bg-surface/80 relative z-10 flex w-full flex-col gap-5 rounded-[1.85rem] p-4 backdrop-blur-3xl sm:p-5 lg:p-6">
 
 		{#if !isMermaidLoaded}
 			<div class="flex items-center justify-center p-20">
@@ -524,13 +657,13 @@
 			</div>
 		{:else}
 			<!-- Template chips + Actions -->
-			<div class="flex flex-col gap-4 bg-white/50 dark:bg-black/20 p-4 rounded-2xl border border-primary/10">
+			<div class="flex flex-col gap-4 rounded-[1.4rem] border border-primary/10 bg-white/60 p-3.5 shadow-sm dark:bg-black/20 sm:p-4">
 				<div class="flex flex-wrap items-center justify-between gap-4">
 					<div class="flex flex-wrap items-center gap-2">
-						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mr-1">{t.templatesLabel}:</span>
+						<span class="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{t.templatesLabel}:</span>
 						{#each Object.keys(templates) as key}
 							<button
-								class="px-3 py-1.5 rounded-full text-[0.7rem] font-bold uppercase tracking-wider transition-all border
+								class="rounded-full border px-3 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] transition-all
 									{selectedTemplate === key
 										? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
 										: 'bg-white/60 dark:bg-white/5 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary'}"
@@ -544,7 +677,7 @@
 					<div class="flex flex-wrap items-center gap-2">
 						<button
 							onclick={undo}
-							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							class="ui-btn gap-1.5 border border-[var(--ui-border)] bg-[var(--ui-bg-muted)] !h-9 !px-3 !text-[0.72rem] disabled:cursor-not-allowed disabled:opacity-50"
 							disabled={!canUndo}
 						>
 							<span class="material-symbols-outlined text-sm">undo</span>
@@ -552,7 +685,7 @@
 						</button>
 						<button
 							onclick={redo}
-							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							class="ui-btn gap-1.5 border border-[var(--ui-border)] bg-[var(--ui-bg-muted)] !h-9 !px-3 !text-[0.72rem] disabled:cursor-not-allowed disabled:opacity-50"
 							disabled={!canRedo}
 						>
 							<span class="material-symbols-outlined text-sm">redo</span>
@@ -560,21 +693,21 @@
 						</button>
 						<button
 							onclick={clearDraft}
-							class="ui-btn bg-transparent border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 hover:border-red-400 hover:text-red-500 transition-colors"
+							class="ui-btn gap-1.5 border border-[var(--ui-border)] bg-transparent !h-9 !px-3 !text-[0.72rem] transition-colors hover:border-red-400 hover:text-red-500"
 						>
 							<span class="material-symbols-outlined text-sm">delete_sweep</span>
 							{t.clearDraft}
 						</button>
 						<button
 							onclick={exportSvg}
-							class="ui-btn bg-[var(--ui-bg-muted)] border border-[var(--ui-border)] !h-9 !px-3 !text-xs gap-1.5 hover:bg-primary hover:text-white transition-colors"
+							class="ui-btn gap-1.5 border border-[var(--ui-border)] bg-[var(--ui-bg-muted)] !h-9 !px-3 !text-[0.72rem] transition-colors hover:bg-primary hover:text-white"
 						>
 							<span class="material-symbols-outlined text-sm">download</span>
 							{t.svg}
 						</button>
 						<button
 							onclick={exportPng}
-							class="ui-btn ui-btn-primary !h-9 !px-3 !text-xs gap-1.5"
+							class="ui-btn ui-btn-primary gap-1.5 !h-9 !px-3 !text-[0.72rem]"
 						>
 							<span class="material-symbols-outlined text-sm">image</span>
 							{t.png}
@@ -582,15 +715,15 @@
 					</div>
 				</div>
 
-				<div class="flex flex-wrap items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest">
-					<span class="rounded-full bg-primary/10 px-3 py-1 text-primary">
+				<div class="flex flex-wrap items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.18em]">
+					<span class="rounded-full bg-primary/10 px-2.5 py-1 text-primary">
 						{restoredFromDraft ? t.draftRestored : t.draftAutosave}
 					</span>
-					<span class="rounded-full bg-slate-100 px-3 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
+					<span class="rounded-full bg-slate-100 px-2.5 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
 						{t.historyLabel}: {historySummary}
 					</span>
 					{#if savedAtLabel}
-						<span class="rounded-full bg-slate-100 px-3 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
+						<span class="rounded-full bg-slate-100 px-2.5 py-1 text-slate-500 dark:bg-white/5 dark:text-slate-300">
 							{t.lastSavedAt}: {savedAtLabel}
 						</span>
 					{/if}
@@ -598,12 +731,12 @@
 			</div>
 
 			<!-- Editor + Preview -->
-			<div class="grid lg:grid-cols-2 gap-6 min-h-[500px]">
+			<div class="grid gap-5 lg:grid-cols-2 lg:items-stretch">
 				<!-- Code Editor -->
 				<div class="flex flex-col gap-2">
 					<div class="flex items-center justify-between px-1">
-						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">{t.editorTitle}</span>
-						<div class="flex items-center gap-3 text-[0.6rem] font-mono text-slate-400">
+						<span class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-primary">{t.editorTitle}</span>
+						<div class="flex items-center gap-3 text-[0.62rem] font-mono text-slate-400">
 							<span>{mermaidCode.split('\n').length} {t.lines}</span>
 							<span>{historySummary} {t.snapshots}</span>
 						</div>
@@ -611,9 +744,9 @@
 					<textarea
 						bind:value={mermaidCode}
 						spellcheck="false"
-						class="flex-1 w-full resize-none rounded-2xl bg-slate-900 text-slate-100 font-mono text-sm leading-relaxed p-5
-							   border border-slate-700/50 outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/40 transition-all
-							   placeholder:text-slate-500 custom-scrollbar"
+						class="custom-scrollbar min-h-[360px] w-full flex-1 resize-none rounded-[1.4rem] border border-slate-700/50 bg-slate-950 px-4 py-4 font-mono text-[0.83rem] leading-6 text-slate-100
+							   outline-none transition-all focus:border-primary/40 focus:ring-4 focus:ring-primary/20
+							   placeholder:text-slate-500 sm:min-h-[420px] sm:px-5 sm:py-4"
 						placeholder={t.placeholder}
 					></textarea>
 				</div>
@@ -621,20 +754,19 @@
 				<!-- Preview -->
 				<div class="flex flex-col gap-2">
 					<div class="flex items-center justify-between px-1">
-						<span class="text-[0.65rem] font-bold uppercase tracking-widest text-primary">{t.previewTitle}</span>
+						<span class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-primary">{t.previewTitle}</span>
 						{#if errorMessage}
-							<span class="text-[0.6rem] font-bold text-red-500 flex items-center gap-1">
+							<span class="flex items-center gap-1 text-[0.62rem] font-bold text-red-500">
 								<span class="material-symbols-outlined text-xs">error</span>
 								{t.syntaxError}
 							</span>
 						{/if}
 					</div>
 					<div
-						class="flex-1 rounded-2xl bg-white dark:bg-slate-900/80 border border-primary/10 dark:border-white/10
-							   shadow-inner overflow-auto p-6 flex items-center justify-center custom-scrollbar relative"
+						class="custom-scrollbar relative flex min-h-[360px] flex-1 items-center justify-center overflow-auto rounded-[1.4rem] border border-primary/10 bg-white p-4 shadow-inner dark:border-white/10 dark:bg-slate-900/80 sm:min-h-[420px] sm:p-5"
 					>
 						{#if errorMessage}
-							<div class="absolute inset-0 flex items-center justify-center bg-red-50/80 dark:bg-red-950/30 backdrop-blur-sm rounded-2xl p-6">
+							<div class="absolute inset-0 flex items-center justify-center rounded-[1.4rem] bg-red-50/80 p-6 backdrop-blur-sm dark:bg-red-950/30">
 								<div class="text-center max-w-sm">
 									<span class="material-symbols-outlined text-4xl text-red-400 mb-3">code_off</span>
 									<p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">{t.syntaxErrorTitle}</p>
@@ -642,17 +774,17 @@
 								</div>
 							</div>
 						{/if}
-						<div bind:this={previewContainer} class="w-full flex items-center justify-center diagram-output"></div>
+						<div bind:this={previewContainer} class="diagram-output flex w-full items-center justify-center"></div>
 					</div>
 				</div>
 			</div>
 
-			<p class="text-[0.65rem] font-bold text-primary tracking-widest uppercase opacity-70 text-center">
+			<p class="text-center text-[0.64rem] font-bold uppercase tracking-[0.18em] text-primary opacity-70">
 				{t.footerSummary}
 			</p>
 		{/if}
 	</div>
-	<div class="absolute -right-20 -top-20 size-80 rounded-full bg-primary/5 blur-[100px] pointer-events-none"></div>
+	<div class="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-primary/5 blur-[100px]"></div>
 </div>
 
 <style>
@@ -665,13 +797,13 @@
 		opacity: 0.2;
 		border-radius: 9999px;
 	}
-	/* Ensure mermaid SVG text is visible in dark mode */
-	:global(.dark) .diagram-output :global(svg) {
-		filter: invert(0);
+
+	.diagram-output {
+		min-width: min-content;
 	}
-	:global(.dark) .diagram-output :global(.nodeLabel),
-	:global(.dark) .diagram-output :global(.edgeLabel),
-	:global(.dark) .diagram-output :global(.label) {
-		color: inherit !important;
+
+	:global(.diagram-output svg) {
+		max-width: 100%;
+		height: auto;
 	}
 </style>

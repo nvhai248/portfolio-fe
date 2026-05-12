@@ -11,6 +11,8 @@ const routes: ReadonlyArray<SmokeRoute> = [
 	{ path: '/vi/about', marker: /How I contribute inside teams|đóng góp/i },
 	{ path: '/vi/projects', marker: /Open University Moodle Optimization|Moodle/i },
 	{ path: '/vi/cv', marker: /Kinh nghiệm|Experience/i },
+	{ path: '/vi/tools', marker: /Công cụ & Tiện ích|Tools & Utilities/i },
+	{ path: '/vi/tools/image-compress', marker: /Nén ảnh < 1MB|Compress Image < 1MB/i },
 	{ path: '/vi/blog' }
 ] as const;
 
