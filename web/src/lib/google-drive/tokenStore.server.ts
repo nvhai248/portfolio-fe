@@ -30,10 +30,26 @@ export type GoogleOAuthToken = {
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-const getTokenStorePath = () => {
-	const configuredPath = env.GOOGLE_TOKEN_STORE_PATH || '.data/google-admin-token.json';
+const hasCode = (caught: unknown, code: string): boolean =>
+	caught instanceof Error && 'code' in caught && (caught as NodeJS.ErrnoException).code === code;
 
-	return isAbsolute(configuredPath) ? configuredPath : resolve(process.cwd(), configuredPath);
+const shouldIgnoreChmodError = (caught: unknown): boolean =>
+	hasCode(caught, 'ENOSYS') || hasCode(caught, 'EPERM') || hasCode(caught, 'EINVAL');
+
+const getDefaultTokenStorePath = (): string => {
+	// Vercel serverless functions cannot persist files under /var/task.
+	if (env.VERCEL) {
+		return '/tmp/.data/google-admin-token.json';
+	}
+
+	return '.data/google-admin-token.json';
+};
+
+const getTokenStorePath = () => {
+	const configuredPath = env.GOOGLE_TOKEN_STORE_PATH || getDefaultTokenStorePath();
+	const baseDir = env.VERCEL ? '/tmp' : process.cwd();
+
+	return isAbsolute(configuredPath) ? configuredPath : resolve(baseDir, configuredPath);
 };
 
 const getEncryptionSecret = () => {
@@ -107,7 +123,13 @@ export const writeAdminDriveToken = async (token: AdminDriveToken) => {
 
 	await mkdir(dirname(tokenStorePath), { recursive: true });
 	await writeFile(tokenStorePath, `${JSON.stringify(encrypted, null, 2)}\n`, { mode: 0o600 });
-	await chmod(tokenStorePath, 0o600);
+	try {
+		await chmod(tokenStorePath, 0o600);
+	} catch (caught) {
+		if (!shouldIgnoreChmodError(caught)) {
+			throw caught;
+		}
+	}
 };
 
 export const persistAdminDriveToken = async (token: GoogleOAuthToken) => {
