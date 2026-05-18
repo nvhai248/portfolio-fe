@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import type { ObsidianGraph, GraphNode, GraphEdge } from '$lib/obsidian/types';
+	import type { Simulation } from 'd3-force';
 
 	let {
 		graph,
@@ -38,7 +39,7 @@
 	let hoveredNode: SimNode | null = $state(null);
 
 	// d3 simulation reference
-	let simulation: ReturnType<typeof import('d3-force').forceSimulation> | undefined;
+	let simulation: Simulation<SimNode, undefined> | undefined;
 
 	const NODE_RADIUS = 6;
 	const ACTIVE_RADIUS = 10;
