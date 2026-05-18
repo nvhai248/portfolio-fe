@@ -10,6 +10,8 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:unit": "vitest run",
+		"test:unit:watch": "vitest",
 		"test:smoke": "playwright test",
 		"test:smoke:ui": "playwright test --ui"
 	},
@@ -27,14 +29,21 @@
 		"svelte-check": "^4.3.5",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
-		"vite": "^7.3.1"
+		"vite": "^7.3.1",
+		"vitest": "^3.2.1"
 	},
 	"dependencies": {
+		"@codemirror/commands": "^6.8.1",
+		"@codemirror/lang-markdown": "^6.3.2",
+		"@codemirror/language": "^6.11.0",
+		"@codemirror/state": "^6.5.2",
+		"@codemirror/view": "^6.36.5",
 		"@portabletext/svelte": "^3.0.1",
 		"@sanity/client": "^7.14.1",
 		"@sanity/image-url": "^2.0.3",
 		"@threlte/core": "^8.5.9",
 		"@threlte/extras": "^9.14.6",
+		"d3": "^7.9.0",
 		"nodemailer": "^8.0.5",
 		"shiki": "^4.0.2",
 		"three": "^0.184.0",

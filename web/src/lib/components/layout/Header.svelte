@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { getPrimaryNavItems } from '$lib/content/navigation';
 	import { getDictionary } from '$lib/i18n/dictionary';
 	import { localeLabels, locales } from '$lib/i18n/config';
 	import { localeFromPathname, localizePath } from '$lib/i18n/locale';
 	import { theme } from '$lib/stores/theme.svelte';
+	import type { SessionUser } from '$lib/auth/types';
 
+	let { user = null }: { user?: SessionUser | null } = $props();
 	let isMenuOpen = $state(false);
 	let isLangOpen = $state(false);
+	let isProfileOpen = $state(false);
 
 	const locale = $derived(localeFromPathname(page.url.pathname));
 	const t = $derived(getDictionary(locale));
@@ -93,6 +96,75 @@
 				{/if}
 			</div>
 			<a href={`${base}/${locale}/contact`} class="ui-btn ui-btn-primary hidden h-10 px-4 sm:inline-flex">{t.header.letTalk}</a>
+			
+			{#if user}
+				<!-- Profile Dropdown (Desktop) -->
+				<div class="relative hidden sm:block">
+					<button
+						type="button"
+						onclick={() => (isProfileOpen = !isProfileOpen)}
+						class={`ui-icon-btn transition-transform active:scale-95 overflow-hidden ${isProfileOpen ? 'border-primary/30 bg-primary/5 text-primary' : ''} ${user.picture ? '!p-0.5' : ''}`}
+						aria-label="User Profile"
+						aria-expanded={isProfileOpen}
+					>
+						{#if user.picture}
+							<img src={user.picture} alt="Profile" class="size-full rounded-md object-cover" />
+						{:else}
+							<span class="material-symbols-outlined text-xl">person</span>
+						{/if}
+					</button>
+
+					{#if isProfileOpen}
+						<div
+							class="ui-dropdown w-56 animate-in fade-in slide-in-from-top-1 duration-200"
+							role="menu"
+							tabindex="-1"
+						>
+							<div class="border-b border-[color:var(--ui-border)] px-4 py-3">
+								<p class="text-sm font-semibold [color:var(--ui-text)] truncate">{user.name || 'User'}</p>
+								<p class="text-[11px] [color:var(--ui-text-subtle)] truncate mt-0.5">{user.email}</p>
+							</div>
+
+							<div class="p-1.5 flex flex-col gap-0.5">
+								{#if user.isAdmin}
+									<a
+										href={resolve('/admin/obsidian-notes')}
+										class="ui-dropdown-item gap-2.5"
+										onclick={() => (isProfileOpen = false)}
+										role="menuitem"
+									>
+										<span class="material-symbols-outlined text-[18px]">drive_file_rename_outline</span>
+										Admin Dashboard
+									</a>
+								{/if}
+								<a
+									href={resolve('/auth/logout')}
+									class="ui-dropdown-item gap-2.5 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-300"
+									onclick={() => (isProfileOpen = false)}
+									role="menuitem"
+								>
+									<span class="material-symbols-outlined text-[18px]">logout</span>
+									Logout
+								</a>
+							</div>
+						</div>
+
+						<!-- Click outside backdrop -->
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
+						<div class="fixed inset-0 z-40 h-screen w-screen" onclick={() => (isProfileOpen = false)}></div>
+					{/if}
+				</div>
+			{:else}
+				<a
+					href={resolve('/auth/google')}
+					class="ui-icon-btn hidden sm:inline-flex"
+					aria-label="Sign in with Google"
+					title="Sign in with Google"
+				>
+					<span class="material-symbols-outlined text-xl">login</span>
+				</a>
+			{/if}
 			<button
 				type="button"
 				onclick={() => theme.toggle()}
@@ -152,6 +224,48 @@
 						{item.label}
 					</a>
 				{/each}
+				{#if user}
+					<div class="mt-4 mb-2 border-t border-white/10 pt-4">
+						<div class="flex items-center gap-3 px-4 py-2">
+							{#if user.picture}
+								<img src={user.picture} alt="Profile" class="size-8 rounded-full object-cover ring-2 ring-primary/20" />
+							{:else}
+								<div class="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+									<span class="material-symbols-outlined text-[16px]">person</span>
+								</div>
+							{/if}
+							<div class="flex min-w-0 flex-col">
+								<span class="truncate text-sm font-semibold text-white">{user.name || 'User'}</span>
+								<span class="truncate text-xs text-slate-400">{user.email}</span>
+							</div>
+						</div>
+					</div>
+					{#if user.isAdmin}
+						<a
+							href={resolve('/admin/obsidian-notes')}
+							onclick={closeMenu}
+							class={`rounded-xl px-4 py-3 text-[0.75rem] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${
+								page.url.pathname.startsWith('/admin/obsidian-notes') ? 'bg-blue-500/10 text-blue-400' : 'text-slate-400 hover:bg-white/5'
+							}`}
+						>
+							<span class="material-symbols-outlined text-[16px]">drive_file_rename_outline</span>
+							Admin Dashboard
+						</a>
+					{/if}
+					<a 
+						href={resolve('/auth/logout')} 
+						onclick={closeMenu} 
+						class="rounded-xl px-4 py-3 text-[0.75rem] font-bold uppercase tracking-[0.2em] text-red-400 transition-all hover:bg-red-500/10 flex items-center gap-2"
+					>
+						<span class="material-symbols-outlined text-[16px]">logout</span>
+						Sign out
+					</a>
+				{:else}
+					<a href={resolve('/auth/google')} onclick={closeMenu} class="rounded-xl px-4 py-3 text-[0.75rem] font-bold uppercase tracking-[0.2em] text-slate-400 transition-all hover:bg-white/5 flex items-center gap-2 mt-4">
+						<span class="material-symbols-outlined text-[16px]">login</span>
+						Sign in
+					</a>
+				{/if}
 				<a href={`${base}/${locale}/contact`} onclick={closeMenu} class="ui-btn ui-btn-primary mt-4 rounded-xl h-12 text-[0.75rem]">{t.header.letTalk}</a>
 			</div>
 		</nav>

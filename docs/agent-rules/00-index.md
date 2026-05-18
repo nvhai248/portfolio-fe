@@ -9,4 +9,3 @@ This folder contains the complete, detailed instructions for AI Agents working o
 3. [Design System & UI Guide](./03-design-and-ui-guide.md) - The "Editorial Minimal" design philosophy, including specific Tailwind usage, typography, spacing, and theming.
 4. [Core Features & Dummy Data](./04-core-features.md) - Specific implementation details for theming, resume/CV display, blog system, and personal placeholder data.
 5. [Coding Standards](./05-coding-standards.md) - Accessibility, state management, and code quality expectations.
-6. [Phased Development Plan](./06-phased-development-plan.md) - The strict step-by-step roadmap for implementing the project from scratch.

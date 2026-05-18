@@ -13,8 +13,10 @@
 	import { onNavigate } from '$app/navigation';
 	import { localeFromPathname } from '$lib/i18n/locale';
 	import GlobalMusicFab from '$lib/components/ui/GlobalMusicFab.svelte';
+	import type { Snippet } from 'svelte';
+	import type { LayoutData } from './$types';
 
-	let { children } = $props();
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 	let showNavigationFeedback = $state(false);
 
 	let revealTimer: ReturnType<typeof setTimeout> | undefined;
@@ -36,6 +38,7 @@
 	const t = $derived(getDictionary(locale));
 	const personSchema = $derived(getPersonSchema(page.url.origin, locale));
 	const websiteSchema = $derived(getWebsiteSchema(page.url.origin, locale));
+	const isAdminRoute = $derived(page.url.pathname.startsWith('/admin/'));
 	const stringifySchema = (payload: Record<string, unknown>): string => JSON.stringify(payload).replace(/</g, '\\u003c');
 
 	$effect(() => {
@@ -94,33 +97,42 @@
 			// ignore storage access errors
 		}`}
 	</script>
-	<script type="application/ld+json">{stringifySchema(personSchema)}</script>
-	<script type="application/ld+json">{stringifySchema(websiteSchema)}</script>
+	{#if !isAdminRoute}
+		<script type="application/ld+json">{stringifySchema(personSchema)}</script>
+		<script type="application/ld+json">{stringifySchema(websiteSchema)}</script>
+	{/if}
 </svelte:head>
 
-<a
+{#if isAdminRoute}
+	<!-- Admin routes: full-screen workspace without site chrome -->
+	{@render children()}
+{:else}
+	<!-- Public routes: standard site layout with Header, Footer, etc. -->
+	<a
 	href="#main-content"
 	class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
->
+	>
 	{t.skipToContent}
-</a>
+	</a>
 
-<RouteLoadingBar active={showNavigationFeedback} />
-<InteractiveGrid />
+	<RouteLoadingBar active={showNavigationFeedback} />
+	<InteractiveGrid />
 
-<div class="layout-container flex min-h-screen grow flex-col">
-	<Header />
-	<div class="relative flex-1">
-		<main
-			id="main-content"
-			class="flex-1 transition-opacity duration-200 {showNavigationFeedback ? 'opacity-50 pointer-events-none blur-[1px]' : ''}"
-			data-testid="main-content"
-			aria-busy={showNavigationFeedback ? 'true' : undefined}
-		>
-			{@render children()}
-		</main>
+	<div class="layout-container flex min-h-screen grow flex-col">
+		<Header user={data.user} />
+		<div class="relative flex-1">
+			<main
+				id="main-content"
+				class="flex-1 transition-opacity duration-200 {showNavigationFeedback ? 'opacity-50 pointer-events-none blur-[1px]' : ''}"
+				data-testid="main-content"
+				aria-busy={showNavigationFeedback ? 'true' : undefined}
+			>
+				{@render children()}
+			</main>
+		</div>
+		<Footer />
+
+		<GlobalMusicFab />
 	</div>
-	<Footer />
+{/if}
 
-	<GlobalMusicFab />
-</div>

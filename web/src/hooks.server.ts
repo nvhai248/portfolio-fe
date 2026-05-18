@@ -1,7 +1,8 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { detectPreferredLocale, isLocale } from '$lib/i18n/locale';
+import { readSessionUser } from '$lib/auth/session.server';
 
-const bypassPrefixes = ['/robots.txt', '/sitemap.xml', '/favicon', '/_app', '/static'];
+const bypassPrefixes = ['/robots.txt', '/sitemap.xml', '/favicon', '/_app', '/static', '/auth', '/api', '/admin'];
 
 const shouldBypass = (pathname: string): boolean => {
 	if (bypassPrefixes.some((prefix) => pathname.startsWith(prefix))) {
@@ -13,6 +14,7 @@ const shouldBypass = (pathname: string): boolean => {
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const { pathname } = event.url;
+	event.locals.user = await readSessionUser(event.cookies);
 
 	if (!shouldBypass(pathname)) {
 		const segments = pathname.split('/').filter(Boolean);

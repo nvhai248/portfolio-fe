@@ -116,6 +116,19 @@ test('root redirects to locale prefix', async ({ page }) => {
 	expect(page.url()).toMatch(/\/vi$|\/en$/);
 });
 
+test('admin obsidian notes redirects anonymous users to Google login', async ({ request }) => {
+	const response = await request.get('/admin/obsidian-notes', { maxRedirects: 0 });
+
+	expect(response.status()).toBe(302);
+	expect(response.headers().location).toContain('/auth/google?next=%2Fadmin%2Fobsidian-notes');
+});
+
+test('admin obsidian API blocks anonymous users', async ({ request }) => {
+	const response = await request.get('/api/admin/obsidian/vault');
+
+	expect(response.status()).toBe(403);
+});
+
 test('language switch keeps route and switches locale', async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 800 });
 	await page.goto('/vi/projects');
