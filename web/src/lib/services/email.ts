@@ -1,9 +1,8 @@
 import nodemailer from 'nodemailer';
-import * as env from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-// Resolve type issues during svelte-check if env variables are not yet generated
-const EMAIL_PASS = (env as any).EMAIL_PASS || '';
-const EMAIL_OWNER = (env as any).EMAIL_OWNER || '';
+const EMAIL_PASS = env.EMAIL_PASS ?? '';
+const EMAIL_OWNER = env.EMAIL_OWNER ?? '';
 
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
