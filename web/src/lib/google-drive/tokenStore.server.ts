@@ -29,6 +29,8 @@ export type GoogleOAuthToken = {
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+const DEFAULT_LOCAL_TOKEN_STORE_PATH = '.data/google-admin-token.json';
+const DEFAULT_VERCEL_TOKEN_STORE_PATH = '/tmp/.data/google-admin-token.json';
 
 const hasCode = (caught: unknown, code: string): boolean =>
 	caught instanceof Error && 'code' in caught && (caught as NodeJS.ErrnoException).code === code;
@@ -36,20 +38,21 @@ const hasCode = (caught: unknown, code: string): boolean =>
 const shouldIgnoreChmodError = (caught: unknown): boolean =>
 	hasCode(caught, 'ENOSYS') || hasCode(caught, 'EPERM') || hasCode(caught, 'EINVAL');
 
-const getDefaultTokenStorePath = (): string => {
-	// Vercel serverless functions cannot persist files under /var/task.
-	if (env.VERCEL) {
-		return '/tmp/.data/google-admin-token.json';
+const getTokenStorePath = () => {
+	const configuredPath = env.GOOGLE_TOKEN_STORE_PATH;
+
+	if (!configuredPath) {
+		// Vercel serverless functions cannot persist files under /var/task.
+		return env.VERCEL
+			? DEFAULT_VERCEL_TOKEN_STORE_PATH
+			: resolve(process.cwd(), DEFAULT_LOCAL_TOKEN_STORE_PATH);
 	}
 
-	return '.data/google-admin-token.json';
-};
+	if (env.VERCEL && !isAbsolute(configuredPath)) {
+		return DEFAULT_VERCEL_TOKEN_STORE_PATH;
+	}
 
-const getTokenStorePath = () => {
-	const configuredPath = env.GOOGLE_TOKEN_STORE_PATH || getDefaultTokenStorePath();
-	const baseDir = env.VERCEL ? '/tmp' : process.cwd();
-
-	return isAbsolute(configuredPath) ? configuredPath : resolve(baseDir, configuredPath);
+	return isAbsolute(configuredPath) ? configuredPath : resolve(process.cwd(), configuredPath);
 };
 
 const getEncryptionSecret = () => {
