@@ -67,14 +67,25 @@ export const ensureMarkdownFileName = (name: unknown): string => {
 	return validName.toLowerCase().endsWith('.md') ? validName : `${validName}.md`;
 };
 
+// Simple in-memory cache for drive file metadata to speed up tree traversals
+const fileCache = new Map<string, { data: DriveFileMetadata; time: number }>();
+const FILE_CACHE_TTL = 1000 * 60 * 15; // 15 minutes
+
 export const getDriveFile = async (fileId: string): Promise<DriveFileMetadata> => {
+	const cached = fileCache.get(fileId);
+	if (cached && Date.now() - cached.time < FILE_CACHE_TTL) {
+		return cached.data;
+	}
+
 	const params = new URLSearchParams({
 		fields: driveFileFields,
 		supportsAllDrives: 'true'
 	});
 	const response = await driveFetch(`/files/${encodePath(fileId)}?${params.toString()}`);
 
-	return parseDriveFile(await response.json());
+	const data = parseDriveFile(await response.json());
+	fileCache.set(fileId, { data, time: Date.now() });
+	return data;
 };
 
 export const listFolderChildren = async (folderId: string): Promise<DriveFileMetadata[]> => {
@@ -346,6 +357,39 @@ export const createFolder = async (parentId: string, name: string): Promise<Driv
 		}
 	);
 
-	return parseDriveFile(await response.json());
+	const data = parseDriveFile(await response.json());
+	fileCache.set(data.id, { data, time: Date.now() });
+	return data;
+};
+
+export const moveDriveItem = async (fileId: string, newParentId: string): Promise<DriveFileMetadata> => {
+	const file = await getDriveFile(fileId);
+	const oldParents = file.parents?.join(',') || '';
+
+	const params = new URLSearchParams({
+		addParents: newParentId,
+		removeParents: oldParents,
+		fields: driveFileFields,
+		supportsAllDrives: 'true'
+	});
+
+	const response = await driveFetch(`/files/${encodePath(fileId)}?${params.toString()}`, {
+		method: 'PATCH'
+	});
+
+	const data = parseDriveFile(await response.json());
+	fileCache.set(data.id, { data, time: Date.now() });
+	return data;
+};
+
+export const trashDriveItem = async (fileId: string): Promise<void> => {
+	await driveFetch(`/files/${encodePath(fileId)}?supportsAllDrives=true`, {
+		method: 'PATCH',
+		headers: {
+			'content-type': 'application/json'
+		},
+		body: JSON.stringify({ trashed: true })
+	});
+	fileCache.delete(fileId);
 };
 

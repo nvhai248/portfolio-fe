@@ -4,7 +4,8 @@ import {
 	assertFolderInVault,
 	createFolder,
 	getDrivePath,
-	validateDriveName
+	validateDriveName,
+	trashDriveItem
 } from '$lib/google-drive/driveFiles.server';
 import { detectVaultRoot } from '$lib/obsidian/vaultDetector.server';
 import { error, json } from '@sveltejs/kit';
@@ -50,5 +51,24 @@ export const POST: RequestHandler = async (event) => {
 		},
 		{ status: 201 }
 	);
+};
+
+export const DELETE: RequestHandler = async (event) => {
+	requireAdmin(event);
+
+	const folderId = event.url.searchParams.get('id');
+	if (!folderId) {
+		throw error(400, 'Folder id is required.');
+	}
+
+	const vault = await detectVaultRoot();
+	if (folderId === vault.vaultRootId) {
+		throw error(403, 'Cannot delete the vault root folder.');
+	}
+	
+	await assertFolderInVault(folderId, vault.vaultRootId);
+	await trashDriveItem(folderId);
+
+	return json({ success: true });
 };
 

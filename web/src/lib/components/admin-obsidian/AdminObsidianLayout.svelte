@@ -20,6 +20,8 @@
 		onOpenFile,
 		onCreateItem,
 		onSwitchView,
+		onMoveItem = undefined,
+		onDeleteItem = undefined,
 		children
 	}: {
 		vaultName: string;
@@ -34,6 +36,8 @@
 		onOpenFile: (file: DriveFileNode) => void;
 		onCreateItem: (name: string, isFolder: boolean, parentId: string) => Promise<DriveFileNode>;
 		onSwitchView?: (mode: ViewMode) => void;
+		onMoveItem?: (draggedId: string, targetFolderId: string) => Promise<void>;
+		onDeleteItem?: (node: DriveFileNode) => void;
 		children: Snippet;
 	} = $props();
 
@@ -108,6 +112,8 @@
 					{onOpenFile}
 					onCreateFile={handleOpenCreateFile}
 					onCreateFolder={handleOpenCreateFolder}
+					{onMoveItem}
+					{onDeleteItem}
 				/>
 			</div>
 		{/if}
@@ -128,6 +134,8 @@
 					onOpenFile={(file) => { onOpenFile(file); isMobileSidebarOpen = false; }}
 					onCreateFile={handleOpenCreateFile}
 					onCreateFolder={handleOpenCreateFolder}
+					{onMoveItem}
+					{onDeleteItem}
 				/>
 			</div>
 		{/if}

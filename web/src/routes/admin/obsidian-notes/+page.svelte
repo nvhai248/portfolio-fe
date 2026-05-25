@@ -154,6 +154,55 @@
 		return created;
 	};
 
+	const handleMoveItem = async (draggedId: string, targetFolderId: string) => {
+		try {
+			const response = await fetch('/api/admin/obsidian/move', {
+				method: 'PUT',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ id: draggedId, parentId: targetFolderId })
+			});
+
+			if (!response.ok) {
+				const payload = await response.json();
+				throw new Error(payload.message || 'Failed to move item.');
+			}
+
+			toastStore.success('Item moved successfully.');
+			await handleRefresh();
+		} catch (caught) {
+			toastStore.error(caught instanceof Error ? caught.message : 'Move failed.');
+		}
+	};
+
+	const handleDeleteItem = async (node: DriveFileNode) => {
+		if (!confirm(`Are you sure you want to delete ${node.isFolder ? 'folder' : 'note'} "${node.name}"?`)) {
+			return;
+		}
+
+		try {
+			const endpoint = node.isFolder ? '/api/admin/obsidian/folder' : '/api/admin/obsidian/file';
+			const response = await fetch(`${endpoint}?id=${encodeURIComponent(node.id)}`, {
+				method: 'DELETE'
+			});
+
+			if (!response.ok) {
+				const payload = await response.json();
+				throw new Error(payload.message || `Failed to delete ${node.isFolder ? 'folder' : 'note'}.`);
+			}
+
+			toastStore.success(`Deleted "${node.name}".`);
+
+			if (currentFileId === node.id || (node.isFolder && currentFile?.path.includes(node.name))) {
+				currentFileId = null;
+				currentFile = null;
+			}
+
+			await handleRefresh();
+		} catch (caught) {
+			toastStore.error(caught instanceof Error ? caught.message : 'Delete failed.');
+		}
+	};
+
 	const handleSaveContent = async (content: string) => {
 		if (!currentFile) return;
 
@@ -234,6 +283,8 @@
 	onOpenFile={handleOpenFile}
 	onCreateItem={handleCreateItem}
 	onSwitchView={handleSwitchView}
+	onMoveItem={handleMoveItem}
+	onDeleteItem={handleDeleteItem}
 >
 	{#if viewMode === 'graph'}
 		<!-- Graph View -->
@@ -274,17 +325,27 @@
 			/>
 		{/if}
 	{:else if isLoadingFile}
-		<!-- File Loading State -->
-		<div class="flex h-full flex-col items-center justify-center gap-4">
-			<div class="relative">
-				<div class="size-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 animate-pulse"></div>
-				<span class="material-symbols-outlined animate-spin absolute -bottom-1 -right-1 text-2xl text-primary dark:text-blue-500">progress_activity</span>
+		<!-- Skeleton Loading State -->
+		<article class="flex h-full flex-col overflow-hidden animate-pulse">
+			<div class="shrink-0 border-b border-neutral-200 px-4 py-3 sm:px-6 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/50">
+				<div class="flex items-start justify-between gap-4">
+					<div class="min-w-0 flex-1">
+						<div class="h-3 w-32 rounded bg-neutral-200 dark:bg-neutral-800 mb-2"></div>
+						<div class="h-6 w-64 rounded bg-neutral-300 dark:bg-neutral-700"></div>
+					</div>
+					<div class="hidden shrink-0 pt-1 sm:block">
+						<div class="h-3 w-24 rounded bg-neutral-200 dark:bg-neutral-800"></div>
+					</div>
+				</div>
 			</div>
-			<div class="text-center">
-				<p class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Loading note</p>
-				<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Fetching content from Google Drive...</p>
+			<div class="flex-1 p-6 space-y-4">
+				<div class="h-4 w-full rounded bg-neutral-200 dark:bg-neutral-800"></div>
+				<div class="h-4 w-5/6 rounded bg-neutral-200 dark:bg-neutral-800"></div>
+				<div class="h-4 w-4/6 rounded bg-neutral-200 dark:bg-neutral-800"></div>
+				<div class="h-4 w-full rounded bg-neutral-200 dark:bg-neutral-800"></div>
+				<div class="h-4 w-3/4 rounded bg-neutral-200 dark:bg-neutral-800"></div>
 			</div>
-		</div>
+		</article>
 	{:else if fileErrorMsg}
 		<!-- File Error State -->
 		<div class="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">

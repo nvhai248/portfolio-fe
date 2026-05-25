@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 	import { EditorView, keymap, placeholder as cmPlaceholder, lineNumbers, drawSelection, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
 	import { EditorState } from '@codemirror/state';
 	import { markdown } from '@codemirror/lang-markdown';
@@ -23,6 +23,17 @@
 	let saveStatus = $state<SaveStatus>('idle');
 	let saveTimer: ReturnType<typeof setTimeout> | undefined;
 	let lastSavedContent = $state('');
+
+	let showPreview = $state(false);
+	let editorContent = $state('');
+
+	// Ensure window.marked and window.DOMPurify exist on global scope for TS
+	declare global {
+		interface Window {
+			marked: any;
+			DOMPurify: any;
+		}
+	}
 
 	const DEBOUNCE_MS = 1200;
 
@@ -67,13 +78,14 @@
 	const obsidianDarkTheme = EditorView.theme(
 		{
 			'&': {
-				fontSize: '14px',
+				fontSize: '15px',
 				height: '100%'
 			},
 			'.cm-content': {
 				fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-				padding: '16px 0',
-				caretColor: 'var(--ui-primary)'
+				padding: '24px 16px',
+				caretColor: 'var(--ui-primary)',
+				lineHeight: '1.6'
 			},
 			'&.cm-focused .cm-cursor': {
 				borderLeftColor: 'var(--ui-primary)'
@@ -88,7 +100,7 @@
 				minWidth: '3em'
 			},
 			'.cm-gutter': {
-				fontSize: '12px'
+				fontSize: '13px'
 			},
 			'.cm-activeLineGutter': {
 				backgroundColor: 'transparent',
@@ -103,11 +115,13 @@
 			'.cm-line': {
 				padding: '1px 16px 1px 8px'
 			},
-			/* Markdown heading styling */
-			'.ͼ7': {
-				/* ATX headings */
-				fontWeight: '700'
-			}
+			/* Markdown heading styling for visual Notion-like experience */
+			'.ͼ7': { fontWeight: '700', fontSize: '1.8em', color: '#e2e8f0' },
+			'.ͼ8': { fontWeight: '700', fontSize: '1.5em', color: '#e2e8f0' },
+			'.ͼ9': { fontWeight: '700', fontSize: '1.3em', color: '#e2e8f0' },
+			'.ͼa': { fontWeight: '700', fontSize: '1.1em', color: '#e2e8f0' },
+			'.ͼb': { fontStyle: 'italic' },
+			'.ͼc': { fontWeight: 'bold' }
 		},
 		{ dark: false }
 	);
@@ -122,7 +136,7 @@
 		}
 
 		const state = EditorState.create({
-			doc: initialContent,
+			doc: lastSavedContent,
 			extensions: [
 				lineNumbers(),
 				highlightActiveLineGutter(),
@@ -141,6 +155,7 @@
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
 						const content = update.state.doc.toString();
+						editorContent = content;
 						scheduleSave(content);
 					}
 				})
@@ -152,23 +167,27 @@
 			parent: editorContainer
 		});
 
+		editorContent = lastSavedContent;
 		editorView.focus();
 	};
 
 	// Re-initialize editor when fileId changes (different file selected)
 	$effect(() => {
-		// Track fileId to trigger re-init
+		// Track fileId to trigger re-init. DO NOT track initialContent.
 		const _trackId = fileId;
-		lastSavedContent = initialContent;
-		saveStatus = 'idle';
+		
+		untrack(() => {
+			lastSavedContent = initialContent;
+			saveStatus = 'idle';
 
-		if (saveTimer) {
-			clearTimeout(saveTimer);
-			saveTimer = undefined;
-		}
+			if (saveTimer) {
+				clearTimeout(saveTimer);
+				saveTimer = undefined;
+			}
 
-		// Use tick-like delay to ensure container is ready
-		setTimeout(() => initEditor(), 0);
+			// Use tick-like delay to ensure container is ready
+			setTimeout(() => initEditor(), 0);
+		});
 	});
 
 	onMount(() => {
@@ -189,35 +208,70 @@
 	};
 
 	const status = $derived(saveStatusConfig[saveStatus]);
+
+	let previewHtml = $derived.by(() => {
+		if (showPreview && typeof window !== 'undefined' && window.marked && window.DOMPurify) {
+			return window.DOMPurify.sanitize(window.marked.parse(editorContent));
+		}
+		return '';
+	});
+
 </script>
 
+<svelte:head>
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+</svelte:head>
+
 <div class="flex h-full flex-col overflow-hidden">
-	<!-- Save Status Bar -->
-	{#if saveStatus !== 'idle'}
-		<div class="flex shrink-0 items-center justify-between border-b border-neutral-200 bg-neutral-50/80 px-4 py-1.5 dark:border-neutral-800 dark:bg-neutral-900/80">
-			<div class="flex items-center gap-1.5 {status.color}">
+	<!-- Save Status Bar & Tools -->
+	<div class="flex shrink-0 items-center justify-between border-b border-neutral-200 bg-neutral-50/80 px-4 py-1.5 dark:border-neutral-800 dark:bg-neutral-900/80 min-h-[40px]">
+		<div class="flex items-center gap-1.5 {status.color}">
+			{#if saveStatus !== 'idle'}
 				<span class="material-symbols-outlined text-[16px] {saveStatus === 'saving' ? 'animate-pulse' : ''}">{status.icon}</span>
 				<span class="text-xs font-semibold">{status.label}</span>
-			</div>
-
+			{/if}
 			{#if saveStatus === 'failed'}
 				<button
 					type="button"
 					onclick={handleRetrySave}
-					class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 transition-colors hover:bg-red-100 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/50"
+					class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 transition-colors hover:bg-red-100 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/50 ml-2"
 				>
 					<span class="material-symbols-outlined text-[14px]">refresh</span>
 					Retry
 				</button>
 			{/if}
 		</div>
-	{/if}
 
-	<!-- CodeMirror Editor -->
-	<div
-		bind:this={editorContainer}
-		class="cm-editor-container flex-1 overflow-auto"
-	></div>
+		<div class="flex items-center gap-2">
+			<button
+				type="button"
+				onclick={() => showPreview = !showPreview}
+				class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors {showPreview ? 'bg-primary text-white dark:bg-blue-600' : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700'}"
+			>
+				<span class="material-symbols-outlined text-[14px]">{showPreview ? 'visibility_off' : 'visibility'}</span>
+				{showPreview ? 'Hide Preview' : 'Side-by-side Preview'}
+			</button>
+		</div>
+	</div>
+
+	<!-- Workspace Area -->
+	<div class="flex flex-1 overflow-hidden">
+		<!-- CodeMirror Editor Pane -->
+		<div
+			bind:this={editorContainer}
+			class="cm-editor-container flex-1 overflow-auto transition-all duration-300 {showPreview ? 'border-r border-neutral-200 dark:border-neutral-800' : ''}"
+		></div>
+
+		<!-- Live Preview Pane -->
+		{#if showPreview}
+			<div class="flex-1 overflow-auto bg-white dark:bg-neutral-950 p-6 lg:p-10 transition-all duration-300">
+				<div class="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
+					{@html previewHtml || '<p class="text-neutral-500 italic">No content to preview.</p>'}
+				</div>
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>

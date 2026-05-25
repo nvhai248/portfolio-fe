@@ -7,13 +7,17 @@
 		currentFileId = null,
 		onOpenFile,
 		onCreateFile,
-		onCreateFolder
+		onCreateFolder,
+		onMoveItem = undefined,
+		onDeleteItem = undefined
 	}: {
 		treeRoot: DriveFileNode | null;
 		currentFileId?: string | null;
 		onOpenFile: (file: DriveFileNode) => void;
 		onCreateFile: (parentId: string) => void;
 		onCreateFolder: (parentId: string) => void;
+		onMoveItem?: (draggedId: string, targetFolderId: string) => void;
+		onDeleteItem?: (node: DriveFileNode) => void;
 	} = $props();
 
 	let expandedFolders = $state<Set<string>>(new Set());
@@ -139,6 +143,8 @@
 						{onOpenFile}
 						onToggleFolder={handleToggleFolder}
 						onCreateInFolder={handleCreateInFolder}
+						{onMoveItem}
+						{onDeleteItem}
 					/>
 				{/each}
 			</div>

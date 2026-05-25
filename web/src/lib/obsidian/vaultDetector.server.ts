@@ -31,16 +31,25 @@ export const getConfiguredObsidianFolderId = (): string => {
 	return folderId;
 };
 
+let cachedVaultInfo: VaultInfo | null = null;
+let vaultInfoCacheTime = 0;
+const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+
 export const detectVaultRoot = async (defaultFolderId = getConfiguredObsidianFolderId()): Promise<VaultInfo> => {
+	if (cachedVaultInfo && Date.now() - vaultInfoCacheTime < CACHE_TTL) {
+		return cachedVaultInfo;
+	}
 	const configuredFolder = await getDriveFile(defaultFolderId);
 	const children = await listFolderChildren(defaultFolderId);
 
 	if (hasVaultIndicator(children)) {
-		return {
+		cachedVaultInfo = {
 			vaultRootId: configuredFolder.id,
 			vaultName: configuredFolder.name,
 			configuredFolderId: configuredFolder.id
 		};
+		vaultInfoCacheTime = Date.now();
+		return cachedVaultInfo;
 	}
 
 	const childFolders = children.filter(isFolder);
@@ -49,18 +58,22 @@ export const detectVaultRoot = async (defaultFolderId = getConfiguredObsidianFol
 		const subChildren = await listFolderChildren(childFolder.id);
 
 		if (hasVaultIndicator(subChildren)) {
-			return {
+			cachedVaultInfo = {
 				vaultRootId: childFolder.id,
 				vaultName: childFolder.name,
 				configuredFolderId: configuredFolder.id
 			};
+			vaultInfoCacheTime = Date.now();
+			return cachedVaultInfo;
 		}
 	}
 
-	return {
+	cachedVaultInfo = {
 		vaultRootId: configuredFolder.id,
 		vaultName: configuredFolder.name,
 		configuredFolderId: configuredFolder.id
 	};
+	vaultInfoCacheTime = Date.now();
+	return cachedVaultInfo;
 };
 

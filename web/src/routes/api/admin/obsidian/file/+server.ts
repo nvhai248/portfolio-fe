@@ -6,7 +6,8 @@ import {
 	ensureMarkdownFileName,
 	getDrivePath,
 	readMarkdownNote,
-	updateMarkdownFile
+	updateMarkdownFile,
+	trashDriveItem
 } from '$lib/google-drive/driveFiles.server';
 import { detectVaultRoot } from '$lib/obsidian/vaultDetector.server';
 import { error, json } from '@sveltejs/kit';
@@ -88,5 +89,20 @@ export const POST: RequestHandler = async (event) => {
 		},
 		{ status: 201 }
 	);
+};
+
+export const DELETE: RequestHandler = async (event) => {
+	requireAdmin(event);
+
+	const fileId = event.url.searchParams.get('id');
+	if (!fileId) {
+		throw error(400, 'Markdown file id is required.');
+	}
+
+	const vault = await detectVaultRoot();
+	await assertMarkdownFileInVault(fileId, vault.vaultRootId);
+	await trashDriveItem(fileId);
+
+	return json({ success: true });
 };
 
