@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 
 	type ViewMode = 'editor' | 'graph';
 
@@ -46,6 +47,26 @@
 		>
 			<span class="material-symbols-outlined text-[18px]">home</span>
 		</a>
+
+		<!-- Admin Segmented Tab Navigation -->
+		<div class="flex items-center rounded-lg border border-neutral-200 p-0.5 dark:border-neutral-800 ml-1">
+			<a
+				href={resolve('/admin/obsidian-notes')}
+				class="inline-flex h-7 items-center justify-center gap-1 rounded-md px-2.5 text-xs font-bold transition-colors {page.url.pathname.startsWith('/admin/obsidian-notes') ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'}"
+				title="Obsidian notes manager"
+			>
+				<span class="material-symbols-outlined text-[14px]">edit_document</span>
+				Notes
+			</a>
+			<a
+				href={resolve('/admin/tasks')}
+				class="inline-flex h-7 items-center justify-center gap-1 rounded-md px-2.5 text-xs font-bold transition-colors {page.url.pathname.startsWith('/admin/tasks') ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'}"
+				title="Tasks Kanban board"
+			>
+				<span class="material-symbols-outlined text-[14px]">space_dashboard</span>
+				Tasks
+			</a>
+		</div>
 
 		<div class="flex items-center gap-2 ml-1">
 			<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-blue-500/15 dark:text-blue-400">

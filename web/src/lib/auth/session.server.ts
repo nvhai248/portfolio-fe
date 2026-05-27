@@ -4,7 +4,7 @@ import type { Cookies } from '@sveltejs/kit';
 import type { SessionUser } from './types';
 
 const SESSION_COOKIE = 'portfolio_session';
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
@@ -106,6 +106,14 @@ export const readSessionUser = async (cookies: Cookies): Promise<SessionUser | n
 
 		const parsed = JSON.parse(decoder.decode(fromBase64Url(payload))) as SessionPayload;
 		if (!parsed.user || parsed.expiresAt <= Date.now()) return null;
+
+		// Sliding session: if the session is older than 1 day (i.e. remaining time is less than 29 days),
+		// refresh the session cookie to extend the session.
+		const remainingTime = parsed.expiresAt - Date.now();
+		const refreshThreshold = (SESSION_MAX_AGE - 24 * 60 * 60) * 1000;
+		if (remainingTime < refreshThreshold) {
+			await setSessionCookie(cookies, parsed.user);
+		}
 
 		return parsed.user;
 	} catch {

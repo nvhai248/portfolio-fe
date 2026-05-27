@@ -27,13 +27,7 @@
 	let showPreview = $state(false);
 	let editorContent = $state('');
 
-	// Ensure window.marked and window.DOMPurify exist on global scope for TS
-	declare global {
-		interface Window {
-			marked: any;
-			DOMPurify: any;
-		}
-	}
+
 
 	const DEBOUNCE_MS = 1200;
 
@@ -210,8 +204,11 @@
 	const status = $derived(saveStatusConfig[saveStatus]);
 
 	let previewHtml = $derived.by(() => {
-		if (showPreview && typeof window !== 'undefined' && window.marked && window.DOMPurify) {
-			return window.DOMPurify.sanitize(window.marked.parse(editorContent));
+		if (showPreview && typeof window !== 'undefined') {
+			const win = window as any;
+			if (win.marked && win.DOMPurify) {
+				return win.DOMPurify.sanitize(win.marked.parse(editorContent));
+			}
 		}
 		return '';
 	});

@@ -393,3 +393,85 @@ export const trashDriveItem = async (fileId: string): Promise<void> => {
 	fileCache.delete(fileId);
 };
 
+export const createJsonFile = async (
+	parentId: string,
+	name: string,
+	content: string
+): Promise<DriveFileMetadata> => {
+	const boundary = `obsidian-notes-${crypto.randomUUID()}`;
+	const metadata = {
+		name,
+		mimeType: 'application/json',
+		parents: [parentId]
+	};
+	const body = [
+		`--${boundary}`,
+		'Content-Type: application/json; charset=UTF-8',
+		'',
+		JSON.stringify(metadata),
+		`--${boundary}`,
+		'Content-Type: application/json; charset=UTF-8',
+		'',
+		content,
+		`--${boundary}--`,
+		''
+	].join('\r\n');
+	const response = await driveFetch(
+		`/upload/drive/v3/files?${new URLSearchParams({
+			uploadType: 'multipart',
+			fields: driveFileFields,
+			supportsAllDrives: 'true'
+		}).toString()}`,
+		{
+			method: 'POST',
+			headers: {
+				'content-type': `multipart/related; boundary="${boundary}"`
+			},
+			body
+		}
+	);
+
+	return parseDriveFile(await response.json());
+};
+
+export const updateJsonFile = async (fileId: string, content: string): Promise<DriveFileMetadata> => {
+	const response = await driveFetch(
+		`/upload/drive/v3/files/${encodePath(fileId)}?${new URLSearchParams({
+			uploadType: 'media',
+			fields: driveFileFields,
+			supportsAllDrives: 'true'
+		}).toString()}`,
+		{
+			method: 'PATCH',
+			headers: {
+				'content-type': 'application/json; charset=utf-8'
+			},
+			body: content
+		}
+	);
+
+	return parseDriveFile(await response.json());
+};
+
+export const getTasksFileId = async (vaultRootId: string): Promise<string> => {
+	const params = new URLSearchParams({
+		q: `name = 'admin-tasks.json' and '${escapeDriveQueryValue(vaultRootId)}' in parents and trashed = false`,
+		fields: 'files(id)',
+		pageSize: '1',
+		supportsAllDrives: 'true',
+		includeItemsFromAllDrives: 'true'
+	});
+
+	const response = await driveFetch(`/files?${params.toString()}`);
+	const payload = (await response.json()) as { files?: { id: string }[] };
+
+	if (payload.files && payload.files.length > 0) {
+		return payload.files[0].id;
+	}
+
+	// Not found, create it with default empty array
+	const defaultTasksContent = JSON.stringify([]);
+	const created = await createJsonFile(vaultRootId, 'admin-tasks.json', defaultTasksContent);
+	return created.id;
+};
+

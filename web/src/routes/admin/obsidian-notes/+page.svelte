@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
+	import { untrack, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import type { DriveFileNode, MarkdownNote, ObsidianGraph } from '$lib/obsidian/types';
 	import { AdminObsidianLayout } from '$lib/components/admin-obsidian';
@@ -10,7 +11,10 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let treeRoot = $state<DriveFileNode | null>(untrack(() => data.initialTree) || null);
+	let treeRoot = $state<DriveFileNode | null>(null);
+	let vaultInfo = $state<{ vaultName: string } | null>(null);
+	let isLoadingTree = $state(true);
+
 	let currentFileId = $state<string | null>(null);
 	let currentFile = $state<MarkdownNote | null>(null);
 	let isRefreshing = $state(false);
@@ -22,6 +26,36 @@
 	let graphData = $state<ObsidianGraph | null>(null);
 	let isLoadingGraph = $state(false);
 	let graphErrorMsg = $state('');
+
+	onMount(async () => {
+		isLoadingTree = true;
+		try {
+			// Fetch vault metadata
+			const vaultRes = await fetch('/api/admin/obsidian/vault');
+			if (vaultRes.status === 428) {
+				window.location.href = `/auth/google?next=${encodeURIComponent(window.location.pathname)}`;
+				return;
+			}
+			if (vaultRes.ok) {
+				vaultInfo = await vaultRes.json();
+			}
+
+			// Fetch initial file tree
+			const treeRes = await fetch('/api/admin/obsidian/tree');
+			if (treeRes.status === 428) {
+				window.location.href = `/auth/google?next=${encodeURIComponent(window.location.pathname)}`;
+				return;
+			}
+			if (treeRes.ok) {
+				const payload = await treeRes.json();
+				treeRoot = payload.root || null;
+			}
+		} catch (err) {
+			toastStore.error('Failed to load Obsidian vault.');
+		} finally {
+			isLoadingTree = false;
+		}
+	});
 
 	// --- Keyboard shortcuts ---
 	const handleGlobalKeydown = (event: KeyboardEvent) => {
@@ -43,11 +77,23 @@
 	};
 
 	// --- Tree & file operations ---
+	const safeFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+		const response = await fetch(input, init);
+		if (response.status === 428) {
+			toastStore.error('Google session expired. Redirecting to login...');
+			setTimeout(() => {
+				window.location.href = `/auth/google?next=${encodeURIComponent(window.location.pathname)}`;
+			}, 1500);
+			throw new Error('Google session expired. Redirecting to login...');
+		}
+		return response;
+	};
+
 	const handleRefresh = async () => {
 		if (isRefreshing) return;
 		try {
 			isRefreshing = true;
-			const response = await fetch('/api/admin/obsidian/tree');
+			const response = await safeFetch('/api/admin/obsidian/tree');
 			if (!response.ok) {
 				throw new Error('Failed to refresh vault structure.');
 			}
@@ -75,7 +121,7 @@
 		fileErrorMsg = '';
 
 		try {
-			const response = await fetch(`/api/admin/obsidian/file?id=${encodeURIComponent(fileNode.id)}`);
+			const response = await safeFetch(`/api/admin/obsidian/file?id=${encodeURIComponent(fileNode.id)}`);
 			if (!response.ok) {
 				throw new Error('Failed to load note content.');
 			}
@@ -131,7 +177,7 @@
 			? JSON.stringify({ name, parentId })
 			: JSON.stringify({ name, parentId, content: `# ${name}\n\n` });
 
-		const response = await fetch(endpoint, {
+		const response = await safeFetch(endpoint, {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body
@@ -156,7 +202,7 @@
 
 	const handleMoveItem = async (draggedId: string, targetFolderId: string) => {
 		try {
-			const response = await fetch('/api/admin/obsidian/move', {
+			const response = await safeFetch('/api/admin/obsidian/move', {
 				method: 'PUT',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ id: draggedId, parentId: targetFolderId })
@@ -181,7 +227,7 @@
 
 		try {
 			const endpoint = node.isFolder ? '/api/admin/obsidian/folder' : '/api/admin/obsidian/file';
-			const response = await fetch(`${endpoint}?id=${encodeURIComponent(node.id)}`, {
+			const response = await safeFetch(`${endpoint}?id=${encodeURIComponent(node.id)}`, {
 				method: 'DELETE'
 			});
 
@@ -206,7 +252,7 @@
 	const handleSaveContent = async (content: string) => {
 		if (!currentFile) return;
 
-		const response = await fetch('/api/admin/obsidian/file', {
+		const response = await safeFetch('/api/admin/obsidian/file', {
 			method: 'PUT',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({ id: currentFile.id, content })
@@ -229,7 +275,7 @@
 		graphErrorMsg = '';
 
 		try {
-			const response = await fetch('/api/admin/obsidian/graph');
+			const response = await safeFetch('/api/admin/obsidian/graph');
 			if (!response.ok) {
 				throw new Error('Failed to load graph data.');
 			}
@@ -266,12 +312,13 @@
 <svelte:window onkeydown={handleGlobalKeydown} />
 
 <svelte:head>
-	<title>{data.vaultInfo ? `${data.vaultInfo.vaultName} | Admin Obsidian` : 'Admin Obsidian Notes'}</title>
+	<title>{vaultInfo ? `${vaultInfo.vaultName} | Admin Obsidian` : 'Admin Obsidian Notes'}</title>
 	<meta name="robots" content="noindex,nofollow" />
 </svelte:head>
 
+<div in:fade={{ duration: 180 }} class="h-screen w-full flex flex-col">
 <AdminObsidianLayout
-	vaultName={data.vaultInfo?.vaultName || 'Obsidian Vault'}
+	vaultName={vaultInfo?.vaultName || 'Obsidian Vault'}
 	userEmail={data.user.email}
 	userName={data.user.name}
 	userPicture={data.user.picture}
@@ -419,6 +466,7 @@
 		</div>
 	{/if}
 </AdminObsidianLayout>
+</div>
 
 <!-- Global Toast Notifications -->
 <ToastContainer />

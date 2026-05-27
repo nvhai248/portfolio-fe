@@ -109,14 +109,11 @@ const decryptToken = async (file: EncryptedTokenFile): Promise<AdminDriveToken> 
 export const readAdminDriveToken = async (): Promise<AdminDriveToken | null> => {
 	try {
 		const raw = await readFile(getTokenStorePath(), 'utf8');
+		const file = JSON.parse(raw) as EncryptedTokenFile;
 
-		return decryptToken(JSON.parse(raw) as EncryptedTokenFile);
-	} catch (caught) {
-		if (caught instanceof Error && 'code' in caught && caught.code === 'ENOENT') {
-			return null;
-		}
-
-		throw caught;
+		return await decryptToken(file);
+	} catch {
+		return null;
 	}
 };
 
