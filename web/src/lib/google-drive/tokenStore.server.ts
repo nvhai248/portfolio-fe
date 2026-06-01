@@ -1,4 +1,6 @@
 import { env } from '$env/dynamic/private';
+import { dev } from '$app/environment';
+import { getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 import { Buffer } from 'node:buffer';
 import { mkdir, readFile, writeFile, chmod } from 'node:fs/promises';
@@ -31,6 +33,15 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 const DEFAULT_LOCAL_TOKEN_STORE_PATH = '.data/google-admin-token.json';
 const DEFAULT_VERCEL_TOKEN_STORE_PATH = '/tmp/.data/google-admin-token.json';
+const ADMIN_DRIVE_TOKEN_COOKIE = 'portfolio_admin_drive_token';
+const ADMIN_DRIVE_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
+const tokenCookieOptions = {
+	httpOnly: true,
+	path: '/',
+	sameSite: 'lax' as const,
+	secure: !dev,
+	maxAge: ADMIN_DRIVE_TOKEN_COOKIE_MAX_AGE
+};
 
 const hasCode = (caught: unknown, code: string): boolean =>
 	caught instanceof Error && 'code' in caught && (caught as NodeJS.ErrnoException).code === code;
@@ -91,6 +102,12 @@ const encryptToken = async (token: AdminDriveToken): Promise<EncryptedTokenFile>
 	};
 };
 
+const encodeEncryptedTokenFile = (file: EncryptedTokenFile): string =>
+	Buffer.from(JSON.stringify(file), 'utf8').toString('base64url');
+
+const decodeEncryptedTokenFile = (value: string): EncryptedTokenFile =>
+	JSON.parse(Buffer.from(value, 'base64url').toString('utf8')) as EncryptedTokenFile;
+
 const decryptToken = async (file: EncryptedTokenFile): Promise<AdminDriveToken> => {
 	if (file.version !== 1) {
 		throw error(500, 'Unsupported Google token store version.');
@@ -106,12 +123,37 @@ const decryptToken = async (file: EncryptedTokenFile): Promise<AdminDriveToken> 
 	return JSON.parse(decoder.decode(decrypted)) as AdminDriveToken;
 };
 
+const readCookieToken = async (): Promise<AdminDriveToken | null> => {
+	try {
+		const cookieValue = getRequestEvent().cookies.get(ADMIN_DRIVE_TOKEN_COOKIE);
+		if (!cookieValue) return null;
+
+		return await decryptToken(decodeEncryptedTokenFile(cookieValue));
+	} catch {
+		return null;
+	}
+};
+
+const writeCookieToken = async (encrypted: EncryptedTokenFile) => {
+	try {
+		getRequestEvent().cookies.set(ADMIN_DRIVE_TOKEN_COOKIE, encodeEncryptedTokenFile(encrypted), tokenCookieOptions);
+	} catch {
+		// Some non-request contexts cannot access cookies; the file store remains as fallback.
+	}
+};
+
 export const readAdminDriveToken = async (): Promise<AdminDriveToken | null> => {
+	const cookieToken = await readCookieToken();
+	if (cookieToken) return cookieToken;
+
 	try {
 		const raw = await readFile(getTokenStorePath(), 'utf8');
 		const file = JSON.parse(raw) as EncryptedTokenFile;
+		const fileToken = await decryptToken(file);
 
-		return await decryptToken(file);
+		await writeCookieToken(file);
+
+		return fileToken;
 	} catch {
 		return null;
 	}
@@ -121,6 +163,8 @@ export const writeAdminDriveToken = async (token: AdminDriveToken) => {
 	const tokenStorePath = getTokenStorePath();
 	const encrypted = await encryptToken(token);
 
+	await writeCookieToken(encrypted);
+
 	await mkdir(dirname(tokenStorePath), { recursive: true });
 	await writeFile(tokenStorePath, `${JSON.stringify(encrypted, null, 2)}\n`, { mode: 0o600 });
 	try {
@@ -129,6 +173,14 @@ export const writeAdminDriveToken = async (token: AdminDriveToken) => {
 		if (!shouldIgnoreChmodError(caught)) {
 			throw caught;
 		}
+	}
+};
+
+export const clearAdminDriveTokenCookie = () => {
+	try {
+		getRequestEvent().cookies.delete(ADMIN_DRIVE_TOKEN_COOKIE, tokenCookieOptions);
+	} catch {
+		// Non-request contexts do not have a cookie to clear.
 	}
 };
 
