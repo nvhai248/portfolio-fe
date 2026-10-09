@@ -17,6 +17,12 @@
 			locale: data.locale
 		})
 	);
+
+	const registryLabel = $derived(
+		data.locale === 'vi'
+			? `DANH MỤC SẢN XUẤT: ${projectsContent.items.length} HỒ SƠ KIẾN TRÚC`
+			: `PRODUCTION REGISTRY: ${projectsContent.items.length} ACTIVE SPECIFICATIONS`
+	);
 </script>
 
 <SeoHead
@@ -27,12 +33,23 @@
 	locale={data.locale}
 />
 
-<section class="page-shell pb-10 pt-14 lg:pt-20">
+<section class="page-shell pb-8 pt-12 lg:pt-16">
 	<SectionIntro content={projectsContent.intro} />
+
+	<!-- Technical Index Bar -->
+	<div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-y [border-color:var(--ui-border)] py-3 font-mono text-xs text-[var(--ui-text-subtle)]">
+		<div class="flex items-center gap-2">
+			<span class="inline-block w-2 h-2 rounded-full [background:var(--ui-status-ok,#00DC82)]"></span>
+			<span class="font-bold [color:var(--ui-text)]">{registryLabel}</span>
+		</div>
+		<div class="flex items-center gap-4 text-[11px]">
+			<span>DOMAINS: RETAIL POS // LMS // CLOUD DEVOPS // AGENTIC AI</span>
+		</div>
+	</div>
 </section>
 
-<section class="page-shell grid gap-5 pb-20 sm:gap-6">
-	{#each projectsContent.items as project}
+<section class="page-shell grid gap-8 pb-24">
+	{#each projectsContent.items as project (project.slug)}
 		<ProjectCard
 			{project}
 			overviewHeading={projectsContent.labels.overview}

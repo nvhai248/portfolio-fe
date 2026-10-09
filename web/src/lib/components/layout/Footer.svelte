@@ -32,7 +32,7 @@
 						<span class="material-symbols-outlined text-base">mail</span>
 					</div>
 					<div class="flex flex-col">
-						<span class="text-[0.55rem] font-black uppercase tracking-widest [color:var(--ui-text-subtle)]">Connect via Email</span>
+						<span class="text-[0.55rem] font-black uppercase tracking-widest [color:var(--ui-text-subtle)]">{locale === 'vi' ? 'Gửi email cho tôi' : 'Connect via Email'}</span>
 						<span class="font-mono text-xs font-bold [color:var(--ui-text)] transition-colors group-hover:text-primary dark:group-hover:text-blue-400">nvhai2408@gmail.com</span>
 					</div>
 				</a>

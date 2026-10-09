@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+<defs><radialGradient id="sphere" cx=".3" cy=".25" r=".8"><stop stop-color="#edf9ff"/><stop offset=".35" stop-color="#a1c5de"/><stop offset=".8" stop-color="#345b7b"/><stop offset="1" stop-color="#17344c"/></radialGradient></defs>
+<ellipse cx="200" cy="249" rx="110" ry="18" fill="#476f98" opacity=".12"/>
+<path d="m95 211 105-57 105 57-105 57Z" fill="#c9dbe9"/><path d="m95 211 105 57v10L95 221Z" fill="#8ca9c1"/><path d="m200 268 105-57v10l-105 57Z" fill="#355a7a"/>
+<circle cx="200" cy="132" r="73" fill="url(#sphere)"/>
+<ellipse cx="200" cy="137" rx="125" ry="33" transform="rotate(-25 200 137)" stroke="#779fbf" stroke-width="8"/>
+<path d="m183 99 17-12 17 12m-34 53 17 12 17-12m-42-40-12 20 12 20m50-40 12 20-12 20" stroke="#e7f5ff" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="94" cy="69" r="18" fill="url(#sphere)"/><circle cx="308" cy="190" r="12" fill="url(#sphere)"/>
+</svg>

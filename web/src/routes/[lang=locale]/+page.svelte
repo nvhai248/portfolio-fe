@@ -2,12 +2,8 @@
 	import type { PageData } from './$types';
 	import { page } from '$app/state';
 	import { getHomeContent } from '$lib/content/home';
-	import MetricList from '$lib/components/ui/MetricList.svelte';
-	import SocialLinkList from '$lib/components/ui/SocialLinkList.svelte';
-	import RecentPostCard from '$lib/components/sections/RecentPostCard.svelte';
-	import CtaBlock from '$lib/components/ui/CtaBlock.svelte';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
-	import { getDictionary } from '$lib/i18n/dictionary';
+	import EngineeringShowcase from '$lib/components/home/EngineeringShowcase.svelte';
 
 	import Hero from '$lib/components/home/Hero.svelte';
 	import QuickProfile from '$lib/components/home/QuickProfile.svelte';
@@ -53,7 +49,7 @@
 
 <div class="page-shell overflow-hidden">
 	<!-- Hero Section: Identity & Real-time Context -->
-	<section class="pb-24 pt-14 lg:pt-20">
+	<section class="pb-12 pt-8 lg:pt-12">
 		<Hero
 			tagline={heroTagline}
 			intro={heroIntro}
@@ -63,15 +59,14 @@
 		/>
 	</section>
 
-	<!-- Market Dynamics Section: Currency & Global Data -->
-	<section class="py-24 lg:py-32">
-		<CurrencyTicker />
-	</section>
+	<EngineeringShowcase {locale} />
 
 	<!-- Technical Capacity Section: System Status & Metrics -->
 	<section class="py-24 lg:py-32">
 		<QuickProfile highlights={homeContent.homeHighlights} socials={data.settings?.socials} />
 	</section>
+
+	<section class="py-16 lg:py-24"><CurrencyTicker /></section>
 
 	<!-- Knowledge Transfer Section: Recent Technical Writing -->
 	<RecentInsights

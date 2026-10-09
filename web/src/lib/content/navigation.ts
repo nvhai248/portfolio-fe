@@ -2,9 +2,8 @@ import type { Locale } from '$lib/i18n/config';
 
 export const getPrimaryNavItems = (locale: Locale) => [
 	{ href: `/${locale}`, label: locale === 'vi' ? 'Trang chủ' : 'Home' },
-	{ href: `/${locale}/about`, label: locale === 'vi' ? 'Giới thiệu' : 'About' },
+	{ href: `/${locale}/about`, label: locale === 'vi' ? 'Giới thiệu & CV' : 'About & CV' },
 	{ href: `/${locale}/projects`, label: locale === 'vi' ? 'Dự án' : 'Projects' },
-	{ href: `/${locale}/cv`, label: 'CV' },
 	{ href: `/${locale}/tools`, label: locale === 'vi' ? 'Công cụ' : 'Tools' },
 	{ href: `/${locale}/blog`, label: 'Blog' }
 ];

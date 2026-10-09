@@ -1,5 +1,5 @@
 import { resolveLocale } from '$lib/i18n/locale';
-import { getProjectsContent } from '$lib/content/sanity-content';
+import { getProjectsContent } from '$lib/content/projects';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ setHeaders, params }) => {
@@ -11,6 +11,6 @@ export const load: PageServerLoad = async ({ setHeaders, params }) => {
 
 	return {
 		locale,
-		projectsContent: await getProjectsContent(locale)
+		projectsContent: getProjectsContent(locale)
 	};
 };

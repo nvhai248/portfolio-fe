@@ -71,8 +71,8 @@
 		</Reveal>
 
 		<div class="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
-			{#each toolsList as tool, index}
-				<Reveal type="slide-up" delay={150 * (index + 1)}>
+			{#each toolsList as tool, index (tool.id)}
+				<Reveal type="slide-up" delay={(index % 2) * 60}>
 					<a href={tool.path} class="ui-card-link group block p-6">
 						<div class="mb-6 flex size-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/10 transition-all group-hover:bg-primary/10 group-hover:scale-110 group-hover:shadow-lg dark:bg-blue-500/5 dark:text-blue-400 dark:ring-blue-500/10">
 							<span class="material-symbols-outlined text-3xl">{tool.icon}</span>

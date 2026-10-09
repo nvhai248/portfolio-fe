@@ -1,6 +1,8 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import '../app.css';
+	import '$lib/styles/page-motion.css';
+	import { revealPageBlocks } from '$lib/actions/reveal-page';
 	import Header from '$lib/components/layout/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import RouteLoadingBar from '$lib/components/ui/RouteLoadingBar.svelte';
@@ -72,7 +74,7 @@
 	});
 
 	onNavigate((navigation) => {
-		if (!document.startViewTransition) return;
+		if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
@@ -122,6 +124,7 @@
 		<Header user={data.user} />
 		<div class="relative flex-1">
 			<main
+				use:revealPageBlocks={page.url.pathname}
 				id="main-content"
 				class="flex-1 transition-opacity duration-200 {showNavigationFeedback ? 'opacity-50 pointer-events-none blur-[1px]' : ''}"
 				data-testid="main-content"

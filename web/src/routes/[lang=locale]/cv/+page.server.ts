@@ -1,16 +1,8 @@
 import { resolveLocale } from '$lib/i18n/locale';
-import { getCvContent } from '$lib/content/sanity-content';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ setHeaders, params }) => {
-	setHeaders({
-		'cache-control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
-	});
-
+export const load: PageServerLoad = ({ params, url }) => {
 	const locale = resolveLocale(params.lang);
-
-	return {
-		locale,
-		cvContent: await getCvContent(locale)
-	};
+	redirect(308, `/${locale}/about${url.search}#cv`);
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Reveal from '$lib/components/ui/Reveal.svelte';
+	import Reveal from '$lib/components/ui/ScrollReveal.svelte';
 
 	interface WeatherData {
 		temp: number;

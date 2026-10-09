@@ -13,14 +13,14 @@ export const dictionary = {
 			toggleLanguage: 'Chọn ngôn ngữ'
 		},
 		footer: {
-			eyebrow: 'Sẵn sàng cho cơ hội phù hợp',
-			title: 'Xây dựng hệ thống backend ổn định với tác động kinh doanh rõ ràng.',
+			eyebrow: 'Cảm ơn bạn đã ghé qua',
+			title: 'Hẹn gặp bạn trong một cuộc trò chuyện.',
 			description:
-				'Nếu bạn cần kỹ sư backend để hiện đại hoá kiến trúc, cải thiện hiệu năng hoặc triển khai tính năng AI an toàn, hãy kết nối.',
-			navigation: 'Điều hướng',
-			profiles: 'Hồ sơ',
+				'Bạn có thể gửi email cho tôi để trao đổi về công việc, một ý tưởng mới hoặc những câu chuyện làm nghề.',
+			navigation: 'Khám phá thêm',
+			profiles: 'Tìm tôi ở đây',
 			copyrightSuffix: 'Đã đăng ký bản quyền.',
-			builtWith: 'Xây dựng bằng SvelteKit, ưu tiên hiệu năng, khả năng truy cập và sự rõ ràng.'
+			builtWith: 'Trang này được tôi xây dựng bằng SvelteKit.'
 		},
 		home: {
 			seoTitle: 'Nguyen Van Hai | Kỹ sư Backend & Kiến trúc sư Hệ thống',
@@ -53,13 +53,17 @@ export const dictionary = {
 			back: '← Quay lại danh sách dự án',
 			timeline: 'Mốc thời gian',
 			teamContext: 'Bối cảnh đội ngũ',
-			problemStatement: 'Bài toán',
-			responsibilities: 'Trách nhiệm',
-			architectureHighlights: 'Điểm nhấn kiến trúc',
-			deliveryOutcomes: 'Kết quả triển khai',
-			lessonsLearned: 'Bài học rút ra',
-			contributions: 'Đóng góp và tác động chính',
-			techStack: 'Tech stack'
+			problemStatement: 'Bài toán & Thách thức kỹ thuật',
+			responsibilities: 'Trách nhiệm & Phạm vi triển khai',
+			architectureHighlights: 'Điểm nhấn kiến trúc & Hệ thống',
+			deliveryOutcomes: 'Kết quả triển khai & Vận hành',
+			lessonsLearned: 'Bài học kinh nghiệm & Tối ưu',
+			contributions: 'Đóng góp kỹ thuật & Tác động đo lường',
+			techStack: 'Công nghệ triển khai',
+			roleLabel: 'Vai trò đảm nhiệm',
+			domainLabel: 'Lĩnh vực',
+			sysCodePrefix: 'HỒ SƠ HỆ THỐNG',
+			switchLanguage: 'Ngôn ngữ tài liệu'
 		},
 		contact: {
 			seoTitle: 'Liên hệ | Nguyen Van Hai',
@@ -307,13 +311,17 @@ export const dictionary = {
 			back: '← Back to all projects',
 			timeline: 'Timeline',
 			teamContext: 'Team context',
-			problemStatement: 'Problem statement',
-			responsibilities: 'Responsibilities',
-			architectureHighlights: 'Architecture highlights',
-			deliveryOutcomes: 'Delivery outcomes',
-			lessonsLearned: 'Lessons learned',
-			contributions: 'Key contributions and impact',
-			techStack: 'Tech stack'
+			problemStatement: 'Context & Problem Statement',
+			responsibilities: 'Responsibilities & Technical Scope',
+			architectureHighlights: 'Architecture Highlights & System Design',
+			deliveryOutcomes: 'Delivery Outcomes & Production Impact',
+			lessonsLearned: 'Lessons Learned & Engineering Takeaways',
+			contributions: 'Key Engineering Contributions & Impact',
+			techStack: 'Technology Stack',
+			roleLabel: 'Role',
+			domainLabel: 'Domain',
+			sysCodePrefix: 'SPECIFICATION DOSSIER',
+			switchLanguage: 'Document Language'
 		},
 		contact: {
 			seoTitle: 'Contact | Nguyen Van Hai',

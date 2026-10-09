@@ -10,6 +10,7 @@
 	import QuickProfile from '$lib/components/home/QuickProfile.svelte';
 	import RecentInsights from '$lib/components/home/RecentInsights.svelte';
 	import OpportunityCTA from '$lib/components/home/OpportunityCTA.svelte';
+	import EngineeringShowcase from '$lib/components/home/EngineeringShowcase.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -49,7 +50,7 @@
 
 <div class="page-shell overflow-hidden">
 	<!-- Hero Section -->
-	<section class="pb-16 pt-14 lg:pt-20">
+	<section class="pb-12 pt-8 lg:pt-12">
 		<Hero
 			tagline={heroTagline}
 			intro={heroIntro}
@@ -58,6 +59,8 @@
 			{show3DHero}
 		/>
 	</section>
+
+	<EngineeringShowcase {locale} />
 
 	<!-- Quick Profile (Floating Section) -->
 	<section class="pb-24">

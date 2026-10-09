@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types';
 import { locales } from '$lib/i18n/config';
 import { resolveSiteUrl, toAbsoluteUrl } from '$lib/seo/site';
 
-const bareRoutes = ['/', '/about', '/projects', '/cv', '/blog', '/blog/optimizing-moodle-with-ollama-ai'];
+const bareRoutes = ['/', '/about', '/projects', '/blog', '/blog/optimizing-moodle-with-ollama-ai'];
 
 export const prerender = true;
 

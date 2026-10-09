@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { MetricItem } from '$lib/types/content';
-	import Reveal from '$lib/components/ui/Reveal.svelte';
+	import Reveal from '$lib/components/ui/ScrollReveal.svelte';
 
 	interface Props {
 		items: MetricItem[];
@@ -11,8 +11,8 @@
 </script>
 
 <ul class="space-y-4">
-	{#each items as item, i}
-		<Reveal type="slide-up" delay={baseDelay + i * 100} duration={600}>
+	{#each items as item, i (item.label)}
+		<Reveal type="slide-up" delay={baseDelay + i * 60} duration={600}>
 			<li
 				class="group flex items-center justify-between gap-4 border-b border-white/5 pb-4 last:border-b-0 last:pb-0"
 			>

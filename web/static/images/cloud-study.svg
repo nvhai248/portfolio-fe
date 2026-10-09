@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+<defs><linearGradient id="cloud" x2=".8" y2="1"><stop stop-color="#f3f9ff"/><stop offset="1" stop-color="#93b1cb"/></linearGradient></defs>
+<ellipse cx="200" cy="250" rx="125" ry="18" fill="#476f98" opacity=".12"/>
+<path d="m100 212 100-54 100 54-100 54Z" fill="#c7d9e9"/><path d="m100 212 100 54v12l-100-54Z" fill="#8aa8c3"/><path d="m200 266 100-54v12l-100 54Z" fill="#3d6080"/>
+<path d="M123 154c-24 0-42-18-42-40s17-41 40-42c7-29 33-49 64-49 28 0 51 15 62 38 29-6 56 15 56 45 20 4 32 21 32 40 0 23-18 40-41 40H130Z" fill="#6b8ba7" transform="translate(0 8)"/>
+<path d="M123 154c-24 0-42-18-42-40s17-41 40-42c7-29 33-49 64-49 28 0 51 15 62 38 29-6 56 15 56 45 20 4 32 21 32 40 0 23-18 40-41 40H130Z" fill="url(#cloud)"/>
+<path d="M200 126v105m-62-52v29m124-29v29" stroke="#3c678c" stroke-width="3" stroke-dasharray="5 6"/><path d="m183 221 17-9 17 9-17 10Z" fill="#294d6c"/>
+</svg>
