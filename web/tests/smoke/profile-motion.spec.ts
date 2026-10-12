@@ -17,6 +17,32 @@ test('scroll reveals content once without changing page height', async ({ page }
 	await expect(heading).toHaveAttribute('data-profile-reveal', 'visible');
 });
 
+test('profile principles join the existing restrained scroll reveal', async ({ page }) => {
+	await page.setViewportSize({ width: 1280, height: 800 });
+	await page.goto('/en/about');
+	const direction = page.getByRole('region', { name: 'Mission & vision', exact: true });
+	const directionCard = direction.locator('.principle-direction-card').first();
+	const value = page.getByRole('region', { name: 'Core values', exact: true });
+	const valueCard = value.locator('.principle-value-card').first();
+
+	await expect(directionCard).toHaveAttribute('data-profile-reveal', 'pending');
+	await directionCard.scrollIntoViewIfNeeded();
+	await expect(directionCard).toHaveAttribute('data-profile-reveal', 'visible');
+	await expect(valueCard).toHaveAttribute('data-profile-reveal', 'visible');
+});
+
+test('profile principle dividers remain visible in dark mode', async ({ page }) => {
+	await page.setViewportSize({ width: 1280, height: 800 });
+	await page.emulateMedia({ colorScheme: 'dark' });
+	await page.goto('/en/about');
+	await expect(page.locator('html')).toHaveClass(/dark/);
+
+	const directionDivider = page.getByRole('region', { name: 'Mission & vision', exact: true }).locator('.principle-direction-card').nth(1);
+	const valueDivider = page.getByRole('region', { name: 'Core values', exact: true }).locator('.principle-value-card').nth(1);
+	await expect(directionDivider).toHaveCSS('border-left-color', 'rgb(30, 41, 59)');
+	await expect(valueDivider).toHaveCSS('border-left-color', 'rgb(30, 41, 59)');
+});
+
 test('mobile contact reveal does not overflow horizontally', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/vi/about');

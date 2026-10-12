@@ -20,7 +20,8 @@ for (const locale of ['vi', 'en']) {
 			await expect(page.getByRole('region', { name: 'Mission & vision', exact: true }).locator('article')).toHaveCount(2);
 			await expect(page.getByRole('region', { name: 'Core values', exact: true }).locator('article')).toHaveCount(4);
 		} else {
-			await expect(page.getByRole('heading', { name: 'Mission & vision', exact: true })).toHaveCount(0);
+			await expect(page.getByRole('region', { name: 'Tầm nhìn & sứ mệnh', exact: true }).locator('article')).toHaveCount(2);
+			await expect(page.getByRole('region', { name: 'Giá trị cốt lõi', exact: true }).locator('article')).toHaveCount(4);
 		}
 		await expect(page.locator('#cv a[href^="https://drive.google.com/file/"]')).toBeVisible();
 		await expect(page.locator('#cv a[href^="mailto:"]')).toBeVisible();

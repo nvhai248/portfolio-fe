@@ -97,6 +97,20 @@ const profiles: Record<Locale, ProfileContent> = {
 		},
 		profileDetails: {
 			contactTitle: 'Liên hệ & hồ sơ',
+			principles: {
+				directionTitle: 'Tầm nhìn & sứ mệnh',
+				directions: [
+					{ heading: 'Tầm nhìn của tôi', body: 'Tôi mong muốn đồng hành cùng các đội ngũ xây dựng hệ thống có thể phát triển theo nhu cầu mà không trở nên khó vận hành. Tự động hóa có chủ đích, AI thực tiễn và tri thức được chia sẻ sẽ tạo thêm thời gian cho những công việc có ý nghĩa.' },
+					{ heading: 'Sứ mệnh của tôi', body: 'Tôi xây dựng phần mềm đáng tin cậy cho những người sử dụng nó. Điều đó bắt đầu từ việc hiểu đúng vấn đề, giữ giải pháp rõ ràng và giúp đội ngũ có thể duy trì sản phẩm lâu dài sau khi phát hành.' }
+				],
+				valuesTitle: 'Giá trị cốt lõi',
+				values: [
+					{ heading: 'Sự rõ ràng', body: 'Tôi trình bày quyết định và đánh đổi một cách dễ hiểu, để người tiếp theo có thể tiếp tục công việc với sự tự tin.' },
+					{ heading: 'Tinh thần sở hữu', body: 'Tôi theo sát công việc đến khi nó vận hành trong thực tế, nhận trách nhiệm khi có sự cố và cùng đội ngũ khắc phục đến nơi đến chốn.' },
+					{ heading: 'Tôn trọng con người', body: 'Tôi cân nhắc cả người dùng sản phẩm lẫn đồng đội vận hành hệ thống. Thời gian và trải nghiệm của họ là một phần trong mọi quyết định kỹ thuật.' },
+					{ heading: 'Không ngừng học hỏi', body: 'Tôi giữ sự tò mò, đón nhận phản hồi và chia sẻ những điều đã học. Công cụ mới chỉ có ý nghĩa khi giúp giải quyết một vấn đề thực tế.' }
+				]
+			},
 			pdfLabel: 'Xem CV đầy đủ (PDF)',
 			pdfUrl,
 			contactLinks: [

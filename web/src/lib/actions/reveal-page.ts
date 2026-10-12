@@ -17,8 +17,10 @@ export function revealPageBlocks(node: HTMLElement, pathname: string) {
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const targets = Array.from(node.querySelectorAll<HTMLElement>([
 			'section > article.ui-panel',
+			'section > article.sys-project-card',
 			'section .ui-card-link',
 			'section > .ui-panel',
+			'[data-testid="project-detail-card"]',
 			'.prose > h2', '.prose > h3', '.prose > h4',
 			'.prose > figure', '.prose > blockquote', '.prose > pre', '.prose > div',
 			'article > header > img', 'article > .mt-16'

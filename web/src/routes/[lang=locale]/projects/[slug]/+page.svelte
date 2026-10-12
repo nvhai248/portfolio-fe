@@ -280,6 +280,7 @@
 		{#each cards as card, index (card.id)}
 			<article
 				id={card.id}
+				data-testid="project-detail-card"
 				bind:this={cardElements[index]}
 				class={`sticky rounded-2xl sm:rounded-3xl border [border-color:var(--ui-border)] [background-color:var(--ui-surface)] transition-all duration-150 will-change-transform shadow-[0_15px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] ${
 					index < cards.length - 1 ? 'mb-36 sm:mb-48 lg:mb-56' : 'mb-8'

@@ -52,11 +52,18 @@ test('article anchors reveal headings and preserve the hash', async ({ page }) =
 test('client navigation initializes new project detail reveals', async ({ page }) => {
 	await page.goto('/en/projects');
 	await expect(page.locator('html')).toHaveAttribute('data-app-hydrated', 'true');
-	await page.locator('main a[href$="/projects/open-university-moodle-optimization"]').first().click();
-	await expect(page).toHaveURL(/\/en\/projects\/open-university-moodle-optimization$/);
-	const lastBlock = page.locator('main section > article').last();
+	const target = page.getByRole('link', { name: 'Open University Moodle (Enterprise LMS Platform)', exact: true });
+	const sourceCard = target.locator('xpath=ancestor::article[contains(@class, "sys-project-card")]');
+	await sourceCard.scrollIntoViewIfNeeded();
+	await expect(sourceCard).toHaveAttribute('data-page-reveal', 'visible');
+	await Promise.all([
+		page.waitForURL(/\/en\/projects\/open-university-moodle-optimization$/),
+		target.click()
+	]);
+	const lastBlock = page.getByTestId('project-detail-card').last();
 	await expect(lastBlock).toHaveAttribute('data-page-reveal', 'pending');
 	await lastBlock.scrollIntoViewIfNeeded();
+	await expect(lastBlock).toHaveAttribute('data-page-reveal', 'visible');
 	await expect(lastBlock).toHaveCSS('opacity', '1');
 });
 
